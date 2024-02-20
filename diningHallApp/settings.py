@@ -15,6 +15,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SITE_ID = 2
 
 # Application definition
 
@@ -48,7 +49,7 @@ ROOT_URLCONF = "diningHallApp.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / 'login' / 'templates'],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -116,7 +117,9 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTHENTICATION_BACKENDS = ("allauth.account.auth_backends.AuthenticationBackend",)
+AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend",
+                           "allauth.account.auth_backends.AuthenticationBackend",
+                           ]
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
@@ -129,3 +132,6 @@ SOCIALACCOUNT_PROVIDERS = {
         },
     }
 }
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
