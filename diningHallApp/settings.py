@@ -49,7 +49,7 @@ ROOT_URLCONF = "diningHallApp.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / 'login' / 'templates'],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -117,21 +117,29 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend",
-                           "allauth.account.auth_backends.AuthenticationBackend",
-                           ]
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = (
+    "1061490713677-lco3blmvsce1jp0k1i91rnvff2t4fm99.apps.googleusercontent.com"
+)
+
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "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"
 
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "SCOPE": ["profile", "email"],
         "AUTH_PARAMS": {"access_type": "online"},
-        "APP": {
-            "client_id": "1061490713677-lco3blmvsce1jp0k1i91rnvff2t4fm99.apps.googleusercontent.com",
-            "secret": "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",
-            "key": "",
-        },
+        # "APP": {
+        #     "client_id": "1061490713677-lco3blmvsce1jp0k1i91rnvff2t4fm99.apps.googleusercontent.com",
+        #     "secret": "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",
+        #     "key": "",
+        # },
     }
 }
+SITE_ID = 2
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = "/auth_home/"
+LOGOUT_REDIRECT_URL = "/home/"
