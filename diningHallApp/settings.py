@@ -1,6 +1,7 @@
 from pathlib import Path
 import os
 import dj_database_url
+import secrets
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -12,10 +13,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-x=vxj8o=(976yc(mczv^s*21ke-h(o_3=8-xghs75wjqnx*8g4"
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
 
 SITE_ID = 2
 
@@ -44,6 +41,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "diningHallApp.urls"
@@ -156,6 +154,10 @@ ALLOWED_HOSTS = [
 WSGI_APPLICATION = "diningHallApp.wsgi.application"
 
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
+# SECURITY WARNING: don't run with debug turned on in production!
+if not IS_HEROKU_APP:
+    DEBUG = True
+
 if IS_HEROKU_APP:
     # In production on Heroku the database configuration is derived from the `DATABASE_URL`
     # environment variable by the dj-database-url package. `DATABASE_URL` will be set
@@ -182,7 +184,7 @@ else:
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # SHERRIFF: Added the static_root variable here to fix an erorr with static files not being found
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # SHERRIFF

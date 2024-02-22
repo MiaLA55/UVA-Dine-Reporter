@@ -6,3 +6,4 @@ psycopg2-binary
 dj-database-url
 django-bootstrap-v5
 Pillow
+django-heroku
