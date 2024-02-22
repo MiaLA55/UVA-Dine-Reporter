@@ -1,4 +1,6 @@
 from pathlib import Path
+import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -143,3 +145,36 @@ SITE_ID = 2
 
 LOGIN_REDIRECT_URL = "/auth_home/"
 LOGOUT_REDIRECT_URL = "/home/"
+
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "https://git.heroku.com/uva-dining-hall-reporter.git",
+]
+
+
+WSGI_APPLICATION = "diningHallApp.wsgi.application"
+
+IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
+if IS_HEROKU_APP:
+    # In production on Heroku the database configuration is derived from the `DATABASE_URL`
+    # environment variable by the dj-database-url package. `DATABASE_URL` will be set
+    # automatically by Heroku when a database addon is attached to your Heroku app. See:
+    # https://devcenter.heroku.com/articles/provisioning-heroku-postgres
+    # https://github.com/jazzband/dj-database-url
+    DATABASES = {
+        "default": dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+            ssl_require=True,
+        ),
+    }
+else:
+    # When running locally in development or in CI, a sqlite database file will be used instead
+    # to simplify initial setup. Longer term it's recommended to use Postgres locally too.
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
