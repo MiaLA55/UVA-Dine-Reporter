@@ -178,3 +178,21 @@ else:
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
+
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+# SHERRIFF: Added the static_root variable here to fix an erorr with static files not being found
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+# SHERRIFF
+# Activate Django-Heroku.
+# Use this code to avoid the psycopg2 / django-heroku error!
+# Do NOT import django-heroku above!
+try:
+    if "HEROKU" in os.environ:
+        import django_heroku
+
+        django_heroku.settings(locals())
+except ImportError:
+    found = False
