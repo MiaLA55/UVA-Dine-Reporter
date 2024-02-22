@@ -147,7 +147,7 @@ LOGOUT_REDIRECT_URL = "/home/"
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "https://git.heroku.com/uva-dining-hall-reporter.git",
+    "https://uva-dining-hall-reporter-32168ccd03da.herokuapp.com",
 ]
 
 
