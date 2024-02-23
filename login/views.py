@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth import logout
 
 
 def auth_home(request):
@@ -7,3 +8,8 @@ def auth_home(request):
 
 def home(request):
     return render(request=request, template_name="login/home.html", context={})
+
+
+def logout_view(request):
+    logout(request)
+    return render(request, template_name="login/logout.html")
