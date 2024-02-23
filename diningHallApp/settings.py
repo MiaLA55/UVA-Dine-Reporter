@@ -144,8 +144,8 @@ WSGI_APPLICATION = "diningHallApp.wsgi.application"
 
 IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
 # SECURITY WARNING: don't run with debug turned on in production!
-if not IS_HEROKU_APP:
-    DEBUG = True
+# if not IS_HEROKU_APP:
+DEBUG = True
 
 if IS_HEROKU_APP:
     # In production on Heroku the database configuration is derived from the `DATABASE_URL`
@@ -165,14 +165,14 @@ else:
     # to simplify initial setup. Longer term it's recommended to use Postgres locally too.
     DATABASES = {
         "default": {
-            # "ENGINE": "django.db.backends.sqlite3",
-            # "NAME": BASE_DIR / "db.sqlite3",
-            "ENGINE": "django.db.backends.postgresql_psycopg2",
-            "NAME": "db",
-            "USER": "a-29-member",
-            "PASSWORD": "!S24ASDA29Group!",
-            "HOST": "localhost",
-            "PORT": "5432",
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+            # "ENGINE": "django.db.backends.postgresql_psycopg2",
+            # "NAME": "db",
+            # "USER": "a-29-member",
+            # "PASSWORD": "!S24ASDA29Group!",
+            # "HOST": "localhost",
+            # "PORT": "5432",
         }
     }
 
