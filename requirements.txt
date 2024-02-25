@@ -1,0 +1,9 @@
+Django
+gunicorn
+social-auth-app-django
+django-allauth==0.57.0
+psycopg2-binary
+dj-database-url
+django-bootstrap-v5
+Pillow
+django-heroku
