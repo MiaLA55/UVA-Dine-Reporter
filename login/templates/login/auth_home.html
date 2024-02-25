@@ -1,0 +1,23 @@
+<!-- /***************************************************************************************
+*  REFERENCES
+*  Title: User Registration in Django using Google OAuth
+*  Author: Sect
+*  Date: December 18, 2020
+*  URL: https://web.archive.org/web/20210123204124/https://www.section.io/engineering-education/django-google-oauth/
+***************************************************************************************/ -->
+{% extends 'login/base.html' %}
+{% load socialaccount %}
+{% block content %}
+<body class="bg-light">
+    <div class="container mt-4">
+        <h1 class="mb-4">UVA Dining Hall Reporter</h1>
+        {% if user.is_authenticated %}
+            <p>Welcome, You are logged in as {{ user.username }}</p>
+        {% else %}
+<!--            <a href="{% provider_login_url 'google' %}" class="btn btn-primary">Login With Google</a>-->
+        <p>Welcome, You are logged in as Anonymous</p>
+        {% endif %}
+        <a href="{% url 'login:logout' %}" class="btn btn-danger">Logout</a>
+    </div>
+</body>
+{% endblock %}
