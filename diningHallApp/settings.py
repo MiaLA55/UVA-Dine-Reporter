@@ -1,4 +1,7 @@
 from pathlib import Path
+import os
+import dj_database_url
+import secrets
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -10,10 +13,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-x=vxj8o=(976yc(mczv^s*21ke-h(o_3=8-xghs75wjqnx*8g4"
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
 
 SITE_ID = 2
 
@@ -31,7 +30,7 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
-    'bootstrap5',
+    "bootstrap5",
 ]
 
 MIDDLEWARE = [
@@ -62,19 +61,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = "diningHallApp.wsgi.application"
-
-
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
 
 
 # Password validation
@@ -133,14 +119,72 @@ SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "SCOPE": ["profile", "email"],
         "AUTH_PARAMS": {"access_type": "online"},
-        # "APP": {
-        #     "client_id": "1061490713677-lco3blmvsce1jp0k1i91rnvff2t4fm99.apps.googleusercontent.com",
-        #     "secret": "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",
-        #     "key": "",
-        # },
+        "APP": {
+            "client_id": "1061490713677-lco3blmvsce1jp0k1i91rnvff2t4fm99.apps.googleusercontent.com",
+            "secret": "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",
+            "key": "",
+        },
     }
 }
 SITE_ID = 2
 
 LOGIN_REDIRECT_URL = "/auth_home/"
 LOGOUT_REDIRECT_URL = "/logout/"
+
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "uva-dining-hall-reporter-32168ccd03da.herokuapp.com",
+]
+
+WSGI_APPLICATION = "diningHallApp.wsgi.application"
+
+IS_HEROKU_APP = "DYNO" in os.environ and not "CI" in os.environ
+# SECURITY WARNING: don't run with debug turned on in production!
+# if not IS_HEROKU_APP:
+DEBUG = True
+
+if IS_HEROKU_APP:
+    # In production on Heroku the database configuration is derived from the `DATABASE_URL`
+    # environment variable by the dj-database-url package. `DATABASE_URL` will be set
+    # automatically by Heroku when a database addon is attached to your Heroku app. See:
+    # https://devcenter.heroku.com/articles/provisioning-heroku-postgres
+    # https://github.com/jazzband/dj-database-url
+    DATABASES = {
+        "default": dj_database_url.config(
+            conn_max_age=600,
+            conn_health_checks=True,
+            ssl_require=True,
+        ),
+    }
+else:
+    # When running locally in development or in CI, a sqlite database file will be used instead
+    # to simplify initial setup. Longer term it's recommended to use Postgres locally too.
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+            # "ENGINE": "django.db.backends.postgresql_psycopg2",
+            # "NAME": "db",
+            # "USER": "a-29-member",
+            # "PASSWORD": "!S24ASDA29Group!",
+            # "HOST": "localhost",
+            # "PORT": "5432",
+        }
+    }
+
+
+STATIC_ROOT = BASE_DIR / "staticfiles"
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+# SHERRIFF
+# Activate Django-Heroku.
+# Use this code to avoid the psycopg2 / django-heroku error!
+# Do NOT import django-heroku above!
+try:
+    if "HEROKU" in os.environ:
+        import django_heroku
+
+        django_heroku.settings(locals())
+except ImportError:
+    found = False
