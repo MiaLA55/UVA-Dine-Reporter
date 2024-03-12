@@ -22,6 +22,7 @@ def auth_home(request):
 
 
 def home(request):
+    logout(request)
     return render(request=request, template_name="login/home.html", context={})
 
 
