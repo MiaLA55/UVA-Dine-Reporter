@@ -3,6 +3,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.contrib.auth.models import AnonymousUser
 
 
 # views.py
@@ -14,6 +15,8 @@ def auth_home(request):
             return render(request=request, template_name="login/admin_home.html", context={})
         else:
             return render(request=request, template_name="login/auth_home.html", context={})
+    elif isinstance(request.user, AnonymousUser):
+        return render(request=request, template_name="login/auth_home.html", context={})
     else:
         return render(request, template_name="login/logout.html")
 
