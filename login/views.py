@@ -6,6 +6,7 @@ from django.urls import reverse
 import boto3
 from django.conf import settings
 from django.http import HttpResponse
+from django.contrib.auth.models import AnonymousUser
 
 
 # views.py
@@ -21,11 +22,14 @@ def auth_home(request):
             return render(
                 request=request, template_name="login/auth_home.html", context={}
             )
+    elif isinstance(request.user, AnonymousUser):
+        return render(request=request, template_name="login/auth_home.html", context={})
     else:
         return render(request, template_name="login/logout.html")
 
 
 def home(request):
+    logout(request)
     return render(request=request, template_name="login/home.html", context={})
 
 
