@@ -8,3 +8,6 @@ def upload_page(request):
 
 def user_submit_report(request):
     return render(request, template_name="file_upload/user_submit_report.html")
+
+def success(request):
+    return render(request, template_name="file_upload/success.html")

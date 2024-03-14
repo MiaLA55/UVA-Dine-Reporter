@@ -8,6 +8,16 @@
     <h2>Submit Report</h2>
     <p>Fill in the fields below to make a report on UVA Dine.</p>
     <p>Upload files as needed (accepted file types are .txt / plain text, .pdf / Adobe PDF documents, .jpg / JPEG images)</p>
+
+  <div>
+            <form method="post" action="{% url 'file_upload:success' %}">
+                 {% csrf_token %}
+                <label for="reportExplanation">Report Explanation:</label><br>
+                <textarea id="reportExplanation" name="reportExplanation" rows="4" cols="50"></textarea><br><br>
+
+                <input type="submit" value="Submit Report">
+            </form>
+        </div>
 </body>
 
 {% endblock %}
