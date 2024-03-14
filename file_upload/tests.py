@@ -1,57 +1,55 @@
+import os
+
 from django.conf import settings
 from django.test import TestCase
 import boto3
-from requests import request
+
 
 class FileUploadTest(TestCase):
-    def upload_txt_file(self):
-        
+    def test_upload_txt_file(self):
         s3 = boto3.client('s3',
-                           aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                           aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
-        s3.upload_fileobj("test.txt", settings.AWS_STORAGE_BUCKET_NAME, "test.txt")
+                          aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                          aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+        s3.upload_file("file_upload/test.txt", settings.AWS_STORAGE_BUCKET_NAME, "test.txt")
 
         # test downloading
-        s3.download_file(settings.AWS_STORAGE_BUCKET_NAME, "test.txt", "./test.txt")
-"""
-  def upload_pdf_file(self):
-        BUCKET_NAME = 'YOUR-BUCKET-NAME’
-        S3_FILE = 'YOUR-MANUALLY-UPLOADED-FILE-NAME'
-        LOCAL_NAME = 'YOUR-LOCAL-NAME-FOR-THIS-FILE'
+        s3.download_file(settings.AWS_STORAGE_BUCKET_NAME, "test.txt", "test_passed.txt")
 
-        s3 = boto3.resource('s3')
+        # Assertions for successful download
+        self.assertTrue(os.path.isfile("test_passed.txt"), "Downloaded file not found")
 
-        # test listing
-        bucket = s3.Bucket(BUCKET_NAME)
-        for f in bucket.objects.all():
-            print(f.key)
+        # delete ./test_passed.txt for future
+        if os.path.isfile("test_passed.txt"):
+            os.remove("test_passed.txt")
 
-        # test downloading
-        bucket.download_file(S3_FILE, LOCAL_NAME)
-
-        # test uploading
-        data = open('YOUR-LOCAL-FILE', 'rb')
-        bucket.put_object(Key='YOUR-FILE-NAME-ON-S3-FOR-THIS-FILE', Body=data)
-
-    def upload_jpg_file(self):
-        BUCKET_NAME = 'YOUR-BUCKET-NAME’
-        S3_FILE = 'YOUR-MANUALLY-UPLOADED-FILE-NAME'
-        LOCAL_NAME = 'YOUR-LOCAL-NAME-FOR-THIS-FILE'
-
-        s3 = boto3.resource('s3')
-
-        # test listing
-        bucket = s3.Bucket(BUCKET_NAME)
-        for f in bucket.objects.all():
-            print(f.key)
+    def test_upload_pdf_file(self):
+        s3 = boto3.client('s3',
+                          aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                          aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+        s3.upload_file("file_upload/test.pdf", settings.AWS_STORAGE_BUCKET_NAME, "test.pdf")
 
         # test downloading
-        bucket.download_file(S3_FILE, LOCAL_NAME)
+        s3.download_file(settings.AWS_STORAGE_BUCKET_NAME, "test.pdf", "test_passed.pdf")
 
-        # test uploading
-        data = open('YOUR-LOCAL-FILE', 'rb')
-        bucket.put_object(Key='YOUR-FILE-NAME-ON-S3-FOR-THIS-FILE', Body=data)
-"""
+        # Assertions for successful download
+        self.assertTrue(os.path.isfile("test_passed.pdf"), "Downloaded file not found")
 
+        # delete ./test_passed.txt for future
+        if os.path.isfile("test_passed.pdf"):
+            os.remove("test_passed.pdf")
 
+    def test_upload_jpg_file(self):
+        s3 = boto3.client('s3',
+                          aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                          aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY)
+        s3.upload_file("file_upload/test.jpg", settings.AWS_STORAGE_BUCKET_NAME, "test.jpg")
 
+        # test downloading
+        s3.download_file(settings.AWS_STORAGE_BUCKET_NAME, "test.jpg", "test_passed.jpg")
+
+        # Assertions for successful download
+        self.assertTrue(os.path.isfile("test_passed.jpg"), "Downloaded file not found")
+
+        # delete ./test_passed.txt for future
+        if os.path.isfile("test_passed.jpg"):
+            os.remove("test_passed.jpg")
