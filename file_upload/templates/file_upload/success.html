@@ -1,0 +1,18 @@
+{% extends 'login/base.html' %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+     <style>
+        .success-text {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+<h1><span class="success-text">Report Submitted Successfully!</span></h1>
+  <p>Thank you for submitting your report.</p>
+<a href="{% url 'login:auth_home' %}" class="btn btn-primary">Return Home</a>
+</body>
+</html>
+{% endblock %}
