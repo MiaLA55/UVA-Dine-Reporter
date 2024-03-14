@@ -18,14 +18,8 @@
         <p>Welcome, You are logged in as Anonymous</p>
         {% endif %}
 
-        <form method="post" enctype="multipart/form-data" action="{% url 'login:upload_file' %}">
-            {% csrf_token %}
-            <input type="file" name="file">
-            <button type="submit">Upload</button>
-        </form>
-
         <a href="{% url 'login:logout' %}" class="btn btn-danger">Logout</a>
-        <a href="{% url 'file_upload:user_submit_report' %}" class="btn btn-primary">Submit Report</a>
+        <a href="{% url 'file_upload:user_submit_report' %}" class="btn btn-primary">Make a Report</a>
     </div>
 </body>
 {% endblock %}

@@ -12,10 +12,15 @@
   <div>
             <form method="post" action="{% url 'file_upload:success' %}">
                  {% csrf_token %}
-                <label for="reportExplanation">Report Explanation:</label><br>
+                <label for="reportExplanation">Report Explanation (optional):</label><br>
                 <textarea id="reportExplanation" name="reportExplanation" rows="4" cols="50"></textarea><br><br>
 
-                <input type="submit" value="Submit Report">
+
+        <form method="post" enctype="multipart/form-data" action="{% url 'login:upload_file' %}">
+            {% csrf_token %}
+            <input type="file" name="file">
+            <button type="submit">Submit Report</button>
+        </form>
             </form>
         </div>
 </body>
