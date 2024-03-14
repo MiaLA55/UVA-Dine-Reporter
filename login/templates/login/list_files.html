@@ -1,0 +1,20 @@
+{% extends 'login/base.html' %}
+{% block content %}
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File List</title>
+</head>
+
+<body>
+    <h1>Files in S3 Bucket</h1>
+    <ul>
+        {% for file_name in file_names %}
+        <li><a href="{% url 'login:file_detail' file_name %}">{{ file_name }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+
+{% endblock %}

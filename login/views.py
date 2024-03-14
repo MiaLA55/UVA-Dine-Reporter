@@ -4,12 +4,15 @@ from django.contrib.auth.views import LoginView
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 import boto3
-from django.conf import settings
 from django.http import HttpResponse
 from django.contrib.auth.models import AnonymousUser
 
 
 # views.py
+
+AWS_ACCESS_KEY_ID = "AKIAU6GD2ERXH4XMKEH5"
+AWS_SECRET_ACCESS_KEY = "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"
+AWS_STORAGE_BUCKET_NAME = "dininghallapp"
 
 
 def auth_home(request):
@@ -66,14 +69,64 @@ class CustomLoginView(LoginView):
 
 
 def upload_file(request):
-    if request.method == "POST" and request.FILES["file"]:
+    if request.method == "POST" and request.FILES.get("file"):
         file = request.FILES["file"]
+        s3 = boto3.client(
+            "s3",
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+        )
+        s3.upload_fileobj(file, AWS_STORAGE_BUCKET_NAME, file.name)
+        return HttpResponse("File uploaded successfully.")
+    return HttpResponse("No file selected.")
 
-        # Save the uploaded file
-        with open("path/to/save/" + file.name, "wb+") as destination:
-            for chunk in file.chunks():
-                destination.write(chunk)
 
-        # Redirect or render success message
-        return HttpResponseRedirect("/success/")
-    return render(request, "upload.html")
+def list_files(request):
+    s3 = boto3.client(
+        "s3",
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    )
+    bucket_name = "dininghallapp"
+    response = s3.list_objects_v2(Bucket=bucket_name)
+
+    file_names = [obj["Key"] for obj in response["Contents"]]
+    return render(request, "login/list_files.html", {"file_names": file_names})
+
+
+def file_detail(request, file_name):
+    s3 = boto3.client(
+        "s3",
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    )
+
+    # Retrieve the file content from S3
+    try:
+        response = s3.get_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=file_name)
+        file_content = (
+            response["Body"].read().decode("utf-8")
+        )  # Assuming UTF-8 encoding
+    except Exception as e:
+        return HttpResponse(f"Error retrieving file: {e}")
+
+    # Render the file content in the browser
+    return HttpResponse(file_content)
+
+
+# def view_file(bucket_name, s3_file_key):
+#     s3 = boto3.client(
+#         "s3",
+#         aws_access_key_id=AWS_ACCESS_KEY_ID,
+#         aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+#     )
+
+#     # Generate a pre-signed URL for the S3 object
+#     url = s3.generate_presigned_url(
+#         ClientMethod="get_object",
+#         Params={"Bucket": bucket_name, "Key": s3_file_key},
+#         ExpiresIn=3600,  # URL expiration time in seconds (e.g., 1 hour)
+#     )
+
+#     # Redirect the user's browser to the pre-signed URL
+#     return HttpResponseRedirect(url)
