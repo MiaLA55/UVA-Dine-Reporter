@@ -104,29 +104,21 @@ def file_detail(request, file_name):
     # Retrieve the file content from S3
     try:
         response = s3.get_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=file_name)
-        file_content = (
-            response["Body"].read().decode("utf-8")
-        )  # Assuming UTF-8 encoding
+        file_content = response["Body"].read()
     except Exception as e:
         return HttpResponse(f"Error retrieving file: {e}")
 
-    # Render the file content in the browser
-    return HttpResponse(file_content)
+    # Determine the content type based on the file extension
+    content_type = None
+    if file_name.endswith(".txt"):
+        content_type = "text/plain"
+    elif file_name.endswith(".jpg"):
+        content_type = "image/jpeg"
+    elif file_name.endswith(".pdf"):
+        content_type = "application/pdf"
+    else:
+        # If the file extension is not recognized, return an error response
+        return HttpResponse("Unsupported file type")
 
-
-# def view_file(bucket_name, s3_file_key):
-#     s3 = boto3.client(
-#         "s3",
-#         aws_access_key_id=AWS_ACCESS_KEY_ID,
-#         aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-#     )
-
-#     # Generate a pre-signed URL for the S3 object
-#     url = s3.generate_presigned_url(
-#         ClientMethod="get_object",
-#         Params={"Bucket": bucket_name, "Key": s3_file_key},
-#         ExpiresIn=3600,  # URL expiration time in seconds (e.g., 1 hour)
-#     )
-
-#     # Redirect the user's browser to the pre-signed URL
-#     return HttpResponseRedirect(url)
+    # Return an HTTP response with the file content and appropriate content type
+    return HttpResponse(file_content, content_type=content_type)
