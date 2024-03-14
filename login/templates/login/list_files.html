@@ -15,6 +15,7 @@
         <li><a href="{% url 'login:file_detail' file_name %}">{{ file_name }}</a></li>
         {% endfor %}
     </ul>
+    <a href="{% url 'login:admin_home' %}" class="btn btn-primary">Return Home</a>
 </body>
 
 {% endblock %}

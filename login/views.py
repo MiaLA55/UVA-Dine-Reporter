@@ -40,6 +40,9 @@ def logout_view(request):
     logout(request)
     return render(request, template_name="login/logout.html")
 
+def admin_home(request):
+    return render(request, template_name="login/admin_home.html")
+
 
 class CustomLoginView(LoginView):
     default_template_name = "login/auth_home.html"
