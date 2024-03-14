@@ -80,7 +80,7 @@ def upload_file(request):
             aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
         )
         s3.upload_fileobj(file, AWS_STORAGE_BUCKET_NAME, file.name)
-        return HttpResponse("File uploaded successfully.")
+        return render(request, template_name="file_upload/success.html")
     return HttpResponse("No file selected.")
 
 
