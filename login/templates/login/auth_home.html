@@ -14,10 +14,10 @@
         {% if user.is_authenticated %}
             <p>Welcome, You are logged in as {{ user.username }}</p>
         {% else %}
-<!--            <a href="{% provider_login_url 'google' %}" class="btn btn-primary">Login With Google</a>-->
         <p>Welcome, You are logged in as Anonymous</p>
         {% endif %}
         <a href="{% url 'login:logout' %}" class="btn btn-danger">Logout</a>
+        <a href="{% url 'file_upload:user_submit_report' %}" class="btn btn-primary">Submit Report</a>
     </div>
 </body>
 {% endblock %}
