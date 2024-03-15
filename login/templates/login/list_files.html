@@ -1,22 +1,23 @@
 {% extends 'login/base.html' %}
 {% block content %}
-
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>File List</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% bootstrap_messages %}
 </head>
 
 <body>
-    <h1>Files in S3 Bucket</h1>
-    <ul>
-        {% for file_name, report_explanation in file_data %}
-        <li><a href="{% url 'login:file_detail' file_name %}">{{ file_name }}</a>
-        <span>{{ report_explanation }}</span></li>
-        {% endfor %}
-    </ul>
+    <h1>Submitted Reports</h1>
+    {% for file_name, report_explanation in file_data %}
+    <div>
+        <a href="{% url 'login:file_detail' file_name %}">{{ file_name }}</a>
+        <div class="p-3 mb-2 bg-light text-dark">{{ report_explanation }}</div>
+    </div>
+    {% endfor %}
     <a href="{% url 'login:admin_home' %}" class="btn btn-primary">Return Home</a>
 </body>
-
 {% endblock %}
