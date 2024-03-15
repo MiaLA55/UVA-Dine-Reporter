@@ -1,22 +1,55 @@
+<!-- /***************************************************************************************
+*  REFERENCES
+*  Title: Bootstrap Docs
+*  Author: Bootstrap
+*  URL: https://getbootstrap.com/docs/5.3/getting-started/introduction/
+
+*  Tool: ChatGPT
+*  Use: Container styling
+***************************************************************************************/ -->
 {% extends 'login/base.html' %}
 {% block content %}
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>User Submission Page</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% bootstrap_messages %}
 </head>
 <body>
-    <h2>Submit Report</h2>
-    <p>Fill in the fields below to make a report on UVA Dine.</p>
-    <p>Upload files as needed (accepted file types are .txt / plain text, .pdf / Adobe PDF documents, .jpg / JPEG images)</p>
-
-  <div>
-        <form method="post" enctype="multipart/form-data" action="{% url 'login:upload_file' %}">
-            {% csrf_token %}
-            <label for="reportExplanation">Report Explanation (optional):</label><br>
-            <textarea id="reportExplanation" name="reportExplanation" rows="4" cols="50"></textarea><br><br>
-            <input type="file" name="file">
-            <button type="submit">Submit Report</button>
-        </form>
-  </div>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Submit Report</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Fill in the fields below to make a report on UVA Dine.</p>
+                        <p class="card-text">Upload files as needed (accepted file types are .txt / plain text, .pdf / Adobe PDF documents, .jpg / JPEG images)</p>
+                        <form method="post" enctype="multipart/form-data" action="{% url 'login:upload_file' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="reportExplanation">Report Explanation (optional):</label>
+                                <textarea class="form-control" id="reportExplanation" name="reportExplanation" rows="4" cols="50"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <input type="file" class="form-control-file" name="file">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Report</button>
+                        </form>
+                    </div>
+                    {% if error_message %}
+                        <div class="card-footer">
+                            <div class="alert alert-danger" role="alert">
+                                <p>{{ error_message }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 {% endblock %}
