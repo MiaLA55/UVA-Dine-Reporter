@@ -74,12 +74,16 @@ class CustomLoginView(LoginView):
 def upload_file(request):
     if request.method == "POST" and request.FILES.get("file"):
         file = request.FILES["file"]
+        report_explanation = request.POST.get("reportExplanation", "")
         s3 = boto3.client(
             "s3",
             aws_access_key_id=AWS_ACCESS_KEY_ID,
             aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
         )
         s3.upload_fileobj(file, AWS_STORAGE_BUCKET_NAME, file.name)
+        if report_explanation:
+            explanation_filename = f"{file.name}.txt"
+            s3.put_object(Body=report_explanation.encode(), Bucket=AWS_STORAGE_BUCKET_NAME, Key=explanation_filename)
         return render(request, template_name="file_upload/success.html")
     return HttpResponse("No file selected.")
 
@@ -92,9 +96,23 @@ def list_files(request):
     )
     bucket_name = "dininghallapp"
     response = s3.list_objects_v2(Bucket=bucket_name)
+    file_data = []
 
-    file_names = [obj["Key"] for obj in response["Contents"]]
-    return render(request, "login/list_files.html", {"file_names": file_names})
+    # Iterate through objects in the bucket
+    for obj in response.get("Contents", []):
+        file_name = obj["Key"]
+
+        # Retrieve report explanation if available
+        report_explanation_key = f"{file_name}.txt"  # Assuming report explanations are stored as .txt files
+        try:
+            report_obj = s3.get_object(Bucket=bucket_name, Key=report_explanation_key)
+            report_explanation = report_obj["Body"].read().decode("utf-8")
+        except s3.exceptions.NoSuchKey:
+            report_explanation = "No report explanation provided"  # Default explanation if not available
+
+        # Add file_name and report_explanation to the list
+        file_data.append((file_name, report_explanation))
+    return render(request, "login/list_files.html", {"file_data": file_data})
 
 
 def file_detail(request, file_name):
