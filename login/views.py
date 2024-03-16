@@ -76,7 +76,7 @@ def upload_file(request):
         file = request.FILES["file"]
         report_explanation = request.POST.get("reportExplanation", "")
 
-        file_name = f"{request.user.username}_{file.name}"
+        file_name = f"{request.user.username}_{request.user.id}_{file.name}"
         current_filename_index = 0
 
 
