@@ -6,9 +6,8 @@ from django.urls import reverse
 import boto3
 from django.http import HttpResponse
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.auth.decorators import login_required
 
-
-# views.py
 
 AWS_ACCESS_KEY_ID = "AKIAU6GD2ERXH4XMKEH5"
 AWS_SECRET_ACCESS_KEY = "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"
@@ -39,6 +38,7 @@ def home(request):
 def logout_view(request):
     logout(request)
     return render(request, template_name="login/logout.html")
+
 
 def admin_home(request):
     return render(request, template_name="login/admin_home.html")
@@ -75,17 +75,36 @@ def upload_file(request):
     if request.method == "POST" and request.FILES.get("file"):
         file = request.FILES["file"]
         report_explanation = request.POST.get("reportExplanation", "")
+
+        file_name = f"{request.user.username}_{file.name}"
+        current_filename_index = 0
+
+
         s3 = boto3.client(
             "s3",
             aws_access_key_id=AWS_ACCESS_KEY_ID,
             aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
         )
-        s3.upload_fileobj(file, AWS_STORAGE_BUCKET_NAME, file.name)
+
+        while check_existing_filename(s3, bucket_name=AWS_STORAGE_BUCKET_NAME, file_name=file_name):
+            file_name = f"{request.user.username}_{file.name}_{current_filename_index}"
+            current_filename_index += 1
+
+        s3.upload_fileobj(file, AWS_STORAGE_BUCKET_NAME, file_name)
         if report_explanation:
-            explanation_filename = f"{file.name}.txt"
+            explanation_filename = f"{file_name}.txt"
             s3.put_object(Body=report_explanation.encode(), Bucket=AWS_STORAGE_BUCKET_NAME, Key=explanation_filename)
         return render(request, template_name="file_upload/success.html")
     return HttpResponse("No file selected.")
+
+
+
+def check_existing_filename(s3_client, bucket_name, file_name):
+    response = s3_client.list_objects_v2(Bucket=bucket_name)
+    for obj in response.get("Contents", []):
+        if obj["Key"] == file_name:
+            return True
+    return False
 
 
 def list_files(request):
@@ -143,3 +162,52 @@ def file_detail(request, file_name):
 
     # Return an HTTP response with the file content and appropriate content type
     return HttpResponse(file_content, content_type=content_type)
+
+
+@login_required
+def list_specific_user_files(request):
+    if request.user.is_authenticated:
+        user_identifier = request.user.username
+
+        # Initialize an empty list to store file data
+        file_data = []
+
+        # Initialize the Amazon S3 client
+        s3 = boto3.client(
+            "s3",
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+        )
+
+        # Define the bucket name
+        bucket_name = "dininghallapp"
+
+        # Retrieve all objects from the bucket
+        response = s3.list_objects_v2(Bucket=bucket_name)
+
+        # Iterate through objects in the bucket
+        for obj in response.get("Contents", []):
+            file_name = obj["Key"]
+
+            # Check if the file belongs to the specific user
+            if user_identifier in file_name:
+                # Retrieve report explanation if available
+                report_explanation_key = f"{file_name}.txt"
+                try:
+                    report_obj = s3.get_object(Bucket=bucket_name, Key=report_explanation_key)
+                    report_explanation = report_obj["Body"].read().decode("utf-8")
+                except s3.exceptions.NoSuchKey:
+                    report_explanation = "No report explanation provided"  # Default explanation if not available
+
+                # Add file_name and report_explanation to the list
+                file_data.append((file_name, report_explanation))
+
+        context = {
+            'username': request.user.username,
+            'file_data': file_data,
+        }
+        # Render the template with the file data
+        return render(request, "login/user_list_files.html", context)
+    else:
+        # If the user is not authenticated, redirect them to the login page
+        return redirect("login")
