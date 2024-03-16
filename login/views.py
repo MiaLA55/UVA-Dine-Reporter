@@ -4,12 +4,15 @@ from django.contrib.auth.views import LoginView
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 import boto3
-from django.conf import settings
 from django.http import HttpResponse
 from django.contrib.auth.models import AnonymousUser
 
 
 # views.py
+
+AWS_ACCESS_KEY_ID = "AKIAU6GD2ERXH4XMKEH5"
+AWS_SECRET_ACCESS_KEY = "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"
+AWS_STORAGE_BUCKET_NAME = "dininghallapp"
 
 
 def auth_home(request):
@@ -36,6 +39,9 @@ def home(request):
 def logout_view(request):
     logout(request)
     return render(request, template_name="login/logout.html")
+
+def admin_home(request):
+    return render(request, template_name="login/admin_home.html")
 
 
 class CustomLoginView(LoginView):
@@ -66,14 +72,74 @@ class CustomLoginView(LoginView):
 
 
 def upload_file(request):
-    if request.method == "POST" and request.FILES["file"]:
+    if request.method == "POST" and request.FILES.get("file"):
         file = request.FILES["file"]
+        report_explanation = request.POST.get("reportExplanation", "")
+        s3 = boto3.client(
+            "s3",
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+        )
+        s3.upload_fileobj(file, AWS_STORAGE_BUCKET_NAME, file.name)
+        if report_explanation:
+            explanation_filename = f"{file.name}.txt"
+            s3.put_object(Body=report_explanation.encode(), Bucket=AWS_STORAGE_BUCKET_NAME, Key=explanation_filename)
+        return render(request, template_name="file_upload/success.html")
+    return HttpResponse("No file selected.")
 
-        # Save the uploaded file
-        with open("path/to/save/" + file.name, "wb+") as destination:
-            for chunk in file.chunks():
-                destination.write(chunk)
 
-        # Redirect or render success message
-        return HttpResponseRedirect("/success/")
-    return render(request, "upload.html")
+def list_files(request):
+    s3 = boto3.client(
+        "s3",
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    )
+    bucket_name = "dininghallapp"
+    response = s3.list_objects_v2(Bucket=bucket_name)
+    file_data = []
+
+    # Iterate through objects in the bucket
+    for obj in response.get("Contents", []):
+        file_name = obj["Key"]
+
+        # Retrieve report explanation if available
+        report_explanation_key = f"{file_name}.txt"  # Assuming report explanations are stored as .txt files
+        try:
+            report_obj = s3.get_object(Bucket=bucket_name, Key=report_explanation_key)
+            report_explanation = report_obj["Body"].read().decode("utf-8")
+        except s3.exceptions.NoSuchKey:
+            report_explanation = "No report explanation provided"  # Default explanation if not available
+
+        # Add file_name and report_explanation to the list
+        file_data.append((file_name, report_explanation))
+    return render(request, "login/list_files.html", {"file_data": file_data})
+
+
+def file_detail(request, file_name):
+    s3 = boto3.client(
+        "s3",
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    )
+
+    # Retrieve the file content from S3
+    try:
+        response = s3.get_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=file_name)
+        file_content = response["Body"].read()
+    except Exception as e:
+        return HttpResponse(f"Error retrieving file: {e}")
+
+    # Determine the content type based on the file extension
+    content_type = None
+    if file_name.endswith(".txt"):
+        content_type = "text/plain"
+    elif file_name.endswith(".jpg"):
+        content_type = "image/jpeg"
+    elif file_name.endswith(".pdf"):
+        content_type = "application/pdf"
+    else:
+        # If the file extension is not recognized, return an error response
+        return HttpResponse("Unsupported file type")
+
+    # Return an HTTP response with the file content and appropriate content type
+    return HttpResponse(file_content, content_type=content_type)

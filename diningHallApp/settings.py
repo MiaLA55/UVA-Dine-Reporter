@@ -131,11 +131,11 @@ SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "SCOPE": ["profile", "email"],
         "AUTH_PARAMS": {"access_type": "online"},
-        # "APP": {
-        #     "client_id": "1061490713677-lco3blmvsce1jp0k1i91rnvff2t4fm99.apps.googleusercontent.com",
-        #     "secret": "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",
-        #     "key": "",
-        # },
+        "APP": {
+            "client_id": "1061490713677-lco3blmvsce1jp0k1i91rnvff2t4fm99.apps.googleusercontent.com",
+            "secret": "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",
+            "key": "",
+        },
     }
 }
 SITE_ID = 2
