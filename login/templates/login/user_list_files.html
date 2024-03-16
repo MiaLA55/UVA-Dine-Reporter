@@ -1,0 +1,43 @@
+{% extends 'login/base.html' %}
+{% block content %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ username }}'s Submitted Reports</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% bootstrap_messages %}
+    <style>
+        .custom-text-color {
+            color: #b6bcc3; /* Grey color */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>{{ username }}'s Submitted Reports</h1>
+    {% if file_data %}
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    {% for file_name, report_explanation in file_data %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ file_name }}</h5>
+                                <p class="card-text {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
+                                    {{ report_explanation }}
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <p>No reports submitted by this user.</p>
+    {% endif %}
+    <a href="{% url 'login:auth_home' %}" class="btn btn-primary">Return Home</a>
+</body>
+{% endblock %}
