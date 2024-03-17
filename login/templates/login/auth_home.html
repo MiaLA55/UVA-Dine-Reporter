@@ -8,16 +8,22 @@
 {% extends 'login/base.html' %}
 {% load socialaccount %}
 {% block content %}
+
 <body class="bg-light">
     <div class="container mt-4">
         <h1 class="mb-4">UVA Dining Hall Reporter</h1>
         {% if user.is_authenticated %}
-            <p>Welcome, You are logged in as {{ user.username }}</p>
+        <p>Welcome, You are logged in as {{ user.username }}</p>
         {% else %}
-<!--            <a href="{% provider_login_url 'google' %}" class="btn btn-primary">Login With Google</a>-->
         <p>Welcome, You are logged in as Anonymous</p>
+        {% endif %}
+
+        <a href="{% url 'file_upload:user_submit_report' %}" class="btn btn-primary">Make a Report</a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'login:user_reports' %}" class="btn btn-secondary">View Your Reports</a>
         {% endif %}
         <a href="{% url 'login:logout' %}" class="btn btn-danger">Logout</a>
     </div>
 </body>
 {% endblock %}
+
