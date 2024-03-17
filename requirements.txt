@@ -1,4 +1,4 @@
-Django~=4.2.10
+Django
 gunicorn
 social-auth-app-django
 django-allauth==0.57.0
