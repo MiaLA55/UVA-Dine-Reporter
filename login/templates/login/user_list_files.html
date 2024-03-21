@@ -4,14 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ username }}'s Submitted Reports</title>
+    <title>{{ user.username }}'s Submitted Reports</title>
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
     {% bootstrap_messages %}
     <style>
-        .custom-text-color {
-            color: #b6bcc3; /* Grey color */
+        .report-block {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .report-block p {
+            margin-bottom: 10px;
+        }
+        .file-link {
+            display: block;
+            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -23,13 +32,11 @@
             <div class="row justify-content-center">
                 <div class="col-md-8">
                     {% for file_name, report_explanation in file_data %}
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ file_name }}</h5>
-                                <p class="card-text {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
-                                    {{ report_explanation }}
-                                </p>
-                            </div>
+                        <div class="report-block">
+                            <p class="card-text {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}"><strong>
+                                    Report Explanation:</strong> {{ report_explanation }}</p>
+                            <p><strong>Files:</strong></p>
+                            <a href="{% url 'login:file_detail' file_name %}" class="file-link">{{ file_name }}</a>
                         </div>
                     {% endfor %}
                 </div>
