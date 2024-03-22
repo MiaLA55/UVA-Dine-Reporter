@@ -76,7 +76,7 @@ def upload_file(request):
         file = request.FILES["file"]
         report_explanation = request.POST.get("reportExplanation", "")
 
-        file_name = f"{request.user.username}_{request.user.id}_{file.name}"
+        file_name = f"NEW_{request.user.username}_{request.user.id}_{file.name}"
         current_filename_index = 0
 
 
@@ -190,8 +190,9 @@ def list_specific_user_files(request):
             file_name = obj["Key"]
 
             # Check if the file belongs to the specific user
-            if user_identifier in file_name:
+            if user_identifier in file_name and not file_name.endswith(".txt"):
                 # Retrieve report explanation if available
+                status = file_name.split('_')[0]
                 report_explanation_key = f"{file_name}.txt"
                 try:
                     report_obj = s3.get_object(Bucket=bucket_name, Key=report_explanation_key)
@@ -200,7 +201,7 @@ def list_specific_user_files(request):
                     report_explanation = "No report explanation provided"  # Default explanation if not available
 
                 # Add file_name and report_explanation to the list
-                file_data.append((file_name, report_explanation))
+                file_data.append((status, file_name, report_explanation))
 
         context = {
             'username': request.user.username,
