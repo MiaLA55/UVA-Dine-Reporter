@@ -31,8 +31,9 @@
         <div class="container mt-5">
             <div class="row justify-content-center">
                 <div class="col-md-8">
-                    {% for file_name, report_explanation in file_data %}
+                    {% for status, file_name, report_explanation in file_data %}
                         <div class="report-block">
+                            <p><strong>Status: </strong>{{ status }}</p>
                             <p class="card-text {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}"><strong>
                                     Report Explanation:</strong> {{ report_explanation }}</p>
                             <p><strong>Files:</strong></p>
