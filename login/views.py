@@ -108,30 +108,49 @@ def check_existing_filename(s3_client, bucket_name, file_name):
 
 
 def list_files(request):
-    s3 = boto3.client(
-        "s3",
-        aws_access_key_id=AWS_ACCESS_KEY_ID,
-        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-    )
-    bucket_name = "dininghallapp"
-    response = s3.list_objects_v2(Bucket=bucket_name)
-    file_data = []
+    if request.user.is_authenticated:
+        # Initialize an empty list to store file data
+        file_data = []
 
-    # Iterate through objects in the bucket
-    for obj in response.get("Contents", []):
-        file_name = obj["Key"]
+        # Initialize the Amazon S3 client
+        s3 = boto3.client(
+            "s3",
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+        )
 
-        # Retrieve report explanation if available
-        report_explanation_key = f"{file_name}.txt"  # Assuming report explanations are stored as .txt files
-        try:
-            report_obj = s3.get_object(Bucket=bucket_name, Key=report_explanation_key)
-            report_explanation = report_obj["Body"].read().decode("utf-8")
-        except s3.exceptions.NoSuchKey:
-            report_explanation = "No report explanation provided"  # Default explanation if not available
+        # Define the bucket name
+        bucket_name = "dininghallapp"
 
-        # Add file_name and report_explanation to the list
-        file_data.append((file_name, report_explanation))
-    return render(request, "login/list_files.html", {"file_data": file_data})
+        # Retrieve all objects from the bucket
+        response = s3.list_objects_v2(Bucket=bucket_name)
+
+        # Iterate through objects in the bucket
+        for obj in response.get("Contents", []):
+            file_name = obj["Key"]
+
+            # Exclude explanation files
+            if not file_name.startswith("admin/") and not file_name.endswith((".txt.txt", ".pdf.txt", ".jpg.txt")):
+                # Retrieve report explanation if available
+                status = file_name.split('_')[0]
+                report_explanation_key = f"{file_name}.txt"
+                try:
+                    report_obj = s3.get_object(Bucket=bucket_name, Key=report_explanation_key)
+                    report_explanation = report_obj["Body"].read().decode("utf-8")
+                except s3.exceptions.NoSuchKey:
+                    report_explanation = "No report explanation provided"  # Default explanation if not available
+
+                # Add file_name and report_explanation to the list
+                file_data.append((status, file_name, report_explanation))
+
+        context = {
+            'file_data': file_data,
+        }
+        # Render the template with the file data
+        return render(request, "login/list_files.html", context)
+    else:
+        # If the user is not authenticated, redirect them to the login page
+        return redirect("login")
 
 
 def file_detail(request, file_name):
@@ -190,7 +209,7 @@ def list_specific_user_files(request):
             file_name = obj["Key"]
 
             # Check if the file belongs to the specific user
-            if user_identifier in file_name and not file_name.endswith(".txt"):
+            if user_identifier in file_name and not file_name.endswith((".txt.txt", ".pdf.txt", ".jpg.txt")):
                 # Retrieve report explanation if available
                 status = file_name.split('_')[0]
                 report_explanation_key = f"{file_name}.txt"

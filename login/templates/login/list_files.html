@@ -4,30 +4,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File List</title>
+    <title>List of Files</title>
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
     {% bootstrap_messages %}
     <style>
-        .custom-text-color {
-            color: #b6bcc3;
-            /* Grey color */
+        .report-block {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .report-block p {
+            margin-bottom: 10px;
+        }
+        .file-link {
+            display: block;
+            margin-bottom: 5px;
         }
     </style>
 </head>
 
 <body>
-    <h1>Submitted Reports</h1>
-    {% for file_name, report_explanation in file_data %}
-    <div>
-        <a href="{% url 'login:file_detail' file_name %}">{{ file_name }}</a>
-        <div
-            class="p-3 mb-2 bg-light {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
-            {{ report_explanation }}
+    <h1>List of Submitted Reports</h1>
+    {% if file_data %}
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    {% for status, file_name, report_explanation in file_data %}
+                        <div class="report-block">
+                            <p><strong>Status: </strong>{{ status }}</p>
+                            <p class="card-text {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
+                                <strong>Report Explanation:</strong> {{ report_explanation }}
+                            </p>
+                            <p><strong>Files:</strong></p>
+                            <a href="{% url 'login:file_detail' file_name %}" class="file-link">{{ file_name }}</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
-    </div>
-    {% endfor %}
-    <a href="{% url 'login:admin_home' %}" class="btn btn-primary">Return Home</a>
+    {% else %}
+        <p>No reports submitted by any user.</p>
+    {% endif %}
+    <a href="{% url 'login:auth_home' %}" class="btn btn-primary">Return Home</a>
 </body>
 {% endblock %}
