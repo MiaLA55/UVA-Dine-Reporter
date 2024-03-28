@@ -1,3 +1,5 @@
+import os
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
@@ -249,5 +251,35 @@ def resolve_report(request):
     if request.user.is_authenticated:
         user_identifier = request.user.username
         return render(request, "login/resolve_report.html")
+    else:
+        return redirect("login")
+
+
+def resolve_report_submit(request):
+    if request.user.is_authenticated:
+        user_identifier = request.user
+
+        if request.method == "POST" and request.FILES.get("file"):
+            file = request.FILES["file"]
+            s3 = boto3.client(
+                "s3",
+                aws_access_key_id=AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+            )
+            current_filename = f"NEW_{request.user.username}_{request.user.id}_{file.name}"
+            new_filename = f"RESOLVED_{request.user.username}_{request.user.id}_{file.name}"
+            # test downloading
+            s3.download_file(AWS_STORAGE_BUCKET_NAME, current_filename, new_filename)
+            s3.delete_file(AWS_STORAGE_BUCKET_NAME, current_filename)
+            s3.upload_file(AWS_STORAGE_BUCKET_NAME, new_filename)
+
+            # delete ./test_passed.txt for future
+            if os.path.isfile(new_filename):
+                os.remove(new_filename)
+            return redirect("login/list_files.html")
+
+        else:
+            return HttpResponse("No file selected.")
+
     else:
         return redirect("login")
