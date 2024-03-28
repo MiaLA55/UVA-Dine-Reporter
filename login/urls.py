@@ -12,4 +12,5 @@ urlpatterns = [
     path("list_files/", views.list_files, name="list_files"),
     path("user_reports/", views.list_specific_user_files, name="user_reports"),
     path("detail/<str:file_name>/", views.file_detail, name="file_detail"),
+    path("resolve_report/", views.resolve_report, name="resolve_report"),
 ]

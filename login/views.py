@@ -79,24 +79,28 @@ def upload_file(request):
         file_name = f"NEW_{request.user.username}_{request.user.id}_{file.name}"
         current_filename_index = 0
 
-
         s3 = boto3.client(
             "s3",
             aws_access_key_id=AWS_ACCESS_KEY_ID,
             aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
         )
 
-        while check_existing_filename(s3, bucket_name=AWS_STORAGE_BUCKET_NAME, file_name=file_name):
+        while check_existing_filename(
+            s3, bucket_name=AWS_STORAGE_BUCKET_NAME, file_name=file_name
+        ):
             file_name = f"{request.user.username}_{file.name}_{current_filename_index}"
             current_filename_index += 1
 
         s3.upload_fileobj(file, AWS_STORAGE_BUCKET_NAME, file_name)
         if report_explanation:
             explanation_filename = f"{file_name}.txt"
-            s3.put_object(Body=report_explanation.encode(), Bucket=AWS_STORAGE_BUCKET_NAME, Key=explanation_filename)
+            s3.put_object(
+                Body=report_explanation.encode(),
+                Bucket=AWS_STORAGE_BUCKET_NAME,
+                Key=explanation_filename,
+            )
         return render(request, template_name="file_upload/success.html")
     return HttpResponse("No file selected.")
-
 
 
 def check_existing_filename(s3_client, bucket_name, file_name):
@@ -130,12 +134,16 @@ def list_files(request):
             file_name = obj["Key"]
 
             # Exclude explanation files
-            if not file_name.startswith("admin/") and not file_name.endswith((".txt.txt", ".pdf.txt", ".jpg.txt")):
+            if not file_name.startswith("admin/") and not file_name.endswith(
+                (".txt.txt", ".pdf.txt", ".jpg.txt")
+            ):
                 # Retrieve report explanation if available
-                status = file_name.split('_')[0]
+                status = file_name.split("_")[0]
                 report_explanation_key = f"{file_name}.txt"
                 try:
-                    report_obj = s3.get_object(Bucket=bucket_name, Key=report_explanation_key)
+                    report_obj = s3.get_object(
+                        Bucket=bucket_name, Key=report_explanation_key
+                    )
                     report_explanation = report_obj["Body"].read().decode("utf-8")
                 except s3.exceptions.NoSuchKey:
                     report_explanation = "No report explanation provided"  # Default explanation if not available
@@ -144,7 +152,7 @@ def list_files(request):
                 file_data.append((status, file_name, report_explanation))
 
         context = {
-            'file_data': file_data,
+            "file_data": file_data,
         }
         # Render the template with the file data
         return render(request, "login/list_files.html", context)
@@ -209,12 +217,16 @@ def list_specific_user_files(request):
             file_name = obj["Key"]
 
             # Check if the file belongs to the specific user
-            if user_identifier in file_name and not file_name.endswith((".txt.txt", ".pdf.txt", ".jpg.txt")):
+            if user_identifier in file_name and not file_name.endswith(
+                (".txt.txt", ".pdf.txt", ".jpg.txt")
+            ):
                 # Retrieve report explanation if available
-                status = file_name.split('_')[0]
+                status = file_name.split("_")[0]
                 report_explanation_key = f"{file_name}.txt"
                 try:
-                    report_obj = s3.get_object(Bucket=bucket_name, Key=report_explanation_key)
+                    report_obj = s3.get_object(
+                        Bucket=bucket_name, Key=report_explanation_key
+                    )
                     report_explanation = report_obj["Body"].read().decode("utf-8")
                 except s3.exceptions.NoSuchKey:
                     report_explanation = "No report explanation provided"  # Default explanation if not available
@@ -223,11 +235,19 @@ def list_specific_user_files(request):
                 file_data.append((status, file_name, report_explanation))
 
         context = {
-            'username': request.user.username,
-            'file_data': file_data,
+            "username": request.user.username,
+            "file_data": file_data,
         }
         # Render the template with the file data
         return render(request, "login/user_list_files.html", context)
     else:
         # If the user is not authenticated, redirect them to the login page
+        return redirect("login")
+
+
+def resolve_report(request):
+    if request.user.is_authenticated:
+        user_identifier = request.user.username
+        return render(request, "login/resolve_report.html")
+    else:
         return redirect("login")

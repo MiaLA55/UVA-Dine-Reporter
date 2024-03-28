@@ -15,9 +15,11 @@
             padding: 10px;
             margin-bottom: 20px;
         }
+
         .report-block p {
             margin-bottom: 10px;
         }
+
         .file-link {
             display: block;
             margin-bottom: 5px;
@@ -28,24 +30,26 @@
 <body>
     <h1>List of Submitted Reports</h1>
     {% if file_data %}
-        <div class="container mt-5">
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    {% for status, file_name, report_explanation in file_data %}
-                        <div class="report-block">
-                            <p><strong>Status: </strong>{{ status }}</p>
-                            <p class="card-text {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
-                                <strong>Report Explanation:</strong> {{ report_explanation }}
-                            </p>
-                            <p><strong>Files:</strong></p>
-                            <a href="{% url 'login:file_detail' file_name %}" class="file-link">{{ file_name }}</a>
-                        </div>
-                    {% endfor %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                {% for status, file_name, report_explanation in file_data %}
+                <div class="report-block">
+                    <p><strong>Status: </strong>{{ status }}</p>
+                    <p
+                        class="card-text {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
+                        <strong>Report Explanation:</strong> {{ report_explanation }}
+                    </p>
+                    <p><strong>Files:</strong></p>
+                    <a href="{% url 'login:file_detail' file_name %}" class="file-link">{{ file_name }}</a>
+                    <a href="{% url 'login:resolve_report' %}">Resolve</a>
                 </div>
+                {% endfor %}
             </div>
         </div>
+    </div>
     {% else %}
-        <p>No reports submitted by any user.</p>
+    <p>No reports submitted by any user.</p>
     {% endif %}
     <a href="{% url 'login:auth_home' %}" class="btn btn-primary">Return Home</a>
 </body>
