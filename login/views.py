@@ -259,15 +259,14 @@ def resolve_report_submit(request):
     if request.user.is_authenticated:
         user_identifier = request.user
 
-        if request.method == "POST" and request.FILES.get("file"):
-            file = request.FILES["file"]
+        if request.method == "POST" and request.FILES.get("filename"):
+            current_filename = request.FILES["filename"].name
             s3 = boto3.client(
                 "s3",
                 aws_access_key_id=AWS_ACCESS_KEY_ID,
                 aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
             )
-            current_filename = f"NEW_{request.user.username}_{request.user.id}_{file.name}"
-            new_filename = f"RESOLVED_{request.user.username}_{request.user.id}_{file.name}"
+            new_filename = f"RESOLVED_{current_filename}"
             # test downloading
             s3.download_file(AWS_STORAGE_BUCKET_NAME, current_filename, new_filename)
             s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=current_filename)

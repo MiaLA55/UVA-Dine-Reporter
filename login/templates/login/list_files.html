@@ -42,7 +42,15 @@
                     </p>
                     <p><strong>Files:</strong></p>
                     <a href="{% url 'login:file_detail' file_name %}" class="file-link">{{ file_name }}</a>
-                    <a href="{% url 'login:resolve_report' %}">Resolve</a>
+                    <form id="file-upload-form" method="post" enctype="multipart/form-data"
+                        action="{% url 'login:resolve_report_submit' %}">
+                        {% csrf_token %}
+                        <label for="textbox">Type something for resolve notes:</label><br>
+                        <textarea type="text" id="textbox" name="textbox" cols="100"> </textarea>
+                        <br><br>
+                        <button type="submit" class="btn btn-primary">Resolve Report</button>
+
+                    </form>
                 </div>
                 {% endfor %}
             </div>
