@@ -270,7 +270,7 @@ def resolve_report_submit(request):
             new_filename = f"RESOLVED_{request.user.username}_{request.user.id}_{file.name}"
             # test downloading
             s3.download_file(AWS_STORAGE_BUCKET_NAME, current_filename, new_filename)
-            s3.delete_file(AWS_STORAGE_BUCKET_NAME, current_filename)
+            s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=current_filename)
             s3.upload_file(AWS_STORAGE_BUCKET_NAME, new_filename)
 
             # delete ./test_passed.txt for future
