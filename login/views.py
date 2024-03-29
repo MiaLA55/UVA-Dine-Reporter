@@ -255,27 +255,59 @@ def resolve_report(request):
         return redirect("login")
 
 
+# def resolve_report_submit(request):
+#     if request.user.is_authenticated:
+#         user_identifier = request.user
+
+#         if request.method == "POST" and request.FILES.get("file"):
+#             current_filename = request.FILES["file"].name
+#             s3 = boto3.client(
+#                 "s3",
+#                 aws_access_key_id=AWS_ACCESS_KEY_ID,
+#                 aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+#             )
+#             new_filename = f"RESOLVED_{current_filename}"
+#             # test downloading
+#             s3.download_file(AWS_STORAGE_BUCKET_NAME, current_filename, new_filename)
+#             s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=current_filename)
+#             s3.upload_file(AWS_STORAGE_BUCKET_NAME, new_filename)
+
+#             # delete ./test_passed.txt for future
+#             if os.path.isfile(new_filename):
+#                 os.remove(new_filename)
+#             return redirect("login/list_files.html")
+
+#         else:
+#             return HttpResponse("No file selected.")
+
+#     else:
+#         return redirect("login")
+
+
 def resolve_report_submit(request):
     if request.user.is_authenticated:
         user_identifier = request.user
 
-        if request.method == "POST" and request.FILES.get("filename"):
-            current_filename = request.FILES["filename"].name
+        if request.method == "POST":
+            resolve_notes = request.POST.get("textbox", "")
+            current_filename = request.POST.get("file_name", "")
+            new_filename = f"RESOLVED_{current_filename}"
             s3 = boto3.client(
                 "s3",
                 aws_access_key_id=AWS_ACCESS_KEY_ID,
                 aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
             )
-            new_filename = f"RESOLVED_{current_filename}"
-            # test downloading
-            s3.download_file(AWS_STORAGE_BUCKET_NAME, current_filename, new_filename)
-            s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=current_filename)
-            s3.upload_file(AWS_STORAGE_BUCKET_NAME, new_filename)
 
-            # delete ./test_passed.txt for future
-            if os.path.isfile(new_filename):
-                os.remove(new_filename)
-            return redirect("login/list_files.html")
+            # Copy the file to the new name
+            s3.copy_object(
+                Bucket=AWS_STORAGE_BUCKET_NAME,
+                CopySource={"Bucket": AWS_STORAGE_BUCKET_NAME, "Key": current_filename},
+                Key=new_filename,
+            )
+
+            # Delete the old file
+            s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=current_filename)
+            return render(request, "login/resolve_report.html")
 
         else:
             return HttpResponse("No file selected.")

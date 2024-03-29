@@ -2,34 +2,9 @@
 {% block content %}
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Box and Submit Button</title>
-</head>
-
 <body>
-
-    <form method="post" enctype="multipart/form-data" action="{% url 'login:resolve_report_submit' %}">
-        {% csrf_token %}
-        <div class="form-group">
-            <label for="reportExplanation">Report Explanation (optional):</label>
-            <textarea class="form-control" id="reportExplanation" name="reportExplanation" rows="4"
-                cols="50"></textarea>
-        </div>
-        <div class="form-group">
-            <input type="file" class="form-control-file" name="file">
-        </div>
-        <button type="submit" class="btn btn-primary">Submit Report</button>
-    </form>
-
-    <form action="/submit" method="post">
-        <label for="textbox">Type something:</label><br>
-        <textarea type="text" id="textbox" name="textbox" cols="100"> </textarea>
-        <br><br>
-        <button type="submit" class="btn btn-primary">Resolve Report</button>
-    </form>
-
+    The report has been resolved.
+    <a href="{% url 'login:auth_home' %}" class="btn btn-primary">Return Home</a>
 </body>
 
 </html>
