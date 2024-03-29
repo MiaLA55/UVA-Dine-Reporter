@@ -150,8 +150,19 @@ def list_files(request):
                 except s3.exceptions.NoSuchKey:
                     report_explanation = "No report explanation provided"  # Default explanation if not available
 
+                report_resolve_notes_key = f"resolve_notes_for_{file_name}.txt"
+                try:
+                    report_obj = s3.get_object(
+                        Bucket=bucket_name, Key=report_resolve_notes_key
+                    )
+                    report_resolve_notes = report_obj["Body"].read().decode("utf-8")
+                except s3.exceptions.NoSuchKey:
+                    report_resolve_notes = "No report resolve notes provided"  # Default explanation if not available
+
                 # Add file_name and report_explanation to the list
-                file_data.append((status, file_name, report_explanation))
+                file_data.append(
+                    (status, file_name, report_explanation, report_resolve_notes)
+                )
 
         context = {
             "file_data": file_data,
@@ -233,8 +244,19 @@ def list_specific_user_files(request):
                 except s3.exceptions.NoSuchKey:
                     report_explanation = "No report explanation provided"  # Default explanation if not available
 
+                report_resolve_notes_key = f"resolve_notes_for_{file_name}.txt"
+                try:
+                    report_obj = s3.get_object(
+                        Bucket=bucket_name, Key=report_resolve_notes_key
+                    )
+                    report_resolve_notes = report_obj["Body"].read().decode("utf-8")
+                except s3.exceptions.NoSuchKey:
+                    report_resolve_notes = "No report resolve notes provided"  # Default explanation if not available
+
                 # Add file_name and report_explanation to the list
-                file_data.append((status, file_name, report_explanation))
+                file_data.append(
+                    (status, file_name, report_explanation, report_resolve_notes)
+                )
 
         context = {
             "username": request.user.username,
@@ -289,7 +311,7 @@ def resolve_report_submit(request):
         user_identifier = request.user
 
         if request.method == "POST":
-            resolve_notes = request.POST.get("textbox", "")
+            resolve_notes = request.POST.get("resolveNotes", "")
             current_filename = request.POST.get("file_name", "")
             new_filename = f"RESOLVED_{current_filename}"
             s3 = boto3.client(
@@ -307,6 +329,14 @@ def resolve_report_submit(request):
 
             # Delete the old file
             s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=current_filename)
+
+            if resolve_notes:
+                resolve_notes_filename = f"resolve_notes_for_{new_filename}.txt"
+                s3.put_object(
+                    Body=resolve_notes.encode(),
+                    Bucket=AWS_STORAGE_BUCKET_NAME,
+                    Key=resolve_notes_filename,
+                )
             return render(request, "login/resolve_report.html")
 
         else:
