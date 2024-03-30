@@ -10,7 +10,13 @@
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <p><strong>Status: </strong>{{ status }}</p>
+                <p><strong>Status: </strong>
+                {% if status == "INPROGRESS" %}
+                        IN PROGRESS
+                        {% else %}
+                            {{ status }}
+                        {% endif %}
+                </p>
                 <p><strong>File Name: </strong>
                 {% if "RESOLVED_" in file_name %}
                     <a href="{% url 'login:file_detail' file_name %}" class="file-link">{{ file_name|slice:"13:" }}</a>

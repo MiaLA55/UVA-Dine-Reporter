@@ -52,7 +52,13 @@
                 <div class="text-center">
                     {% for status, file_name, report_explanation, report_resolve_notes in file_data %}
                    <a href="{% url 'login:individual_file_view' %}?file_name={{ file_name }}&status={{ status }}&report_explanation={{ report_explanation }}&report_resolve_notes={{ report_resolve_notes }}" class="btn btn-light btn-lg m-2 btn-report" role="button">
-                       <p><strong>Status: </strong>{{ status }}</p>
+                       <p><strong>Status: </strong>
+                       {% if status == "INPROGRESS" %}
+                        IN PROGRESS
+                        {% else %}
+                            {{ status }}
+                        {% endif %}
+                       </p>
                         <strong>Report Explanation:</strong>
                         <p class="card-text {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
                             {{ report_explanation }}
