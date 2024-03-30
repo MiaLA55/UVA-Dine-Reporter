@@ -1,0 +1,32 @@
+{% extends 'login/base.html' %}
+{% block content %}
+
+<head>
+
+</head>
+
+<body>
+    <h1>File Details</h1>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <p><strong>Status: </strong>{{ status }}</p>
+                <p><strong>File Name: </strong>
+                {% if "RESOLVED_" in file_name %}
+                    <a href="{% url 'login:file_detail' file_name %}" class="file-link">{{ file_name|slice:"13:" }}</a>
+                    {% elif "NEW_" in file_name %}
+                    <a href="{% url 'login:file_detail' file_name %}" class="file-link">{{ file_name|slice:"4:" }}</a>
+                    {% else %}
+                    <a href="{% url 'login:file_detail' file_name %}" class="file-link">{{ file_name|slice:"9:" }}</a>
+                    {% endif %}
+                </p>
+                <p><strong>Report Explanation: </strong>{{ report_explanation }}</p>
+                <p><strong>Report Resolve Notes: </strong>{{ report_resolve_notes }}</p>
+            </div>
+        </div>
+    </div>
+    <a href="{% url 'login:list_files' %}?file_name={{ file_name }}&status={{ status }}&report_explanation={{ report_explanation }}&report_resolve_notes={{ report_resolve_notes }}" class="btn btn-primary">Back to Files List</a>
+
+
+</body>
+{% endblock %}

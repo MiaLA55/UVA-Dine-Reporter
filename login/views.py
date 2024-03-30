@@ -344,3 +344,49 @@ def resolve_report_submit(request):
 
     else:
         return redirect("login")
+
+
+def individual_file_view(request):
+    # Retrieve parameters from the URL
+    file_name = request.GET.get('file_name')
+    status = request.GET.get('status')
+    report_explanation = request.GET.get('report_explanation')
+    report_resolve_notes = request.GET.get('report_resolve_notes')
+
+    # Check if the status is NEW, then update it to INPROGRESS
+    if status.startswith("NEW"):
+        # Update the status and file name
+        status = "IN PROGRESS"
+        new_file_name = f"INPROGRESS_{file_name}"
+        s3 = boto3.client(
+            "s3",
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+        )
+
+        # Copy the file to the new name
+        s3.copy_object(
+            Bucket=AWS_STORAGE_BUCKET_NAME,
+            CopySource={"Bucket": AWS_STORAGE_BUCKET_NAME, "Key": file_name},
+            Key=new_file_name,
+        )
+
+        # Delete the old file
+        s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=file_name)
+
+        context = {
+            'file_name': new_file_name,
+            'status': status,
+            'report_explanation': report_explanation,
+            'report_resolve_notes': report_resolve_notes,
+        }
+    else:
+        context = {
+            'file_name': file_name,
+            'status': status,
+            'report_explanation': report_explanation,
+            'report_resolve_notes': report_resolve_notes,
+        }
+
+
+    return render(request, "login/individual_file_view.html", context)
