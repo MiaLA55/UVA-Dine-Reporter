@@ -16,10 +16,6 @@
             margin-bottom: 20px;
         }
 
-        .report-block p {
-            margin-bottom: 10px;
-        }
-
         .file-link {
             display: block;
             margin-bottom: 5px;
@@ -33,13 +29,21 @@
             background-color: #f2f2f2;
         }
 
-
         .btn-report {
             width: 600px;
             height: auto;
             margin-bottom: 10px;
             padding: 10px;
             cursor: pointer;
+        }
+
+        .box {
+            width: 500px;
+            height: 200px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background-color: #f2f2f2;
+            margin: 0 auto;
         }
     </style>
 </head>
@@ -53,7 +57,7 @@
                 <div class="text-center">
                     {% for status, file_name, report_explanation, report_resolve_notes in file_data %}
                     <div class="custom-card">
-                        <a href="{% url 'login:individual_file_view' %}?file_name={{ file_name }}&status={{ status }}&report_explanation={{ report_explanation }}&report_resolve_notes={{ report_resolve_notes }}" class="btn btn-light btn-lg m-2 btn-report" role="button">
+                        <div class="box">
                             <p><strong>Status: </strong>
                                 {% if status == "INPROGRESS" %}
                                     IN PROGRESS
@@ -61,40 +65,30 @@
                                     {{ status }}
                                 {% endif %}
                             </p>
-                            <strong>Report Explanation:</strong>
-                            <p class="card-text {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
-                                {{ report_explanation }}
+                            <p><strong>Files:</strong></p>
+                            <p><a href="{% url 'login:file_detail' file_name %}" class="file-link">{{ file_name }}</a></p>
+                            <p><strong>Report Explanation: </strong>{{ report_explanation }}</p>
+                        </div>
+                        
+                        {% if "RESOLVED" in status %}
+                            <strong>Report Resolve Notes:</strong>
+                            <p class="card-text {% if report_resolve_notes == 'No report resolve notes provided' %} custom-text-color {% endif %}">
+                                {{ report_resolve_notes }}
                             </p>
-                            <strong>Files:</strong>
-                            {% if "RESOLVED_" in file_name %}
-                                <a href="{% url 'login:file_detail' file_name %}" class="file-link">{{ file_name|slice:"13:" }}</a>
-                            {% elif "NEW_" in file_name %}
-                                <a href="{% url 'login:file_detail' file_name %}" class="file-link">{{ file_name|slice:"4:" }}</a>
-                            {% elif "INPROGRESS_" in file_name %}
-                                <a href="{% url 'login:file_detail' file_name %}" class="file-link">{{ file_name|slice:"4:" }}</a>
-                            {% else %}
-                                <a href="{% url 'login:file_detail' file_name %}" class="file-link">{{ file_name }}</a>
-                            {% endif %}
-                            {% if "RESOLVED" in status %}
-                                <strong>Report Resolve Notes:</strong>
-                                <p class="card-text {% if report_resolve_notes == 'No report resolve notes provided' %} custom-text-color {% endif %}">
-                                    {{ report_resolve_notes }}
-                                </p>
-                            {% else %}
-                                <form id="file-upload-form" method="post" enctype="multipart/form-data"
-                                    action="{% url 'login:resolve_report_submit' %}">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <label for="resolveNotes">Type something for resolve notes (optional):</label>
-                                        <textarea class="form-control" id="resolveNotes" name="resolveNotes" rows="4"
-                                            cols="50"></textarea>
-                                    </div>
-                                    <input type="hidden" name="file_name" value="{{ file_name }}">
-                                    <br><br>
-                                    <button type="submit" class="btn btn-primary">Resolve Report</button>
-                                </form>
-                            {% endif %}
-                        </a>
+                        {% else %}
+                            <form id="file-upload-form" method="post" enctype="multipart/form-data"
+                                action="{% url 'login:resolve_report_submit' %}">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="resolveNotes">Type something for resolve notes (optional):</label>
+                                    <textarea class="form-control" id="resolveNotes" name="resolveNotes" rows="4"
+                                        cols="50"></textarea>
+                                </div>
+                                <input type="hidden" name="file_name" value="{{ file_name }}">
+                                <br><br>
+                                <button type="submit" class="btn btn-primary">Resolve Report</button>
+                            </form>
+                        {% endif %}
                     </div>
                     {% endfor %}
                 </div>
@@ -106,4 +100,5 @@
     {% endif %}
     <a href="{% url 'login:auth_home' %}" class="btn btn-primary">Return Home</a>
 </body>
+
 {% endblock %}
