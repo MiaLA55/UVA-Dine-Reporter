@@ -27,7 +27,25 @@
                     {% endif %}
                 </p>
                 <p><strong>Report Explanation: </strong>{{ report_explanation }}</p>
-                <p><strong>Report Resolve Notes: </strong>{{ report_resolve_notes }}</p>
+                 {% if "RESOLVED" in status %}
+                                <strong>Report Resolve Notes:</strong>
+                                <p class="card-text {% if report_resolve_notes == 'No report resolve notes provided' %} custom-text-color {% endif %}">
+                                    {{ report_resolve_notes }}
+                                </p>
+                            {% else %}
+                                <form id="file-upload-form" method="post" enctype="multipart/form-data"
+                                    action="{% url 'login:resolve_report_submit' %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="resolveNotes">Type something for resolve notes (optional):</label>
+                                        <textarea class="form-control" id="resolveNotes" name="resolveNotes" rows="4"
+                                            cols="50"></textarea>
+                                    </div>
+                                    <input type="hidden" name="file_name" value="{{ file_name }}">
+                                    <br><br>
+                                    <button type="submit" class="btn btn-primary">Resolve Report</button>
+                                </form>
+                            {% endif %}
             </div>
         </div>
     </div>
