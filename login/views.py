@@ -113,6 +113,10 @@ def check_existing_filename(s3_client, bucket_name, file_name):
     return False
 
 
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+import boto3
+
 def list_files(request):
     if request.user.is_authenticated:
         # Initialize an empty list to store file data
@@ -172,7 +176,6 @@ def list_files(request):
     else:
         # If the user is not authenticated, redirect them to the login page
         return redirect("login")
-
 
 def file_detail(request, file_name):
     s3 = boto3.client(
