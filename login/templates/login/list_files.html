@@ -57,18 +57,20 @@
                 <div class="text-center">
                     {% for status, file_name, report_explanation, report_resolve_notes in file_data %}
                     <div class="custom-card">
-                        <div class="box">
-                            <p><strong>Status: </strong>
-                                {% if status == "INPROGRESS" %}
-                                    IN PROGRESS
-                                {% else %}
-                                    {{ status }}
-                                {% endif %}
-                            </p>
-                            <p><strong>Files:</strong></p>
-                            <p><a href="{% url 'login:file_detail' file_name %}" class="file-link">{{ file_name }}</a></p>
-                            <p><strong>Report Explanation: </strong>{{ report_explanation }}</p>
-                        </div>
+                        <a href="{% url 'login:individual_file_view' %}?file_name={{ file_name }}&status={{ status }}&report_explanation={{ report_explanation }}&report_resolve_notes={{ report_resolve_notes }}">
+                            <div class="box">
+                                <p><strong>Status: </strong>
+                                    {% if status == "INPROGRESS" %}
+                                        IN PROGRESS
+                                    {% else %}
+                                        {{ status }}
+                                    {% endif %}
+                                </p>
+                                <p><strong>Files:</strong></p>
+                                <p><a href="{% url 'login:file_detail' file_name %}" class="file-link">{{ file_name }}</a></p>
+                                <p><strong>Report Explanation: </strong>{{ report_explanation }}</p>
+                            </div>
+                        </a>
                         
                         {% if "RESOLVED" in status %}
                             <strong>Report Resolve Notes:</strong>
@@ -89,7 +91,7 @@
                                 <button type="submit" class="btn btn-primary">Resolve Report</button>
                             </form>
                         {% endif %}
-                    </div>
+                    </div>                                       
                     {% endfor %}
                 </div>
             </div>
