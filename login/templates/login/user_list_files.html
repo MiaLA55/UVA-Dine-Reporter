@@ -39,7 +39,13 @@
             <div class="col-md-8">
                 {% for status, file_name, report_explanation, report_resolve_notes in file_data %}
                 <div class="report-block">
-                    <p><strong>Status: </strong>{{ status }}</p>
+                   <p><strong>Status: </strong>
+                {% if status == "INPROGRESS" %}
+                        IN PROGRESS
+                        {% else %}
+                            {{ status }}
+                        {% endif %}
+                </p>
                     <p
                         class="card-text {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
                         <strong>

@@ -261,6 +261,8 @@ def list_specific_user_files(request):
         context = {
             "username": request.user.username,
             "file_data": file_data,
+            'report_explanation': report_explanation,
+            'report_resolve_notes': report_resolve_notes,
         }
         # Render the template with the file data
         return render(request, "login/user_list_files.html", context)
