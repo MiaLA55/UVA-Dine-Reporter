@@ -118,9 +118,19 @@ def list_files(request):
     if request.user.is_authenticated:
         # Initialize an empty list to store file data
         reports = Report.objects.all()
+        # Initialize an empty list to store file data
+        file_data = []
+        for report in reports:
+            file_data.append({
+                'status': report.status,
+                'file_name': report.filenames,
+                'report_explanation': report.explanation,
+                'report_resolve_notes': report.resolved_notes,
+            })
 
         context = {
-            "reports": reports,
+            "username": request.user.username,
+            "file_data": file_data,
         }
 
         return render(request, "login/list_files.html", context)
@@ -242,39 +252,53 @@ def individual_file_view(request):
     report_resolve_notes = request.GET.get('report_resolve_notes')
 
     # Check if the status is NEW, then update it to INPROGRESS
-    if status.startswith("NEW"):
-        # Update the status and file name
-        status = "IN PROGRESS"
-        new_file_name = f"INPROGRESS_{file_name}"
-        s3 = boto3.client(
-            "s3",
-            aws_access_key_id=AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-        )
+    # if status.startswith("NEW"):
+    #     # Update the status and file name
+    #     status = "IN PROGRESS"
+    #     new_file_name = f"INPROGRESS_{file_name}"
+    #     s3 = boto3.client(
+    #         "s3",
+    #         aws_access_key_id=AWS_ACCESS_KEY_ID,
+    #         aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    #     )
 
-        # Copy the file to the new name
-        s3.copy_object(
-            Bucket=AWS_STORAGE_BUCKET_NAME,
-            CopySource={"Bucket": AWS_STORAGE_BUCKET_NAME, "Key": file_name},
-            Key=new_file_name,
-        )
+        # # Copy the file to the new name
+        # s3.copy_object(
+        #     Bucket=AWS_STORAGE_BUCKET_NAME,
+        #     CopySource={"Bucket": AWS_STORAGE_BUCKET_NAME, "Key": file_name},
+        #     Key=new_file_name,
+        # )
 
-        # Delete the old file
-        s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=file_name)
+        # # Delete the old file
+        # s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=file_name)
 
-        context = {
-            'file_name': new_file_name,
-            'status': status,
-            'report_explanation': report_explanation,
-            'report_resolve_notes': report_resolve_notes,
-        }
-    else:
-        context = {
-            'file_name': file_name,
-            'status': status,
-            'report_explanation': report_explanation,
-            'report_resolve_notes': report_resolve_notes,
-        }
+    #     context = {
+    #         'file_name': new_file_name,
+    #         'status': status,
+    #         'report_explanation': report_explanation,
+    #         'report_resolve_notes': report_resolve_notes,
+    #     }
+    # else:
+    #     context = {
+    #         'file_name': file_name,
+    #         'status': status,
+    #         'report_explanation': report_explanation,
+    #         'report_resolve_notes': report_resolve_notes,
+    #     }
+    reports = Report.objects.all()
+    # Initialize an empty list to store file data
+    file_data = []
+    for report in reports:
+        file_data.append({
+            'status': report.status,
+            'file_name': report.filenames,
+            'report_explanation': report.explanation,
+            'report_resolve_notes': report.resolved_notes,
+        })
 
+    context = {
+        "username": request.user.username,
+        "file_data": file_data,
+    }
 
     return render(request, "login/individual_file_view.html", context)
