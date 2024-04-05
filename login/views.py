@@ -10,6 +10,8 @@ import boto3
 from django.http import HttpResponse
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+
 
 
 
@@ -204,101 +206,38 @@ def resolve_report(request):
     else:
         return redirect("login")
 
+
 def resolve_report_submit(request):
     if request.user.is_authenticated:
-        user_identifier = request.user
-
         if request.method == "POST":
             resolve_notes = request.POST.get("resolveNotes", "")
-            current_filename = request.POST.get("file_name", "")
-            new_filename = f"RESOLVED_{current_filename}"
-            s3 = boto3.client(
-                "s3",
-                aws_access_key_id=AWS_ACCESS_KEY_ID,
-                aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-            )
+            filename = request.POST.get("file_name", "")
 
-            # Copy the file to the new name
-            s3.copy_object(
-                Bucket=AWS_STORAGE_BUCKET_NAME,
-                CopySource={"Bucket": AWS_STORAGE_BUCKET_NAME, "Key": current_filename},
-                Key=new_filename,
-            )
+            # Retrieve the specific report based on the file name
+            report = get_object_or_404(Report, filenames=filename)
 
-            # Delete the old file
-            s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=current_filename)
+            # Update the resolved_notes field of the report
+            report.resolved_notes = resolve_notes
+            report.status = 'RESOLVED'
+            report.save()
 
-            if resolve_notes:
-                resolve_notes_filename = f"resolve_notes_for_{new_filename}.txt"
-                s3.put_object(
-                    Body=resolve_notes.encode(),
-                    Bucket=AWS_STORAGE_BUCKET_NAME,
-                    Key=resolve_notes_filename,
-                )
+            # Your other code for file handling if needed
+
             return render(request, "login/resolve_report.html")
-
         else:
             return HttpResponse("No file selected.")
-
     else:
         return redirect("login")
 
-
 def individual_file_view(request):
-    # Retrieve parameters from the URL
-    file_name = request.GET.get('file_name')
-    status = request.GET.get('status')
-    report_explanation = request.GET.get('report_explanation')
-    report_resolve_notes = request.GET.get('report_resolve_notes')
+    try:
+        report = Report.objects.get(filenames=file_name)
+    except Report.DoesNotExist:
+        return HttpResponse("File not found")
 
-    # Check if the status is NEW, then update it to INPROGRESS
-    # if status.startswith("NEW"):
-    #     # Update the status and file name
-    #     status = "IN PROGRESS"
-    #     new_file_name = f"INPROGRESS_{file_name}"
-    #     s3 = boto3.client(
-    #         "s3",
-    #         aws_access_key_id=AWS_ACCESS_KEY_ID,
-    #         aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-    #     )
-
-        # # Copy the file to the new name
-        # s3.copy_object(
-        #     Bucket=AWS_STORAGE_BUCKET_NAME,
-        #     CopySource={"Bucket": AWS_STORAGE_BUCKET_NAME, "Key": file_name},
-        #     Key=new_file_name,
-        # )
-
-        # # Delete the old file
-        # s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=file_name)
-
-    #     context = {
-    #         'file_name': new_file_name,
-    #         'status': status,
-    #         'report_explanation': report_explanation,
-    #         'report_resolve_notes': report_resolve_notes,
-    #     }
-    # else:
-    #     context = {
-    #         'file_name': file_name,
-    #         'status': status,
-    #         'report_explanation': report_explanation,
-    #         'report_resolve_notes': report_resolve_notes,
-    #     }
-    reports = Report.objects.all()
-    # Initialize an empty list to store file data
-    file_data = []
-    for report in reports:
-        file_data.append({
-            'status': report.status,
-            'file_name': report.filenames,
-            'report_explanation': report.explanation,
-            'report_resolve_notes': report.resolved_notes,
-        })
-
+        # Prepare the context with the details of the specific report
     context = {
-        "username": request.user.username,
-        "file_data": file_data,
+        "report": report,
     }
 
     return render(request, "login/individual_file_view.html", context)
