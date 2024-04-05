@@ -32,8 +32,8 @@
                             {% csrf_token %}
                             <input type="hidden" name="username" value="{{ user.username }}">
                             <div class="form-group">
-                                <label for="reportExplanation">Report Explanation (optional):</label>
-                                <textarea class="form-control" id="reportExplanation" name="reportExplanation" rows="4" cols="50"></textarea>
+                                <label for="explanation">Report Explanation (optional):</label>
+                                <textarea class="form-control" id="explanation" name="explanation" rows="4" cols="50"></textarea>
                             </div>
                             <div class="form-group">
                                 <input type="file" class="form-control-file" name="file">
