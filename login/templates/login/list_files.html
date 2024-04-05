@@ -53,6 +53,7 @@
                 <div class="text-center">
                     {% for report in file_data %}
                     <div class="custom-card">
+<a href="{% url 'login:individual_file_view' %}?file_name={{ report.file_name }}&status={{ report.status }}&report_explanation={{ report.report_explanation }}&report_resolve_notes={{ report.report_resolve_notes }}" class="btn btn-light btn-lg m-2 btn-report" role="button">
 
                             <p><strong>Status: </strong>{{ report.status }}</p>
                             <strong>Report Explanation:</strong>

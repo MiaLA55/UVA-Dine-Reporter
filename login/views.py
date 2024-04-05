@@ -230,14 +230,18 @@ def resolve_report_submit(request):
         return redirect("login")
 
 def individual_file_view(request):
-    try:
-        report = Report.objects.get(filenames=file_name)
-    except Report.DoesNotExist:
-        return HttpResponse("File not found")
+    # Retrieve the file name from the query parameters
+    file_name = request.GET.get('file_name', '')
 
-        # Prepare the context with the details of the specific report
+    # Retrieve the corresponding report from the database
+    report = get_object_or_404(Report, filenames=file_name)
+    report.status = 'IN PROGRESS'
+    report.save()
+
+    # Prepare the context with the details of the specific report
     context = {
         "report": report,
     }
 
+    # Render the individual file view template with the context
     return render(request, "login/individual_file_view.html", context)
