@@ -77,11 +77,21 @@ class CustomLoginView(LoginView):
 
 def upload_file(request):
     if request.method == "POST" and request.FILES.get("file"):
+        s3 = boto3.client(
+            "s3",
+            aws_access_key_id=AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+        )
+
+
         username = request.POST.get('username')
         report_explanation = request.POST.get('explanation')
 
         # Get the uploaded file
         uploaded_file = request.FILES['file']
+        file_name = uploaded_file.name
+        s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
+
 
         # Create a Report object with the extracted data
         report = Report.objects.create(
