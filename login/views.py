@@ -8,11 +8,10 @@ from file_upload.models import Report
 from django.urls import reverse
 import boto3
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-
-
 
 
 AWS_ACCESS_KEY_ID = "AKIAU6GD2ERXH4XMKEH5"
@@ -85,27 +84,23 @@ def upload_file(request):
             aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
         )
 
-
-        username = request.POST.get('username')
-        report_explanation = request.POST.get('explanation')
+        username = request.POST.get("username")
+        report_explanation = request.POST.get("explanation")
 
         # Get the uploaded file
-        uploaded_file = request.FILES['file']
+        uploaded_file = request.FILES["file"]
         file_name = uploaded_file.name
         s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
-
 
         # Create a Report object with the extracted data
         report = Report.objects.create(
             attached_user=username,
             explanation=report_explanation,
-            filenames=uploaded_file.name  # Assuming you want to store the filename
+            filenames=uploaded_file.name,  # Assuming you want to store the filename
         )
         return render(request, template_name="file_upload/success.html")
 
-
     return HttpResponse("No file selected.")
-
 
 
 def check_existing_filename(s3_client, bucket_name, file_name):
@@ -123,12 +118,14 @@ def list_files(request):
         # Initialize an empty list to store file data
         file_data = []
         for report in reports:
-            file_data.append({
-                'status': report.status,
-                'file_name': report.filenames,
-                'report_explanation': report.explanation,
-                'report_resolve_notes': report.resolved_notes,
-            })
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "report_resolve_notes": report.resolved_notes,
+                }
+            )
 
         context = {
             "username": request.user.username,
@@ -180,12 +177,14 @@ def list_specific_user_files(request):
         # Initialize an empty list to store file data
         file_data = []
         for report in reports:
-            file_data.append({
-                'status': report.status,
-                'file_name': report.filenames,
-                'report_explanation': report.explanation,
-                'report_resolve_notes': report.resolved_notes,
-            })
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "report_resolve_notes": report.resolved_notes,
+                }
+            )
 
         context = {
             "username": request.user.username,
@@ -218,7 +217,7 @@ def resolve_report_submit(request):
 
             # Update the resolved_notes field of the report
             report.resolved_notes = resolve_notes
-            report.status = 'RESOLVED'
+            report.status = "RESOLVED"
             report.save()
 
             # Your other code for file handling if needed
@@ -229,13 +228,14 @@ def resolve_report_submit(request):
     else:
         return redirect("login")
 
+
 def individual_file_view(request):
     # Retrieve the file name from the query parameters
-    file_name = request.GET.get('file_name', '')
+    file_name = request.GET.get("file_name", "")
 
     # Retrieve the corresponding report from the database
     report = get_object_or_404(Report, filenames=file_name)
-    report.status = 'IN PROGRESS'
+    report.status = "IN PROGRESS"
     report.save()
 
     # Prepare the context with the details of the specific report
@@ -245,3 +245,31 @@ def individual_file_view(request):
 
     # Render the individual file view template with the context
     return render(request, "login/individual_file_view.html", context)
+
+
+def delete_report(request, filenames):
+    if request.user.is_authenticated:
+        # Retrieve the report object based on the filenames
+        report = get_object_or_404(Report, filenames=filenames)
+
+        # Check if the current user is the owner of the report
+        if report.attached_user == request.user.username:
+            # Delete the file from S3 bucket
+            s3 = boto3.client(
+                "s3",
+                aws_access_key_id=AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+            )
+            s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=report.filenames)
+
+            # Delete the report from the database
+            report.delete()
+
+            # Redirect the user back to their list of reports
+            return HttpResponseRedirect(reverse("login:user_reports"))
+        else:
+            # If the user is not the owner, return an error or redirect to an appropriate page
+            return HttpResponse("You are not authorized to delete this report.")
+    else:
+        # If the user is not authenticated, redirect them to the login page
+        return redirect("login")
