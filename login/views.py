@@ -11,6 +11,7 @@ from django.http import HttpResponse
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils import timezone
 
 
 
@@ -77,6 +78,8 @@ class CustomLoginView(LoginView):
         return render(request, self.get_template_names()[0], self.get_context_data())
 
 
+from django.utils import timezone  # Import the timezone module
+
 def upload_file(request):
     if request.method == "POST" and request.FILES.get("file"):
         s3 = boto3.client(
@@ -84,7 +87,6 @@ def upload_file(request):
             aws_access_key_id=AWS_ACCESS_KEY_ID,
             aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
         )
-
 
         username = request.POST.get('username')
         report_explanation = request.POST.get('explanation')
@@ -94,15 +96,14 @@ def upload_file(request):
         file_name = uploaded_file.name
         s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
 
-
         # Create a Report object with the extracted data
         report = Report.objects.create(
             attached_user=username,
             explanation=report_explanation,
-            filenames=uploaded_file.name  # Assuming you want to store the filename
+            filenames=uploaded_file.name,  # Assuming you want to store the filename
+            submission_time=timezone.now()  # Set submission time to current time
         )
         return render(request, template_name="file_upload/success.html")
-
 
     return HttpResponse("No file selected.")
 
