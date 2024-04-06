@@ -78,7 +78,6 @@ class CustomLoginView(LoginView):
         return render(request, self.get_template_names()[0], self.get_context_data())
 
 
-from django.utils import timezone  # Import the timezone module
 
 def upload_file(request):
     if request.method == "POST" and request.FILES.get("file"):
@@ -91,17 +90,17 @@ def upload_file(request):
         username = request.POST.get('username')
         report_explanation = request.POST.get('explanation')
 
-        # Get the uploaded file
+        
         uploaded_file = request.FILES['file']
         file_name = uploaded_file.name
         s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
 
-        # Create a Report object with the extracted data
+        
         report = Report.objects.create(
             attached_user=username,
             explanation=report_explanation,
-            filenames=uploaded_file.name,  # Assuming you want to store the filename
-            submission_time=timezone.now()  # Set submission time to current time
+            filenames=uploaded_file.name,
+            submission_time=timezone.now()  
         )
         return render(request, template_name="file_upload/success.html")
 
