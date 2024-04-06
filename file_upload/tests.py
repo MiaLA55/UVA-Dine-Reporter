@@ -3,7 +3,8 @@ import os
 from django.conf import settings
 from django.test import TestCase
 import boto3
-from .models import ReportResponse, Report
+from .models import Report
+from login.models import User
 
 AWS_ACCESS_KEY_ID = "AKIAU6GD2ERXH4XMKEH5"
 AWS_SECRET_ACCESS_KEY = "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"
