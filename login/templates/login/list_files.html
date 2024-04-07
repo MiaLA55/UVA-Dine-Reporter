@@ -60,6 +60,7 @@
                             <p class="card-text {% if report.report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
                                 {{ report.report_explanation }}
                             </p>
+                            <p><strong>Submission Time:</strong> {{ report.submission_time|date:"N d, Y H:i" }}</p>
                             <p><strong>Files:</strong></p>
                             <a href="{% url 'login:file_detail' report.file_name %}" class="file-link">{{ report.file_name }}</a>
                             {% if report.status == 'RESOLVED' %}

@@ -118,16 +118,15 @@ def check_existing_filename(s3_client, bucket_name, file_name):
 
 def list_files(request):
     if request.user.is_authenticated:
-        # Initialize an empty list to store file data
         reports = Report.objects.all()
-        # Initialize an empty list to store file data
         file_data = []
         for report in reports:
             file_data.append({
                 'status': report.status,
-                'file_name': report.filenames,
-                'report_explanation': report.explanation,
-                'report_resolve_notes': report.resolved_notes,
+                'file_name': report.file_name,
+                'report_explanation': report.report_explanation,
+                'submission_time': report.submission_time,
+                'report_resolve_notes': report.report_resolve_notes,
             })
 
         context = {
@@ -137,7 +136,6 @@ def list_files(request):
 
         return render(request, "login/list_files.html", context)
     else:
-        # If the user is not authenticated, redirect them to the login page
         return redirect("login")
 
 
