@@ -12,6 +12,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from datetime import datetime
 
 
 
@@ -123,10 +124,10 @@ def list_files(request):
         for report in reports:
             file_data.append({
                 'status': report.status,
-                'file_name': report.file_name,
-                'report_explanation': report.report_explanation,
-                'submission_time': report.submission_time,
-                'report_resolve_notes': report.report_resolve_notes,
+                'file_name': report.filenames,
+                'report_explanation': report.explanation,
+                'submission_time': report.submission_time, 
+                'report_resolve_notes': report.resolved_notes,
             })
 
         context = {
@@ -137,7 +138,6 @@ def list_files(request):
         return render(request, "login/list_files.html", context)
     else:
         return redirect("login")
-
 
 def file_detail(request, file_name):
     s3 = boto3.client(
