@@ -14,6 +14,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
 
+
+
 AWS_ACCESS_KEY_ID = "AKIAU6GD2ERXH4XMKEH5"
 AWS_SECRET_ACCESS_KEY = "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"
 AWS_STORAGE_BUCKET_NAME = "dininghallapp"
@@ -92,6 +94,7 @@ def upload_file(request):
         file_name = uploaded_file.name
         s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
 
+
         # Create a Report object with the extracted data
         report = Report.objects.create(
             attached_user=username,
@@ -100,7 +103,9 @@ def upload_file(request):
         )
         return render(request, template_name="file_upload/success.html")
 
+
     return HttpResponse("No file selected.")
+
 
 
 def check_existing_filename(s3_client, bucket_name, file_name):
@@ -217,7 +222,7 @@ def resolve_report_submit(request):
 
             # Update the resolved_notes field of the report
             report.resolved_notes = resolve_notes
-            report.status = "RESOLVED"
+            report.status = 'RESOLVED'
             report.save()
 
             # Your other code for file handling if needed
@@ -228,14 +233,13 @@ def resolve_report_submit(request):
     else:
         return redirect("login")
 
-
 def individual_file_view(request):
     # Retrieve the file name from the query parameters
-    file_name = request.GET.get("file_name", "")
+    file_name = request.GET.get('file_name', '')
 
     # Retrieve the corresponding report from the database
     report = get_object_or_404(Report, filenames=file_name)
-    report.status = "IN PROGRESS"
+    report.status = 'IN PROGRESS'
     report.save()
 
     # Prepare the context with the details of the specific report
