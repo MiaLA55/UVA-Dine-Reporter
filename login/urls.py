@@ -11,11 +11,14 @@ urlpatterns = [
     # path("viewfiles/", views.view_file, name="view_file"),
     path("list_files/", views.list_files, name="list_files"),
     path("user_reports/", views.list_specific_user_files, name="user_reports"),
-    path("individual_file_view/", views.individual_file_view, name="individual_file_view"),
+    path(
+        "individual_file_view/", views.individual_file_view, name="individual_file_view"
+    ),
     path("detail/<str:file_name>/", views.file_detail, name="file_detail"),
     path(
         "resolve_report_submit/",
         views.resolve_report_submit,
         name="resolve_report_submit",
     ),
+    path("delete_report/<str:filenames>/", views.delete_report, name="delete_report"),
 ]

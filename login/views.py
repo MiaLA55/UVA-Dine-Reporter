@@ -3,12 +3,17 @@ import os
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
-from django.http import HttpResponseRedirect
+from django.contrib.auth.models import User
+from file_upload.models import Report
 from django.urls import reverse
 import boto3
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+
+
 
 
 AWS_ACCESS_KEY_ID = "AKIAU6GD2ERXH4XMKEH5"
@@ -75,34 +80,32 @@ class CustomLoginView(LoginView):
 
 def upload_file(request):
     if request.method == "POST" and request.FILES.get("file"):
-        file = request.FILES["file"]
-        report_explanation = request.POST.get("reportExplanation", "")
-
-        file_name = f"NEW_{request.user.username}_{request.user.id}_{file.name}"
-        current_filename_index = 0
-
         s3 = boto3.client(
             "s3",
             aws_access_key_id=AWS_ACCESS_KEY_ID,
             aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
         )
 
-        while check_existing_filename(
-            s3, bucket_name=AWS_STORAGE_BUCKET_NAME, file_name=file_name
-        ):
-            file_name = f"{request.user.username}_{file.name}_{current_filename_index}"
-            current_filename_index += 1
+        username = request.POST.get("username")
+        report_explanation = request.POST.get("explanation")
 
-        s3.upload_fileobj(file, AWS_STORAGE_BUCKET_NAME, file_name)
-        if report_explanation:
-            explanation_filename = f"{file_name}.txt"
-            s3.put_object(
-                Body=report_explanation.encode(),
-                Bucket=AWS_STORAGE_BUCKET_NAME,
-                Key=explanation_filename,
-            )
+        # Get the uploaded file
+        uploaded_file = request.FILES["file"]
+        file_name = uploaded_file.name
+        s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
+
+
+        # Create a Report object with the extracted data
+        report = Report.objects.create(
+            attached_user=username,
+            explanation=report_explanation,
+            filenames=uploaded_file.name,  # Assuming you want to store the filename
+        )
         return render(request, template_name="file_upload/success.html")
+
+
     return HttpResponse("No file selected.")
+
 
 
 def check_existing_filename(s3_client, bucket_name, file_name):
@@ -116,58 +119,24 @@ def check_existing_filename(s3_client, bucket_name, file_name):
 def list_files(request):
     if request.user.is_authenticated:
         # Initialize an empty list to store file data
+        reports = Report.objects.all()
+        # Initialize an empty list to store file data
         file_data = []
-
-        # Initialize the Amazon S3 client
-        s3 = boto3.client(
-            "s3",
-            aws_access_key_id=AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-        )
-
-        # Define the bucket name
-        bucket_name = "dininghallapp"
-
-        # Retrieve all objects from the bucket
-        response = s3.list_objects_v2(Bucket=bucket_name)
-
-        # Iterate through objects in the bucket
-        for obj in response.get("Contents", []):
-            file_name = obj["Key"]
-
-            # Exclude explanation files
-            if not file_name.startswith("admin/") and not file_name.endswith(
-                (".txt.txt", ".pdf.txt", ".jpg.txt")
-            ):
-                # Retrieve report explanation if available
-                status = file_name.split("_")[0]
-                report_explanation_key = f"{file_name}.txt"
-                try:
-                    report_obj = s3.get_object(
-                        Bucket=bucket_name, Key=report_explanation_key
-                    )
-                    report_explanation = report_obj["Body"].read().decode("utf-8")
-                except s3.exceptions.NoSuchKey:
-                    report_explanation = "No report explanation provided"  # Default explanation if not available
-
-                report_resolve_notes_key = f"resolve_notes_for_{file_name}.txt"
-                try:
-                    report_obj = s3.get_object(
-                        Bucket=bucket_name, Key=report_resolve_notes_key
-                    )
-                    report_resolve_notes = report_obj["Body"].read().decode("utf-8")
-                except s3.exceptions.NoSuchKey:
-                    report_resolve_notes = "No report resolve notes provided"  # Default explanation if not available
-
-                # Add file_name and report_explanation to the list
-                file_data.append(
-                    (status, file_name, report_explanation, report_resolve_notes)
-                )
+        for report in reports:
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "report_resolve_notes": report.resolved_notes,
+                }
+            )
 
         context = {
+            "username": request.user.username,
             "file_data": file_data,
         }
-        # Render the template with the file data
+
         return render(request, "login/list_files.html", context)
     else:
         # If the user is not authenticated, redirect them to the login page
@@ -209,61 +178,24 @@ def list_specific_user_files(request):
     if request.user.is_authenticated:
         user_identifier = request.user.username
 
+        reports = Report.objects.filter(attached_user=user_identifier)
         # Initialize an empty list to store file data
         file_data = []
-
-        # Initialize the Amazon S3 client
-        s3 = boto3.client(
-            "s3",
-            aws_access_key_id=AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-        )
-
-        # Define the bucket name
-        bucket_name = "dininghallapp"
-
-        # Retrieve all objects from the bucket
-        response = s3.list_objects_v2(Bucket=bucket_name)
-
-        # Iterate through objects in the bucket
-        for obj in response.get("Contents", []):
-            file_name = obj["Key"]
-
-            # Check if the file belongs to the specific user
-            if user_identifier in file_name and not file_name.endswith(
-                (".txt.txt", ".pdf.txt", ".jpg.txt")
-            ):
-                # Retrieve report explanation if available
-                status = file_name.split("_")[0]
-                report_explanation_key = f"{file_name}.txt"
-                try:
-                    report_obj = s3.get_object(
-                        Bucket=bucket_name, Key=report_explanation_key
-                    )
-                    report_explanation = report_obj["Body"].read().decode("utf-8")
-                except s3.exceptions.NoSuchKey:
-                    report_explanation = "No report explanation provided"  # Default explanation if not available
-
-                report_resolve_notes_key = f"resolve_notes_for_{file_name}.txt"
-                try:
-                    report_obj = s3.get_object(
-                        Bucket=bucket_name, Key=report_resolve_notes_key
-                    )
-                    report_resolve_notes = report_obj["Body"].read().decode("utf-8")
-                except s3.exceptions.NoSuchKey:
-                    report_resolve_notes = "No report resolve notes provided"  # Default explanation if not available
-
-                # Add file_name and report_explanation to the list
-                file_data.append(
-                    (status, file_name, report_explanation, report_resolve_notes)
-                )
+        for report in reports:
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "report_resolve_notes": report.resolved_notes,
+                }
+            )
 
         context = {
             "username": request.user.username,
             "file_data": file_data,
-            'report_explanation': report_explanation,
-            'report_resolve_notes': report_resolve_notes,
         }
+
         # Render the template with the file data
         return render(request, "login/user_list_files.html", context)
     else:
@@ -279,116 +211,70 @@ def resolve_report(request):
         return redirect("login")
 
 
-# def resolve_report_submit(request):
-#     if request.user.is_authenticated:
-#         user_identifier = request.user
-
-#         if request.method == "POST" and request.FILES.get("file"):
-#             current_filename = request.FILES["file"].name
-#             s3 = boto3.client(
-#                 "s3",
-#                 aws_access_key_id=AWS_ACCESS_KEY_ID,
-#                 aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-#             )
-#             new_filename = f"RESOLVED_{current_filename}"
-#             # test downloading
-#             s3.download_file(AWS_STORAGE_BUCKET_NAME, current_filename, new_filename)
-#             s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=current_filename)
-#             s3.upload_file(AWS_STORAGE_BUCKET_NAME, new_filename)
-
-#             # delete ./test_passed.txt for future
-#             if os.path.isfile(new_filename):
-#                 os.remove(new_filename)
-#             return redirect("login/list_files.html")
-
-#         else:
-#             return HttpResponse("No file selected.")
-
-#     else:
-#         return redirect("login")
-
-
 def resolve_report_submit(request):
     if request.user.is_authenticated:
-        user_identifier = request.user
-
         if request.method == "POST":
             resolve_notes = request.POST.get("resolveNotes", "")
-            current_filename = request.POST.get("file_name", "")
-            new_filename = f"RESOLVED_{current_filename}"
+            filename = request.POST.get("file_name", "")
+
+            # Retrieve the specific report based on the file name
+            report = get_object_or_404(Report, filenames=filename)
+
+            # Update the resolved_notes field of the report
+            report.resolved_notes = resolve_notes
+            report.status = 'RESOLVED'
+            report.save()
+
+            # Your other code for file handling if needed
+
+            return render(request, "login/resolve_report.html")
+        else:
+            return HttpResponse("No file selected.")
+    else:
+        return redirect("login")
+
+def individual_file_view(request):
+    # Retrieve the file name from the query parameters
+    file_name = request.GET.get('file_name', '')
+
+    # Retrieve the corresponding report from the database
+    report = get_object_or_404(Report, filenames=file_name)
+    if report.status != 'RESOLVED':
+        report.status = 'IN PROGRESS'
+    report.save()
+
+    # Prepare the context with the details of the specific report
+    context = {
+        "report": report,
+    }
+
+    # Render the individual file view template with the context
+    return render(request, "login/individual_file_view.html", context)
+
+
+def delete_report(request, filenames):
+    if request.user.is_authenticated:
+        # Retrieve the report object based on the filenames
+        report = get_object_or_404(Report, filenames=filenames)
+
+        # Check if the current user is the owner of the report
+        if report.attached_user == request.user.username:
+            # Delete the file from S3 bucket
             s3 = boto3.client(
                 "s3",
                 aws_access_key_id=AWS_ACCESS_KEY_ID,
                 aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
             )
+            s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=report.filenames)
 
-            # Copy the file to the new name
-            s3.copy_object(
-                Bucket=AWS_STORAGE_BUCKET_NAME,
-                CopySource={"Bucket": AWS_STORAGE_BUCKET_NAME, "Key": current_filename},
-                Key=new_filename,
-            )
+            # Delete the report from the database
+            report.delete()
 
-            # Delete the old file
-            s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=current_filename)
-
-            if resolve_notes:
-                resolve_notes_filename = f"resolve_notes_for_{new_filename}.txt"
-                s3.put_object(
-                    Body=resolve_notes.encode(),
-                    Bucket=AWS_STORAGE_BUCKET_NAME,
-                    Key=resolve_notes_filename,
-                )
-            return render(request, "login/resolve_report.html")
-
+            # Redirect the user back to their list of reports
+            return HttpResponseRedirect(reverse("login:user_reports"))
         else:
-            return HttpResponse("No file selected.")
-
+            # If the user is not the owner, return an error or redirect to an appropriate page
+            return HttpResponse("You are not authorized to delete this report.")
     else:
+        # If the user is not authenticated, redirect them to the login page
         return redirect("login")
-
-
-def individual_file_view(request):
-    # Retrieve parameters from the URL
-    file_name = request.GET.get('file_name')
-    status = request.GET.get('status')
-    report_explanation = request.GET.get('report_explanation')
-    report_resolve_notes = request.GET.get('report_resolve_notes')
-
-    # Check if the status is NEW, then update it to INPROGRESS
-    if status.startswith("NEW"):
-        # Update the status and file name
-        status = "IN PROGRESS"
-        new_file_name = f"INPROGRESS_{file_name}"
-        s3 = boto3.client(
-            "s3",
-            aws_access_key_id=AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-        )
-
-        # Copy the file to the new name
-        s3.copy_object(
-            Bucket=AWS_STORAGE_BUCKET_NAME,
-            CopySource={"Bucket": AWS_STORAGE_BUCKET_NAME, "Key": file_name},
-            Key=new_file_name,
-        )
-
-        # Delete the old file
-        s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=file_name)
-
-        context = {
-            'file_name': new_file_name,
-            'status': status,
-            'report_explanation': report_explanation,
-            'report_resolve_notes': report_resolve_notes,
-        }
-    else:
-        context = {
-            'file_name': file_name,
-            'status': status,
-            'report_explanation': report_explanation,
-            'report_resolve_notes': report_resolve_notes,
-        }
-
-
-    return render(request, "login/individual_file_view.html", context)

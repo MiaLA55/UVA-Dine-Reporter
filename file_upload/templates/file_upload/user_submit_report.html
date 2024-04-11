@@ -28,11 +28,12 @@
                     <div class="card-body">
                         <p class="card-text">Fill in the fields below to make a report on UVA Dine.</p>
                         <p class="card-text">Upload files as needed (accepted file types are .txt / plain text, .pdf / Adobe PDF documents, .jpg / JPEG images)</p>
-                        <form method="post" enctype="multipart/form-data" action="{% url 'login:upload_file' %}">
+                        <form id="reportForm" method="post" enctype="multipart/form-data" action="{% url 'login:upload_file' %}">
                             {% csrf_token %}
+                            <input type="hidden" name="username" value="{{ user.username }}">
                             <div class="form-group">
-                                <label for="reportExplanation">Report Explanation (optional):</label>
-                                <textarea class="form-control" id="reportExplanation" name="reportExplanation" rows="4" cols="50"></textarea>
+                                <label for="explanation">Report Explanation (optional):</label>
+                                <textarea class="form-control" id="explanation" name="explanation" rows="4" cols="50"></textarea>
                             </div>
                             <div class="form-group">
                                 <input type="file" class="form-control-file" name="file">
