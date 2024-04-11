@@ -61,7 +61,11 @@
                                 {{ report.report_explanation }}
                             </p>
                             <p><strong>Files:</strong></p>
-                            <a href="{% url 'login:file_detail' report.file_name %}" class="file-link">{{ report.file_name }}</a>
+                            {% if report.file_name %}
+                                <a href="{% url 'login:file_detail' report.file_name %}" class="file-link">{{ report.file_name }}</a>
+                            {% else %}
+                                <p>None</p>
+                            {% endif %}
                             {% if report.status == 'RESOLVED' %}
                                 <strong>Report Resolve Notes:</strong>
                                 <p class="card-text {% if report.resolved_notes == 'No report resolve notes provided' %} custom-text-color {% endif %}">

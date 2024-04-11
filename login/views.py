@@ -239,7 +239,8 @@ def individual_file_view(request):
 
     # Retrieve the corresponding report from the database
     report = get_object_or_404(Report, filenames=file_name)
-    report.status = 'IN PROGRESS'
+    if report.status != 'RESOLVED':
+        report.status = 'IN PROGRESS'
     report.save()
 
     # Prepare the context with the details of the specific report
