@@ -185,6 +185,7 @@ def list_specific_user_files(request):
         for report in reports:
             file_data.append(
                 {
+                    "id": report.id,
                     "status": report.status,
                     "file_name": report.filenames,
                     "report_explanation": report.explanation,
@@ -250,20 +251,21 @@ def individual_file_view(request, report_id):
     return render(request, "login/individual_file_view.html", context)
 
 
-def delete_report(request, filenames):
+def delete_report(request, report_id):
     if request.user.is_authenticated:
         # Retrieve the report object based on the filenames
-        report = get_object_or_404(Report, filenames=filenames)
+        report = get_object_or_404(Report, pk=report_id)
 
         # Check if the current user is the owner of the report
         if report.attached_user == request.user.username:
             # Delete the file from S3 bucket
-            s3 = boto3.client(
-                "s3",
-                aws_access_key_id=AWS_ACCESS_KEY_ID,
-                aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-            )
-            s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=report.filenames)
+            if report.filenames:
+                s3 = boto3.client(
+                    "s3",
+                    aws_access_key_id=AWS_ACCESS_KEY_ID,
+                    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+                )
+                s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=report.filenames)
 
             # Delete the report from the database
             report.delete()

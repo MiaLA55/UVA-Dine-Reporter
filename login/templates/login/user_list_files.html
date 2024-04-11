@@ -57,7 +57,7 @@
                         <strong>
                             Report Resolve Notes:</strong> {{ report.report_resolve_notes }}
                     </p>
-                    <form method="post" action="{% url 'login:delete_report' report.file_name %}">
+                    <form method="post" action="{% url 'login:delete_report' report.id %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
