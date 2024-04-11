@@ -125,6 +125,7 @@ def list_files(request):
         for report in reports:
             file_data.append(
                 {
+                    "id": report.id,
                     "status": report.status,
                     "file_name": report.filenames,
                     "report_explanation": report.explanation,
@@ -233,15 +234,12 @@ def resolve_report_submit(request):
     else:
         return redirect("login")
 
-def individual_file_view(request):
-    # Retrieve the file name from the query parameters
-    file_name = request.GET.get('file_name', '')
-
+def individual_file_view(request, report_id):
     # Retrieve the corresponding report from the database
-    report = get_object_or_404(Report, filenames=file_name)
+    report = get_object_or_404(Report, pk=report_id)
     if report.status != 'RESOLVED':
         report.status = 'IN PROGRESS'
-    report.save()
+        report.save()
 
     # Prepare the context with the details of the specific report
     context = {

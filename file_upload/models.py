@@ -17,3 +17,4 @@ class Report(models.Model):
     filenames = models.CharField(max_length=2048, default=None, null=True, blank=True)
     attached_user = models.CharField(max_length=200)
     resolved_notes = models.TextField(blank=True, null=True)
+    id = models.AutoField(primary_key=True)
