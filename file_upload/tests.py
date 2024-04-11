@@ -23,6 +23,9 @@ class FileUploadTest(TestCase):
         # test downloading
         s3.download_file(AWS_STORAGE_BUCKET_NAME, "test.txt", "test_passed.txt")
 
+        # test delete from s3
+        s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key="test.txt")
+
         # Assertions for successful download
         self.assertTrue(os.path.isfile("test_passed.txt"), "Downloaded file not found")
 
@@ -41,6 +44,8 @@ class FileUploadTest(TestCase):
         # test downloading
         s3.download_file(AWS_STORAGE_BUCKET_NAME, "test.pdf", "test_passed.pdf")
 
+        s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key="test.txt")
+
         # Assertions for successful download
         self.assertTrue(os.path.isfile("test_passed.pdf"), "Downloaded file not found")
 
@@ -58,6 +63,8 @@ class FileUploadTest(TestCase):
 
         # test downloading
         s3.download_file(AWS_STORAGE_BUCKET_NAME, "test.jpg", "test_passed.jpg")
+
+        s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key="test.txt")
 
         # Assertions for successful download
         self.assertTrue(os.path.isfile("test_passed.jpg"), "Downloaded file not found")
