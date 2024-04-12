@@ -19,3 +19,4 @@ class Report(models.Model):
     attached_user = models.CharField(max_length=200)
     resolved_notes = models.TextField(blank=True, null=True)
     submission_time = models.DateTimeField(default=timezone.now)
+    id = models.AutoField(primary_key=True)
