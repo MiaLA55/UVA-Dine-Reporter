@@ -101,7 +101,7 @@ def upload_file(request):
             attached_user=username,
             explanation=report_explanation,
             filenames=uploaded_file.name,
-            submission_time=timezone.now()  
+            ##submission_time=timezone.now()  
         )
         return render(request, template_name="file_upload/success.html")
 
@@ -126,9 +126,11 @@ def list_files(request):
                 'status': report.status,
                 'file_name': report.filenames,
                 'report_explanation': report.explanation,
-                'submission_time': report.submission_time, 
+                'submission_time': report.submission_time.strftime("%m/%d/%Y, %H:%M:%S"),
                 'report_resolve_notes': report.resolved_notes,
             })
+
+        print(reports)    
 
         context = {
             "username": request.user.username,
@@ -183,6 +185,7 @@ def list_specific_user_files(request):
                 'file_name': report.filenames,
                 'report_explanation': report.explanation,
                 'report_resolve_notes': report.resolved_notes,
+                'submission_time': report.submission_time
             })
 
         context = {
