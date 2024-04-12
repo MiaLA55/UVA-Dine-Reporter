@@ -5,6 +5,11 @@ class ReportResponse(models.Model):
     response = models.CharField(max_length=2048)
     report_filename = models.CharField(max_length=2048)
 
+class Tag(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
 
 class Report(models.Model):
     STATUS_CHOICES = (
@@ -17,4 +22,5 @@ class Report(models.Model):
     filenames = models.CharField(max_length=2048, default=None, null=True, blank=True)
     attached_user = models.CharField(max_length=200)
     resolved_notes = models.TextField(blank=True, null=True)
+    tags = models.ManyToManyField(Tag)
     id = models.AutoField(primary_key=True)
