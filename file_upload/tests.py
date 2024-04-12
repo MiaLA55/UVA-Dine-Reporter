@@ -12,6 +12,30 @@ AWS_STORAGE_BUCKET_NAME = "dininghallapp"
 
 
 class FileUploadTest(TestCase):
+    def setUp(self):
+        self.test_user = User.objects.create(username="test_user", password="password")
+
+    def tearDown(self):
+        self.test_user.delete()
+
+    def test_report_submission(self):
+        report = Report.objects.create(
+            attached_user=self.test_user.username,
+            explanation="Test explanation",
+            filenames="test.txt"
+        )
+
+        saved_report = Report.objects.get(pk=report.pk)
+
+        #Check if the report is saved correctly
+        self.assertEqual(saved_report.attached_user, self.test_user.username)
+        self.assertEqual(saved_report.explanation, "Test explanation")
+        self.assertEqual(saved_report.filenames, "test.txt")
+
+
+        report.delete()
+
+
     def test_upload_txt_file(self):
         s3 = boto3.client(
             "s3",
@@ -72,3 +96,4 @@ class FileUploadTest(TestCase):
         # delete ./test_passed.txt for future
         if os.path.isfile("test_passed.jpg"):
             os.remove("test_passed.jpg")
+
