@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class ReportResponse(models.Model):
@@ -8,13 +9,14 @@ class ReportResponse(models.Model):
 
 class Report(models.Model):
     STATUS_CHOICES = (
-        ('NEW', 'New'),
-        ('IN PROGRESS', 'In Progress'),
-        ('RESOLVED', 'Resolved'),
+        ("NEW", "New"),
+        ("IN PROGRESS", "In Progress"),
+        ("RESOLVED", "Resolved"),
     )
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='NEW')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="NEW")
     explanation = models.TextField(default=None, null=True, blank=True)
     filenames = models.CharField(max_length=2048, default=None, null=True, blank=True)
     attached_user = models.CharField(max_length=200)
     resolved_notes = models.TextField(blank=True, null=True)
     id = models.AutoField(primary_key=True)
+    timestamp = models.DateTimeField(default=timezone.now)
