@@ -57,6 +57,18 @@
                         <strong>
                             Report Resolve Notes:</strong> {{ report.report_resolve_notes }}
                     </p>
+
+                    {% if report.tags.exists %}
+                        <p><strong>Tags:</strong></p>
+                        <ul>
+                            {% for tag in report.tags.all %}
+                                <li>{{ tag.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No tags associated with this report.</p>
+                    {% endif %}
+
                     <form method="post" action="{% url 'login:delete_report' report.id %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-danger">Delete</button>

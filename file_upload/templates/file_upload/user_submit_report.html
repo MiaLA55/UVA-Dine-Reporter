@@ -36,6 +36,14 @@
                                 <textarea class="form-control" id="explanation" name="explanation" rows="4" cols="50"></textarea>
                             </div>
                             <div class="form-group">
+                                <label for="available_tags">Tags:</label>
+                                <select class="form-control" id="available_tags" name="tags" multiple>
+                                    {% for tag in available_tags %}
+                                        <option value="{{ tag.id }}">{{ tag.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <input type="file" class="form-control-file" name="file">
                             </div>
                             <button type="submit" class="btn btn-primary">Submit Report</button>
@@ -54,3 +62,8 @@
     </div>
 </body>
 {% endblock %}
+
+
+
+
+

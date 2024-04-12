@@ -92,19 +92,33 @@ def upload_file(request):
         # Get the uploaded file
         uploaded_file = request.FILES["file"]
         file_name = uploaded_file.name
-        s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
 
+        # Check if the file name is not empty
+        if file_name:
+            # Process the file and save it to storage (e.g., Amazon S3)
+            s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
 
-        # Create a Report object with the extracted data
-        report = Report.objects.create(
-            attached_user=username,
-            explanation=report_explanation,
-            filenames=uploaded_file.name,  # Assuming you want to store the filename
-        )
-        return render(request, template_name="file_upload/success.html")
+            # Get selected tags
+            selected_tags = request.POST.getlist("tags")
 
+            # Create a Report object with the extracted data
+            report = Report.objects.create(
+                attached_user=username,
+                explanation=report_explanation,
+                filenames=file_name,
+            )
 
-    return HttpResponse("No file selected.")
+            # Save selected tags for the report
+            report.tags.add(*selected_tags)
+
+            return render(request, template_name="file_upload/success.html")
+        else:
+            # If no file is detected, return an error message
+            return HttpResponse("No file detected.")
+
+    else:
+        return HttpResponse("No file detected.")
+
 
 
 
@@ -190,6 +204,7 @@ def list_specific_user_files(request):
                     "file_name": report.filenames,
                     "report_explanation": report.explanation,
                     "report_resolve_notes": report.resolved_notes,
+                    "tags": report.tags.all(),  # Include tags associated with the report
                 }
             )
 
@@ -203,6 +218,7 @@ def list_specific_user_files(request):
     else:
         # If the user is not authenticated, redirect them to the login page
         return redirect("login")
+
 
 
 def resolve_report(request):
