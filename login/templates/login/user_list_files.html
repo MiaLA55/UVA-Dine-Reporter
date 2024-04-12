@@ -4,14 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ username }}'s Submitted Reports</title>
+    <title>{{ user.username }}'s Submitted Reports</title>
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
     {% bootstrap_messages %}
     <style>
+        .report-block {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .report-block p {
+            margin-bottom: 10px;
+        }
+
+        .file-link {
+            display: block;
+            margin-bottom: 5px;
+        }
+
         .custom-text-color {
-            color: #b6bcc3; /* Grey color */
+            color: rgb(159, 159, 159);
         }
     </style>
 </head>
@@ -19,24 +34,40 @@
 <body>
     <h1>{{ username }}'s Submitted Reports</h1>
     {% if file_data %}
-        <div class="container mt-5">
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    {% for file_name, report_explanation in file_data %}
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ file_name }}</h5>
-                                <p class="card-text {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
-                                    {{ report_explanation }}
-                                </p>
-                            </div>
-                        </div>
-                    {% endfor %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                {% for report in file_data %}
+                <div class="report-block">
+                   <p><strong>Status: </strong>
+                       {{ report.status }}
+                </p>
+                    <p
+                        class="card-text {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
+                        <strong>Report Explanation:</strong> {{ report.report_explanation }}
+                    </p>
+                   <p><strong>Files:</strong></p>
+                            {% if report.file_name %}
+                                <a href="{% url 'login:file_detail' report.file_name %}" class="file-link">{{ report.file_name }}</a>
+                            {% else %}
+                                <p>None</p>
+                            {% endif %}
+                    <p
+                        class="card-text {% if report_resolve_notes == 'No report resolve notes provided' %} custom-text-color {% endif %}">
+                        <strong>
+                            Report Resolve Notes:</strong> {{ report.report_resolve_notes }}
+                    </p>
+                    <form method="post" action="{% url 'login:delete_report' report.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
                 </div>
+                {% endfor %}
             </div>
         </div>
+    </div>
     {% else %}
-        <p>No reports submitted by this user.</p>
+    <p>No reports submitted by this user.</p>
     {% endif %}
     <a href="{% url 'login:auth_home' %}" class="btn btn-primary">Return Home</a>
 </body>

@@ -4,30 +4,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File List</title>
+    <title>List of Files</title>
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
     {% bootstrap_messages %}
     <style>
+        .custom-card {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .report-block p {
+            margin-bottom: 10px;
+        }
+
+        .file-link {
+            display: block;
+            margin-bottom: 5px;
+        }
+
         .custom-text-color {
-            color: #b6bcc3;
-            /* Grey color */
+            color: rgb(159, 159, 159);
+        }
+
+        .btn-light:hover {
+            background-color: #f2f2f2;
+        }
+
+
+        .btn-report {
+            width: 600px;
+            height: auto;
+            margin-bottom: 10px;
+            padding: 10px;
+            cursor: pointer;
         }
     </style>
 </head>
 
 <body>
-    <h1>Submitted Reports</h1>
-    {% for file_name, report_explanation in file_data %}
-    <div>
-        <a href="{% url 'login:file_detail' file_name %}">{{ file_name }}</a>
-        <div
-            class="p-3 mb-2 bg-light {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
-            {{ report_explanation }}
+    <h1>List of Submitted Reports</h1>
+    {% if file_data %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="text-center">
+                    {% for report in file_data %}
+                    <div class="custom-card">
+                        <a href="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}" class="btn btn-light btn-lg m-2 btn-report" role="button">
+
+                            <p><strong>Status: </strong>{{ report.status }}</p>
+                        <p><strong>ID:</strong> {{ report.id }}</p>
+                            <strong>Report Explanation:</strong>
+                            <p class="card-text {% if report.report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
+                                {{ report.report_explanation }}
+                            </p>
+                            <p><strong>File:</strong></p>
+                            {% if report.file_name %}
+                                <a href="{% url 'login:file_detail' report.file_name %}" class="file-link">{{ report.file_name }}</a>
+                            {% else %}
+                                <p>None</p>
+                            {% endif %}
+                            {% if report.status == 'RESOLVED' %}
+                                <strong>Report Resolve Notes:</strong>
+                                <p class="card-text {% if report.resolved_notes == 'No report resolve notes provided' %} custom-text-color {% endif %}">
+                                    {{ report.report_resolve_notes }}
+                                </p>
+                            {% else %}
+                                <form id="file-upload-form" method="post" enctype="multipart/form-data" action="{% url 'login:resolve_report_submit' %}">
+                                    {% csrf_token %}
+                                    <div class="form-group">
+                                        <label for="resolveNotes">Type something for resolve notes (optional):</label>
+                                        <textarea class="form-control" id="resolveNotes" name="resolveNotes" rows="4" cols="50"></textarea>
+                                    </div>
+                                    <input type="hidden" name="file_name" value="{{ report.file_name }}">
+                                    <br><br>
+                                    <button type="submit" class="btn btn-primary">Resolve Report</button>
+                                </form>
+                            {% endif %}
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
         </div>
     </div>
-    {% endfor %}
-    <a href="{% url 'login:admin_home' %}" class="btn btn-primary">Return Home</a>
+    {% else %}
+    <p>No reports submitted by any user.</p>
+    {% endif %}
+    <a href="{% url 'login:auth_home' %}" class="btn btn-primary">Return Home</a>
 </body>
 {% endblock %}
