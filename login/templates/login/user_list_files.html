@@ -39,16 +39,18 @@
             <div class="col-md-8">
                 {% for report in file_data %}
                 <div class="report-block">
-                   <p><strong>Status: </strong>
-                       {{ report.status }}
-                </p>
+                    <p><strong>Reported Time: </strong> {{ report.timestamp }}</p>
+                    <p><strong>Status: </strong>
+                        {{ report.status }}
+                    </p>
                     <p
                         class="card-text {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
                         <strong>Report Explanation:</strong> {{ report.report_explanation }}
                     </p>
                     <p><strong>Submission Time:</strong> {{ report.submission_time|date:"Y-m-d H:i:s" }}</p>
-                    <p><strong>Files:</strong></p>
-                      <a href="{% url 'login:file_detail' report.file_name %}" class="file-link">{{ report.file_name }}</a>
+                    <p><strong>Files:</strong><a href="{% url 'login:file_detail' report.file_name %}"
+                            class="file-link">{{ report.file_name }}</a></p>
+
 
                     <p
                         class="card-text {% if report_resolve_notes == 'No report resolve notes provided' %} custom-text-color {% endif %}">
@@ -67,5 +69,8 @@
     <p>No reports submitted by this user.</p>
     {% endif %}
     <a href="{% url 'login:auth_home' %}" class="btn btn-primary">Return Home</a>
+    <br>
+    <br>
+    <br>
 </body>
 {% endblock %}

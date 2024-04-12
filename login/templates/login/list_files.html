@@ -1,6 +1,26 @@
 {% extends 'login/base.html' %}
 {% block content %}
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get all div elements with the class "custom-card"
+        const cards = document.querySelectorAll('.custom-card');
+
+        // Add a click event listener to each card
+        cards.forEach(function (card) {
+            card.addEventListener('click', function () {
+                // Get the URL from the data-url attribute
+                const url = card.getAttribute('data-url');
+
+                // Redirect the user to the specified URL
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+</script>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,6 +61,30 @@
             padding: 10px;
             cursor: pointer;
         }
+
+        .custom-card {
+            border: 1px solid #ccc;
+            /* Border to give the card a structure */
+            border-radius: 8px;
+            /* Rounded corners */
+            padding: 16px;
+            /* Padding inside the card */
+            margin: 8px;
+            /* Margin around the card */
+            background-color: #f9f9f9;
+            /* Light background color */
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+            /* Smooth transition */
+            cursor: pointer;
+            /* Change cursor to pointer */
+        }
+
+        .custom-card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* Add a soft shadow */
+            background-color: #e9e9e9;
+            /* Slightly change background color */
+        }
     </style>
 </head>
 
@@ -52,37 +96,34 @@
             <div class="col-md-8">
                 <div class="text-center">
                     {% for report in file_data %}
-                    <div class="custom-card">
-                        <a href="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}" class="btn btn-light btn-lg m-2 btn-report" role="button">
-
-                            <p><strong>Status: </strong>{{ report.status }}</p>
+                    <div class="custom-card"
+                        data-url="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}">
+                        <input type="hidden" name="report_id" value="{{ report.id }}">
+                        <p><strong>Reported Time: </strong> {{ report.timestamp }}</p>
+                        <p><strong>Status: </strong>{{ report.status }}</p>
                         <p><strong>ID:</strong> {{ report.id }}</p>
-                            <strong>Report Explanation:</strong>
-                            <p class="card-text {% if report.report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
-                                {{ report.report_explanation }}
-                            </p>
-                            <p><strong>Submission Time:</strong> {{ report.submission_time }}</p>
-                            <p><strong>Files:</strong></p>
-                            <a href="{% url 'login:file_detail' report.file_name %}" class="file-link">{{ report.file_name }}</a>
-                            {% if report.status == 'RESOLVED' %}
-                                <strong>Report Resolve Notes:</strong>
-                                <p class="card-text {% if report.resolved_notes == 'No report resolve notes provided' %} custom-text-color {% endif %}">
-                                    {{ report.report_resolve_notes }}
-                                </p>
+                        <p><strong>Report Explanation:</strong> {{ report.report_explanation }}</p>
+                        <p><strong>File:</strong>
+                            {% if report.file_name %}
+                            <a href="{% url 'login:file_detail' report.file_name %}" class="file-link">
+                                {{ report.file_name }}
+                            </a>
                             {% else %}
-                                <form id="file-upload-form" method="post" enctype="multipart/form-data" action="{% url 'login:resolve_report_submit' %}">
-                                    {% csrf_token %}
-                                    <div class="form-group">
-                                        <label for="resolveNotes">Type something for resolve notes (optional):</label>
-                                        <textarea class="form-control" id="resolveNotes" name="resolveNotes" rows="4" cols="50"></textarea>
-                                    </div>
-                                    <input type="hidden" name="file_name" value="{{ report.file_name }}">
-                                    <br><br>
-                                    <button type="submit" class="btn btn-primary">Resolve Report</button>
-                                </form>
-                            {% endif %}
-                        </a>
+                        <p>None</p>
+                        {% endif %}
+                        </p>
+
+                        {% if report.status == 'RESOLVED' %}
+                        <strong>Report Resolve Notes:</strong>
+                        <p
+                            class="card-text {% if report.resolved_notes == 'No report resolve notes provided' %} custom-text-color {% endif %}">
+                            {{ report.report_resolve_notes }}
+                        </p>
+                        {% else %}
+                        <p style="color: red;"><strong>This report has not been resolved yet.</strong></p>
+                        {% endif %}
                     </div>
+
                     {% endfor %}
                 </div>
             </div>
@@ -92,5 +133,9 @@
     <p>No reports submitted by any user.</p>
     {% endif %}
     <a href="{% url 'login:auth_home' %}" class="btn btn-primary">Return Home</a>
+    <br>
+    <br>
+    <br>
+    <br>
 </body>
 {% endblock %}

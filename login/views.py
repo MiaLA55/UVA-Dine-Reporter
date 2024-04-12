@@ -93,6 +93,7 @@ def upload_file(request):
         file_name = uploaded_file.name
         s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
 
+        # Create a Report object with the extracted data
         report = Report.objects.create(
             attached_user=username,
             explanation=report_explanation,
@@ -242,9 +243,25 @@ def individual_file_view(request, report_id):
         report.status = "IN PROGRESS"
         report.save()
 
-    # Prepare the context with the details of the specific report
+    # file_data = []
+    # # Prepare the context with the details of the specific report
+    # file_data.append(
+    #     {
+    #         "id": report.id,
+    #         "status": report.status,
+    #         "file_name": report.filenames,
+    #         "report_explanation": report.explanation,
+    #         "timestamp": report.timestamp,
+    #     }
+    # )
     context = {
         "report": report,
+        # "file_data": file_data,
+        # "id": report.id,
+        # "status": report.status,
+        # "file_name": report.filenames,
+        # "report_explanation": report.explanation,
+        # "timestamp": report.timestamp,
     }
 
     # Render the individual file view template with the context
