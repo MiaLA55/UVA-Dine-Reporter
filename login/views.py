@@ -123,9 +123,7 @@ def list_files(request):
                     "status": report.status,
                     "file_name": report.filenames,
                     "report_explanation": report.explanation,
-                    "submission_time": report.submission_time.strftime(
-                        "%m/%d/%Y, %H:%M:%S"
-                    ),
+                    "submission_time": report.submission_time,
                     "report_resolve_notes": report.resolved_notes,
                     "id": report.id,
                 }
@@ -188,9 +186,7 @@ def list_specific_user_files(request):
                     "file_name": report.filenames,
                     "report_explanation": report.explanation,
                     "report_resolve_notes": report.resolved_notes,
-                    "submission_time": report.submission_time.strftime(
-                        "%m/%d/%Y, %H:%M:%S"
-                    ),
+                    "submission_time": report.submission_time,
                     "id": report.id,
                 }
             )
