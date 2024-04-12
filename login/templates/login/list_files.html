@@ -99,7 +99,7 @@
                     <div class="custom-card"
                         data-url="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}">
                         <input type="hidden" name="report_id" value="{{ report.id }}">
-                        <p><strong>Reported Time: </strong> {{ report.timestamp }}</p>
+                        <p><strong>Reported Time: </strong> {{ report.submission_time}}</p>
                         <p><strong>Status: </strong>{{ report.status }}</p>
                         <p><strong>ID:</strong> {{ report.id }}</p>
                         <p><strong>Report Explanation:</strong> {{ report.report_explanation }}</p>

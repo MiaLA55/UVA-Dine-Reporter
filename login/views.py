@@ -188,7 +188,9 @@ def list_specific_user_files(request):
                     "file_name": report.filenames,
                     "report_explanation": report.explanation,
                     "report_resolve_notes": report.resolved_notes,
-                    "submission_time": report.submission_time,
+                    "submission_time": report.submission_time.strftime(
+                        "%m/%d/%Y, %H:%M:%S"
+                    ),
                     "id": report.id,
                 }
             )
