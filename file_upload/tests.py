@@ -1,7 +1,10 @@
 import os
 
 from django.conf import settings
-from django.test import TestCase
+from django.test import TestCase, Client
+from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.urls import reverse
 import boto3
 from .models import Report
 from login.models import User
@@ -12,28 +15,6 @@ AWS_STORAGE_BUCKET_NAME = "dininghallapp"
 
 
 class FileUploadTest(TestCase):
-    def setUp(self):
-        self.test_user = User.objects.create(username="test_user", password="password")
-
-    def tearDown(self):
-        self.test_user.delete()
-
-    def test_report_submission(self):
-        report = Report.objects.create(
-            attached_user=self.test_user.username,
-            explanation="Test explanation",
-            filenames="test.txt"
-        )
-
-        saved_report = Report.objects.get(pk=report.pk)
-
-        #Check if the report is saved correctly
-        self.assertEqual(saved_report.attached_user, self.test_user.username)
-        self.assertEqual(saved_report.explanation, "Test explanation")
-        self.assertEqual(saved_report.filenames, "test.txt")
-
-
-        report.delete()
 
 
     def test_upload_txt_file(self):
@@ -97,3 +78,35 @@ class FileUploadTest(TestCase):
         if os.path.isfile("test_passed.jpg"):
             os.remove("test_passed.jpg")
 
+class ReportModelTest(TestCase):
+    def setUp(self):
+        self.test_user = User.objects.create(username="test_user", password="password")
+
+    def tearDown(self):
+        self.test_user.delete()
+
+    def test_report_submission(self):
+        report = Report.objects.create(
+            attached_user=self.test_user.username,
+            explanation="Test explanation",
+            filenames="test.txt"
+        )
+
+        saved_report = Report.objects.get(pk=report.pk)
+
+        # Check if the report is saved correctly
+        self.assertEqual(saved_report.attached_user, self.test_user.username)
+        self.assertEqual(saved_report.explanation, "Test explanation")
+        self.assertEqual(saved_report.filenames, "test.txt")
+
+        report.delete()
+class ReportViewTests(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.test_user = get_user_model().objects.create_user(username="test_user", password="password")
+        self.client.force_login(self.test_user)
+
+    def test_no_reports_user_end(self):
+        response = self.client.get(reverse("login:user_reports"))
+        self.assertContains(response, "No reports submitted by this user.")
+        self.assertQuerySetEqual(response.context["file_data"], [])
