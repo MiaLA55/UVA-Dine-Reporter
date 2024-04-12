@@ -8,6 +8,7 @@ from file_upload.models import Report
 from django.urls import reverse
 import boto3
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
@@ -230,14 +231,12 @@ def resolve_report_submit(request):
     else:
         return redirect("login")
 
-def individual_file_view(request):
-    # Retrieve the file name from the query parameters
-    file_name = request.GET.get('file_name', '')
-
+def individual_file_view(request, report_id):
     # Retrieve the corresponding report from the database
-    report = get_object_or_404(Report, filenames=file_name)
-    report.status = 'IN PROGRESS'
-    report.save()
+    report = get_object_or_404(Report, pk=report_id)
+    if report.status != 'RESOLVED':
+        report.status = 'IN PROGRESS'
+        report.save()
 
     # Prepare the context with the details of the specific report
     context = {
@@ -246,3 +245,32 @@ def individual_file_view(request):
 
     # Render the individual file view template with the context
     return render(request, "login/individual_file_view.html", context)
+
+
+def delete_report(request, report_id):
+    if request.user.is_authenticated:
+        # Retrieve the report object based on the filenames
+        report = get_object_or_404(Report, pk=report_id)
+
+        # Check if the current user is the owner of the report
+        if report.attached_user == request.user.username:
+            # Delete the file from S3 bucket
+            if report.filenames:
+                s3 = boto3.client(
+                    "s3",
+                    aws_access_key_id=AWS_ACCESS_KEY_ID,
+                    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+                )
+                s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=report.filenames)
+
+            # Delete the report from the database
+            report.delete()
+
+            # Redirect the user back to their list of reports
+            return HttpResponseRedirect(reverse("login:user_reports"))
+        else:
+            # If the user is not the owner, return an error or redirect to an appropriate page
+            return HttpResponse("You are not authorized to delete this report.")
+    else:
+        # If the user is not authenticated, redirect them to the login page
+        return redirect("login")

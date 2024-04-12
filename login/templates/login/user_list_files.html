@@ -54,6 +54,10 @@
                         class="card-text {% if report_resolve_notes == 'No report resolve notes provided' %} custom-text-color {% endif %}">
                         <strong>Report Resolve Notes:</strong> {{ report.report_resolve_notes }}
                     </p>
+                    <form method="post" action="{% url 'login:delete_report' report.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
                 </div>
                 {% endfor %}
             </div>
