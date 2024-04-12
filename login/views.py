@@ -16,8 +16,6 @@ from django.utils import timezone
 from datetime import datetime
 
 
-
-
 AWS_ACCESS_KEY_ID = "AKIAU6GD2ERXH4XMKEH5"
 AWS_SECRET_ACCESS_KEY = "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"
 AWS_STORAGE_BUCKET_NAME = "dininghallapp"
@@ -80,7 +78,6 @@ class CustomLoginView(LoginView):
         return render(request, self.get_template_names()[0], self.get_context_data())
 
 
-
 def upload_file(request):
     if request.method == "POST" and request.FILES.get("file"):
         s3 = boto3.client(
@@ -89,25 +86,22 @@ def upload_file(request):
             aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
         )
 
-        username = request.POST.get('username')
-        report_explanation = request.POST.get('explanation')
+        username = request.POST.get("username")
+        report_explanation = request.POST.get("explanation")
 
-        
-        uploaded_file = request.FILES['file']
+        uploaded_file = request.FILES["file"]
         file_name = uploaded_file.name
         s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
 
-        
         report = Report.objects.create(
             attached_user=username,
             explanation=report_explanation,
             filenames=uploaded_file.name,
-            ##submission_time=timezone.now()  
+            ##submission_time=timezone.now()
         )
         return render(request, template_name="file_upload/success.html")
 
     return HttpResponse("No file selected.")
-
 
 
 def check_existing_filename(s3_client, bucket_name, file_name):
@@ -123,15 +117,20 @@ def list_files(request):
         reports = Report.objects.all()
         file_data = []
         for report in reports:
-            file_data.append({
-                'status': report.status,
-                'file_name': report.filenames,
-                'report_explanation': report.explanation,
-                'submission_time': report.submission_time.strftime("%m/%d/%Y, %H:%M:%S"),
-                'report_resolve_notes': report.resolved_notes,
-            })
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "submission_time": report.submission_time.strftime(
+                        "%m/%d/%Y, %H:%M:%S"
+                    ),
+                    "report_resolve_notes": report.resolved_notes,
+                    "id": report.id,
+                }
+            )
 
-        print(reports)    
+        print(reports)
 
         context = {
             "username": request.user.username,
@@ -141,6 +140,7 @@ def list_files(request):
         return render(request, "login/list_files.html", context)
     else:
         return redirect("login")
+
 
 def file_detail(request, file_name):
     s3 = boto3.client(
@@ -181,13 +181,16 @@ def list_specific_user_files(request):
         # Initialize an empty list to store file data
         file_data = []
         for report in reports:
-            file_data.append({
-                'status': report.status,
-                'file_name': report.filenames,
-                'report_explanation': report.explanation,
-                'report_resolve_notes': report.resolved_notes,
-                'submission_time': report.submission_time
-            })
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "report_resolve_notes": report.resolved_notes,
+                    "submission_time": report.submission_time,
+                    "id": report.id,
+                }
+            )
 
         context = {
             "username": request.user.username,
@@ -220,7 +223,7 @@ def resolve_report_submit(request):
 
             # Update the resolved_notes field of the report
             report.resolved_notes = resolve_notes
-            report.status = 'RESOLVED'
+            report.status = "RESOLVED"
             report.save()
 
             # Your other code for file handling if needed
@@ -231,11 +234,12 @@ def resolve_report_submit(request):
     else:
         return redirect("login")
 
+
 def individual_file_view(request, report_id):
     # Retrieve the corresponding report from the database
     report = get_object_or_404(Report, pk=report_id)
-    if report.status != 'RESOLVED':
-        report.status = 'IN PROGRESS'
+    if report.status != "RESOLVED":
+        report.status = "IN PROGRESS"
         report.save()
 
     # Prepare the context with the details of the specific report
