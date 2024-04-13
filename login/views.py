@@ -89,9 +89,7 @@ def upload_file(request):
         username = request.POST.get("username")
         report_explanation = request.POST.get("explanation")
 
-        uploaded_file = request.FILES["file"]
-        file_name = uploaded_file.name
-        s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
+
 
         # Create a Report object with the extracted data
         report = Report.objects.create(
@@ -101,8 +99,18 @@ def upload_file(request):
             ##submission_time=timezone.now()
         )
         return render(request, template_name="file_upload/success.html")
+    elif request.method == "POST":
+        username = request.POST.get("username")
+        report_explanation = request.POST.get("explanation")
 
-    return HttpResponse("No file selected.")
+        # Create a Report object with the extracted data
+        report = Report.objects.create(
+            attached_user=username,
+            explanation=report_explanation,
+        )
+        return render(request, template_name="file_upload/success.html")
+
+    return HttpResponse("Nothing uploaded.")
 
 
 def check_existing_filename(s3_client, bucket_name, file_name):
@@ -128,8 +136,6 @@ def list_files(request):
                     "id": report.id,
                 }
             )
-
-        print(reports)
 
         context = {
             "username": request.user.username,
@@ -239,7 +245,7 @@ def individual_file_view(request, report_id):
     report = get_object_or_404(Report, pk=report_id)
     if report.status != "RESOLVED":
         report.status = "IN PROGRESS"
-        report.save()
+    report.save()
 
     # file_data = []
     # # Prepare the context with the details of the specific report

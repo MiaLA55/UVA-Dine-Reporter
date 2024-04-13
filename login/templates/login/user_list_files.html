@@ -47,8 +47,12 @@
                         class="card-text {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
                         <strong>Report Explanation:</strong> {{ report.report_explanation }}
                     </p>
-                    <p><strong>Files:</strong><a href="{% url 'login:file_detail' report.file_name %}"
-                            class="file-link">{{ report.file_name }}</a></p>
+                    <p><strong>File:</strong></p>
+                            {% if report.file_name %}
+                                <a href="{% url 'login:file_detail' report.file_name %}" class="file-link">{{ report.file_name }}</a>
+                            {% else %}
+                                <p>None</p>
+                            {% endif %}
 
 
                     <p
