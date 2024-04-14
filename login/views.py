@@ -12,8 +12,8 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-
-
+from django.utils import timezone
+from datetime import datetime
 
 
 AWS_ACCESS_KEY_ID = "AKIAU6GD2ERXH4XMKEH5"
@@ -94,18 +94,33 @@ def upload_file(request):
         file_name = uploaded_file.name
         s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
 
+            # Get selected tags
+        selected_tags = request.POST.getlist("tags")
 
         # Create a Report object with the extracted data
         report = Report.objects.create(
             attached_user=username,
             explanation=report_explanation,
-            filenames=uploaded_file.name,  # Assuming you want to store the filename
+            filenames=uploaded_file.name,
+            ##submission_time=timezone.now()
         )
+
+
+        report.tags.add(*selected_tags)
+        return render(request, template_name="file_upload/success.html")
+    elif request.method == "POST":
+        username = request.POST.get("username")
+        report_explanation = request.POST.get("explanation")
+        selected_tags = request.POST.getlist("tags")
+        # Create a Report object with the extracted data
+        report = Report.objects.create(
+            attached_user=username,
+            explanation=report_explanation,
+        )
+        report.tags.add(*selected_tags)
         return render(request, template_name="file_upload/success.html")
 
-
-    return HttpResponse("No file selected.")
-
+    return HttpResponse("Nothing uploaded.")
 
 
 def check_existing_filename(s3_client, bucket_name, file_name):
@@ -128,7 +143,9 @@ def list_files(request):
                     "status": report.status,
                     "file_name": report.filenames,
                     "report_explanation": report.explanation,
+                    "submission_time": report.submission_time,
                     "report_resolve_notes": report.resolved_notes,
+                    "id": report.id,
                 }
             )
 
@@ -188,6 +205,8 @@ def list_specific_user_files(request):
                     "file_name": report.filenames,
                     "report_explanation": report.explanation,
                     "report_resolve_notes": report.resolved_notes,
+                    "submission_time": report.submission_time,
+                    "id": report.id,
                 }
             )
 
@@ -233,15 +252,12 @@ def resolve_report_submit(request):
     else:
         return redirect("login")
 
-def individual_file_view(request):
-    # Retrieve the file name from the query parameters
-    file_name = request.GET.get('file_name', '')
-
+def individual_file_view(request, report_id):
     # Retrieve the corresponding report from the database
-    report = get_object_or_404(Report, filenames=file_name)
+    report = get_object_or_404(Report, pk=report_id)
     if report.status != 'RESOLVED':
         report.status = 'IN PROGRESS'
-    report.save()
+        report.save()
 
     # Prepare the context with the details of the specific report
     context = {
@@ -252,20 +268,21 @@ def individual_file_view(request):
     return render(request, "login/individual_file_view.html", context)
 
 
-def delete_report(request, filenames):
+def delete_report(request, report_id):
     if request.user.is_authenticated:
         # Retrieve the report object based on the filenames
-        report = get_object_or_404(Report, filenames=filenames)
+        report = get_object_or_404(Report, pk=report_id)
 
         # Check if the current user is the owner of the report
         if report.attached_user == request.user.username:
             # Delete the file from S3 bucket
-            s3 = boto3.client(
-                "s3",
-                aws_access_key_id=AWS_ACCESS_KEY_ID,
-                aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-            )
-            s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=report.filenames)
+            if report.filenames:
+                s3 = boto3.client(
+                    "s3",
+                    aws_access_key_id=AWS_ACCESS_KEY_ID,
+                    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+                )
+                s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key=report.filenames)
 
             # Delete the report from the database
             report.delete()

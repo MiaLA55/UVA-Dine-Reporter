@@ -11,8 +11,8 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'login:home' %}">Home</a>
             <a class="navbar-brand" href="{% url 'login:auth_home' %}">Dining Hall Reporter</a>
+            <a class="navbar-brand" href="{% url 'login:home' %}" style="font-size: medium;">Log Out and Return Home</a>
         </div>
     </nav>
 
@@ -22,7 +22,8 @@
     </div>
     <footer class="footer fixed-bottom bg-light navbar-light text-center">
         <div class="container">
-            <span class="text-muted">This system is a class project, the system is not monitored, and no real information should be submitted</span>
+            <span class="text-muted">This system is a class project, the system is not monitored, and no real
+                information should be submitted</span>
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
