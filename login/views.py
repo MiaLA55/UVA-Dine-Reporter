@@ -212,6 +212,7 @@ def list_specific_user_files(request):
                     "report_resolve_notes": report.resolved_notes,
                     "submission_time": report.submission_time,
                     "id": report.id,
+                    "tags": report.tags.all(),
                 }
             )
 
