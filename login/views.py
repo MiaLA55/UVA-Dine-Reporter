@@ -92,6 +92,11 @@ def upload_file(request):
         # Get the uploaded file
         uploaded_file = request.FILES["file"]
         file_name = uploaded_file.name
+        accepted_extensions = ["txt", "pdf" "jpg"]
+        file_extension = file_name.split(".")[-1]
+        if file_extension not in accepted_extensions:
+            return HttpResponse("Invalid file")
+
         s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
 
             # Get selected tags
