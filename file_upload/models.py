@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class ReportResponse(models.Model):
@@ -23,4 +24,5 @@ class Report(models.Model):
     attached_user = models.CharField(max_length=200)
     resolved_notes = models.TextField(blank=True, null=True)
     tags = models.ManyToManyField(Tag)
+    submission_time = models.DateTimeField(default=timezone.now)
     id = models.AutoField(primary_key=True)

@@ -39,23 +39,25 @@
             <div class="col-md-8">
                 {% for report in file_data %}
                 <div class="report-block">
-                   <p><strong>Status: </strong>
-                       {{ report.status }}
-                </p>
+                    <p><strong>Submission Time:</strong> {{ report.submission_time }}</p>
+                    <p><strong>Status: </strong>
+                        {{ report.status }}
+                    </p>
                     <p
                         class="card-text {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
                         <strong>Report Explanation:</strong> {{ report.report_explanation }}
                     </p>
-                   <p><strong>Files:</strong></p>
+                    <p><strong>File:</strong></p>
                             {% if report.file_name %}
                                 <a href="{% url 'login:file_detail' report.file_name %}" class="file-link">{{ report.file_name }}</a>
                             {% else %}
                                 <p>None</p>
                             {% endif %}
+
+
                     <p
                         class="card-text {% if report_resolve_notes == 'No report resolve notes provided' %} custom-text-color {% endif %}">
-                        <strong>
-                            Report Resolve Notes:</strong> {{ report.report_resolve_notes }}
+                        <strong>Report Resolve Notes:</strong> {{ report.report_resolve_notes }}
                     </p>
 
                     {% if report.tags.exists %}
@@ -82,5 +84,8 @@
     <p>No reports submitted by this user.</p>
     {% endif %}
     <a href="{% url 'login:auth_home' %}" class="btn btn-primary">Return Home</a>
+    <br>
+    <br>
+    <br>
 </body>
 {% endblock %}

@@ -12,8 +12,8 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-
-
+from django.utils import timezone
+from datetime import datetime
 
 
 AWS_ACCESS_KEY_ID = "AKIAU6GD2ERXH4XMKEH5"
@@ -92,34 +92,35 @@ def upload_file(request):
         # Get the uploaded file
         uploaded_file = request.FILES["file"]
         file_name = uploaded_file.name
-
-        # Check if the file name is not empty
-        if file_name:
-            # Process the file and save it to storage (e.g., Amazon S3)
-            s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
+        s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
 
             # Get selected tags
-            selected_tags = request.POST.getlist("tags")
+        selected_tags = request.POST.getlist("tags")
 
-            # Create a Report object with the extracted data
-            report = Report.objects.create(
-                attached_user=username,
-                explanation=report_explanation,
-                filenames=file_name,
-            )
-
-            # Save selected tags for the report
-            report.tags.add(*selected_tags)
-
-            return render(request, template_name="file_upload/success.html")
-        else:
-            # If no file is detected, return an error message
-            return HttpResponse("No file detected.")
-
-    else:
-        return HttpResponse("No file detected.")
+        # Create a Report object with the extracted data
+        report = Report.objects.create(
+            attached_user=username,
+            explanation=report_explanation,
+            filenames=uploaded_file.name,
+            ##submission_time=timezone.now()
+        )
 
 
+        report.tags.add(*selected_tags)
+        return render(request, template_name="file_upload/success.html")
+    elif request.method == "POST":
+        username = request.POST.get("username")
+        report_explanation = request.POST.get("explanation")
+        selected_tags = request.POST.getlist("tags")
+        # Create a Report object with the extracted data
+        report = Report.objects.create(
+            attached_user=username,
+            explanation=report_explanation,
+        )
+        report.tags.add(*selected_tags)
+        return render(request, template_name="file_upload/success.html")
+
+    return HttpResponse("Nothing uploaded.")
 
 
 def check_existing_filename(s3_client, bucket_name, file_name):
@@ -139,11 +140,12 @@ def list_files(request):
         for report in reports:
             file_data.append(
                 {
-                    "id": report.id,
                     "status": report.status,
                     "file_name": report.filenames,
                     "report_explanation": report.explanation,
+                    "submission_time": report.submission_time,
                     "report_resolve_notes": report.resolved_notes,
+                    "id": report.id,
                 }
             )
 
@@ -199,12 +201,12 @@ def list_specific_user_files(request):
         for report in reports:
             file_data.append(
                 {
-                    "id": report.id,
                     "status": report.status,
                     "file_name": report.filenames,
                     "report_explanation": report.explanation,
                     "report_resolve_notes": report.resolved_notes,
-                    "tags": report.tags.all(),  # Include tags associated with the report
+                    "submission_time": report.submission_time,
+                    "id": report.id,
                 }
             )
 
@@ -218,7 +220,6 @@ def list_specific_user_files(request):
     else:
         # If the user is not authenticated, redirect them to the login page
         return redirect("login")
-
 
 
 def resolve_report(request):

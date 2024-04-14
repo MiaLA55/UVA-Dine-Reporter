@@ -4,8 +4,12 @@
 
 {% block content %}
   <div class="container mt-4">
-    <h2>Logout</h2>
-    <p>You have been successfully logged out.</p>
-    <a href="{% url 'login:home' %}" class="btn btn-primary">Login</a>
+    <div class="card">
+      <div class="card-body">
+        <h2 class="card-title">Logout</h2>
+        <p class="card-text">You have been successfully logged out.</p>
+        <a href="{% url 'login:home' %}" class="btn btn-primary">Login</a>
+      </div>
+    </div>
   </div>
 {% endblock %}

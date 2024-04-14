@@ -1,12 +1,58 @@
 {% extends 'login/base.html' %}
 {% load socialaccount %}
 {% block content %}
+<head>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .btn-secondary {
+            color: #000; /* Black color for the secondary button */
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            color: #333; /* Darker shade of black on hover */
+        }
+
+        .mt-4 {
+            margin-top: 4rem;
+        }
+
+        .mb-4 {
+            margin-bottom: 4rem;
+        }
+
+        .bg-light {
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+
 <body class="bg-light">
     <div class="container mt-4">
         <h1 class="mb-4">UVA Dining Hall Reporter</h1>
         <p>Welcome! Please log in using Google.</p>
         <a href="{% provider_login_url 'google' %}" class="btn btn-primary">Login With Google</a>
-        <a href="{% url 'login:auth_home' %}">Continue as Anonymous</a>
+        <a href="{% url 'login:auth_home' %}" class="btn btn-secondary">Continue as Anonymous</a>
     </div>
 </body>
 {% endblock %}
