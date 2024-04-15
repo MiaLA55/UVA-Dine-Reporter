@@ -47,7 +47,7 @@
                         </p>
                         {% else %}
                         <form id="file-upload-form" method="post" enctype="multipart/form-data"
-                            action="{% url 'login:resolve_report_submit' %}">
+                            action="{% url 'login:resolve_report_submit' report.id%}">
                             {% csrf_token %}
                             <div class="form-group">
                                 <label for="resolveNotes">Type something for resolve notes (optional):</label>

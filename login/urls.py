@@ -13,7 +13,7 @@ urlpatterns = [
     path("individual_file_view/<int:report_id>/", views.individual_file_view, name="individual_file_view"),
     path("detail/<str:file_name>/", views.file_detail, name="file_detail"),
     path(
-        "resolve_report_submit/",
+        "resolve_report_submit/<int:report_id>/",
         views.resolve_report_submit,
         name="resolve_report_submit",
     ),

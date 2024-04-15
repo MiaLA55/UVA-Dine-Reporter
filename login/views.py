@@ -233,14 +233,14 @@ def resolve_report(request):
         return redirect("login")
 
 
-def resolve_report_submit(request):
+def resolve_report_submit(request, report_id):
     if request.user.is_authenticated:
         if request.method == "POST":
             resolve_notes = request.POST.get("resolveNotes", "")
             filename = request.POST.get("file_name", "")
 
             # Retrieve the specific report based on the file name
-            report = get_object_or_404(Report, filenames=filename)
+            report = get_object_or_404(Report, pk=report_id)
 
             # Update the resolved_notes field of the report
             report.resolved_notes = resolve_notes
