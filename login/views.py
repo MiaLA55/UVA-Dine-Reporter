@@ -79,51 +79,48 @@ class CustomLoginView(LoginView):
 
 
 def upload_file(request):
-    if request.method == "POST" and request.FILES.get("file"):
-        s3 = boto3.client(
-            "s3",
-            aws_access_key_id=AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-        )
+    if request.method == "POST":
+        if not request.FILES.get("file") and not request.POST.get("explanation"):
+            error_message = "Please provide either a file or an explanation."
+            return render(request, 'file_upload/user_submit_report.html', {'error_message': error_message})
 
-        username = request.POST.get("username")
-        report_explanation = request.POST.get("explanation")
+        if request.FILES.get("file"):
+            s3 = boto3.client(
+                "s3",
+                aws_access_key_id=AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+            )
+            username = request.POST.get("username")
+            report_explanation = request.POST.get("explanation")
+            uploaded_file = request.FILES["file"]
+            file_name = uploaded_file.name
+            accepted_extensions = ["txt", "pdf", "jpg"]
+            file_extension = file_name.split(".")[-1]
+            if file_extension not in accepted_extensions:
+                return HttpResponse(f"Invalid file - Files with {file_extension} extension are not allowed")
 
-        # Get the uploaded file
-        uploaded_file = request.FILES["file"]
-        file_name = uploaded_file.name
-        accepted_extensions = ["txt", "pdf", "jpg"]
-        file_extension = file_name.split(".")[-1]
-        if file_extension not in accepted_extensions:
-            return HttpResponse(f"Invalid file - Files with {file_extension} extension are not allowed")
+            s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
 
-        s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
+            selected_tags = request.POST.getlist("tags")
 
-            # Get selected tags
-        selected_tags = request.POST.getlist("tags")
+            report = Report.objects.create(
+                attached_user=username,
+                explanation=report_explanation,
+                filenames=uploaded_file.name,
+            )
+            report.tags.add(*selected_tags)
+            return render(request, template_name="file_upload/success.html")
 
-        # Create a Report object with the extracted data
-        report = Report.objects.create(
-            attached_user=username,
-            explanation=report_explanation,
-            filenames=uploaded_file.name,
-            ##submission_time=timezone.now()
-        )
-
-
-        report.tags.add(*selected_tags)
-        return render(request, template_name="file_upload/success.html")
-    elif request.method == "POST":
-        username = request.POST.get("username")
-        report_explanation = request.POST.get("explanation")
-        selected_tags = request.POST.getlist("tags")
-        # Create a Report object with the extracted data
-        report = Report.objects.create(
-            attached_user=username,
-            explanation=report_explanation,
-        )
-        report.tags.add(*selected_tags)
-        return render(request, template_name="file_upload/success.html")
+        if request.POST.get("explanation"):
+            username = request.POST.get("username")
+            report_explanation = request.POST.get("explanation")
+            selected_tags = request.POST.getlist("tags")
+            report = Report.objects.create(
+                attached_user=username,
+                explanation=report_explanation,
+            )
+            report.tags.add(*selected_tags)
+            return render(request, template_name="file_upload/success.html")
 
     return HttpResponse("Nothing uploaded.")
 
