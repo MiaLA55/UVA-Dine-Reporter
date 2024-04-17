@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
-from file_upload.models import Report
+from file_upload.models import Report, Tag
 from django.urls import reverse
 import boto3
 from django.http import HttpResponse
@@ -82,7 +82,10 @@ def upload_file(request):
     if request.method == "POST":
         if not request.FILES.get("file") and not request.POST.get("explanation"):
             error_message = "Please provide either a file or an explanation."
-            return render(request, 'file_upload/user_submit_report.html', {'error_message': error_message})
+            available_tags = Tag.objects.all()
+            return render(request, 'file_upload/user_submit_report.html', {'error_message': error_message,
+                           'available_tags': available_tags})
+
 
         if request.FILES.get("file"):
             s3 = boto3.client(

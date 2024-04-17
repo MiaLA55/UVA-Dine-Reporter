@@ -6,8 +6,15 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         tags_data = [
-            {'name': 'undercooked food'},
-            {'name': 'spoiled food'},
+            {'name': 'Allergens, Other Special Dietary Needs'},
+            {'name': 'Cleanliness'},
+            {'name': 'Quality of Ingredients'},
+            {'name': 'Service'},
+            {'name': 'Spoiled Food'},
+            {'name': 'Taste'},
+            {'name': 'Temperature'},
+            {'name': 'Undercooked Food'},
+            {'name': 'Wait Time'},
         ]
 
         for tag_data in tags_data:
