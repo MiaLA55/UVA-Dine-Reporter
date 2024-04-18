@@ -51,7 +51,7 @@
     <div class="container mt-4">
         <h1 class="mb-4">UVA Dining Hall Reporter</h1>
         <p>Welcome! Please log in using Google.</p>
-        <a href="{% provider_login_url 'google' %}" class="btn btn-primary">Login With Google</a>
+        <a href="{% url 'account_login' %}" class="btn btn-primary">Login With Google</a>
         <a href="{% url 'login:auth_home' %}" class="btn btn-secondary">Continue as Anonymous</a>
     </div>
 </body>

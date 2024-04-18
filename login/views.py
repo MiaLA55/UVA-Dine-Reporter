@@ -20,7 +20,6 @@ AWS_ACCESS_KEY_ID = "AKIAU6GD2ERXH4XMKEH5"
 AWS_SECRET_ACCESS_KEY = "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"
 AWS_STORAGE_BUCKET_NAME = "dininghallapp"
 
-
 def auth_home(request):
     if request.user.is_authenticated:
         if request.user.groups.filter(name="Site Admin").exists():
