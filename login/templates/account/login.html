@@ -8,6 +8,10 @@
 {% block content %}
 <head>
     <style>
+         .custom-btn {
+            background-color: #222d4b;
+            color: white;
+        }
          .background-section {
             background-image: url('https://news.virginia.edu/sites/default/files/Header_NA_Lawn_Fall_SS_01_0.jpg');
             background-size: cover;
@@ -79,6 +83,9 @@
     {% if SOCIALACCOUNT_ENABLED %}
         {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
     {% endif %}
+               <div class="return-home-button">
+            <a href="{% url 'login:home' %}" class="btn custom-btn">Return Home</a>
+        </div>
                </div>
         </div>
       </div>
