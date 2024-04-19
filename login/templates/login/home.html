@@ -35,7 +35,10 @@
             font-weight: bold;
             color: #222d4b;
         }
-        /* Add style for the card element */
+        .custom-btn {
+            background-color: #222d4b;
+            color: white;
+        }
         .signup-card {
             border: 5px solid #e87423; /* Orange border */
             border-radius: 1rem; /* Rounded corners */
@@ -45,44 +48,47 @@
 <section class="bg-image"
      style="background-image: url('https://harvesttableuva.com/wp-content/uploads/2020/12/20201103_161130030_iOS-scaled-2100x900-c-default.jpg');
             height: 50vh;">
-  <div class="container py-5 h-100">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-        <div class="card shadow-2-strong signup-card">
-          <div class="card-body p-5 text-center">
 
-            <h3 class="mb-5">Log in</h3>
-
-            <div data-mdb-input-init class="form-outline mb-4">
-              <input type="email" id="typeEmailX-2" class="form-control form-control-lg" />
-              <label class="form-label" for="typeEmailX-2">Email</label>
-            </div>
-
-            <div data-mdb-input-init class="form-outline mb-4">
-              <input type="password" id="typePasswordX-2" class="form-control form-control-lg" />
-              <label class="form-label" for="typePasswordX-2">Password</label>
-            </div>
-
-            <div class="form-check d-flex justify-content-start mb-4">
-              <input class="form-check-input" type="checkbox" value="" id="form1Example3" />
-              <label class="form-check-label" for="form1Example3"> Remember password </label>
-            </div>
-
-          <a href="{% url 'account_login' %}" class="btn btn-primary">Login</a>
-        <a href="{% url 'login:auth_home' %}" class="btn btn-secondary">Continue as Anonymous</a>
-
-            <hr class="my-4">
-
-
-
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </section>
 
 <body>
+<div class="container py-5 h-100">
+    <div class="row justify-content-between">
+        <div class="col-md-4 mb-4">
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="{% static 'login/carddine.jpg' %}" alt="UVA Dine">
+                <div class="card-body">
+                    <h5 class="card-title">UVA Dine</h5>
+                    <p class="card-text">Visit the UVA Dine site to see UVA's dining locations, menus, and hours of operation.</p>
+                    <a href="https://virginia.campusdish.com/en/locationsandmenus/" class="btn custom-btn">Visit</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="{% static 'login/cardmap.png' %}" alt="Map">
+                <div class="card-body">
+                    <h5 class="card-title">Dining Locations</h5>
+                    <p class="card-text">Find the perfect dining hall location for you on grounds.</p>
+                    <br>
+                    <a href="https://virginia.campusdish.com/-/media/Local/Higher-Education/GroupC/Virginia/Images/UVA-Map.ashx" class="btn custom-btn">Visit</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src="{% static 'login/events.jpg' %}" alt="Events">
+                <div class="card-body">
+                    <h5 class="card-title">Events</h5>
+                    <p class="card-text">Take a look at upcoming dining hall events and their locations.</p>
+                    <br>
+
+                    <a href="https://virginia.campusdish.com/Events" class="btn custom-btn">Visit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 {% endblock %}
