@@ -163,7 +163,89 @@ def list_files(request):
         # If the user is not authenticated, redirect them to the login page
         return redirect("login")
 
+def list_files_new(request):
+    if request.user.is_authenticated:
+        # Initialize an empty list to store file data
+        reports = Report.objects.filter(status = 'NEW')
+        # Initialize an empty list to store file data
+        file_data = []
+        for report in reports:
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "submission_time": report.submission_time,
+                    "report_resolve_notes": report.resolved_notes,
+                    "id": report.id,
+                }
+            )
 
+        context = {
+            "username": request.user.username,
+            "file_data": file_data,
+        }
+
+        return render(request, "login/list_files_new.html", context)
+    else:
+        # If the user is not authenticated, redirect them to the login page
+        return redirect("login")
+
+def list_files_ip(request):
+    if request.user.is_authenticated:
+        # Initialize an empty list to store file data
+        reports = Report.objects.filter(status = 'IN PROGRESS')
+        # Initialize an empty list to store file data
+        file_data = []
+        for report in reports:
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "submission_time": report.submission_time,
+                    "report_resolve_notes": report.resolved_notes,
+                    "id": report.id,
+                }
+            )
+
+        context = {
+            "username": request.user.username,
+            "file_data": file_data,
+        }
+
+        return render(request, "login/list_files_ip.html", context)
+    else:
+        # If the user is not authenticated, redirect them to the login page
+        return redirect("login")
+
+def list_files_resolved(request):
+    if request.user.is_authenticated:
+        # Initialize an empty list to store file data
+        reports = Report.objects.filter(status = 'RESOLVED')
+        # Initialize an empty list to store file data
+        file_data = []
+        for report in reports:
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "submission_time": report.submission_time,
+                    "report_resolve_notes": report.resolved_notes,
+                    "id": report.id,
+                }
+            )
+
+        context = {
+            "username": request.user.username,
+            "file_data": file_data,
+        }
+
+        return render(request, "login/list_files_resolved.html", context)
+    else:
+        # If the user is not authenticated, redirect them to the login page
+        return redirect("login")
 def file_detail(request, file_name):
     s3 = boto3.client(
         "s3",

@@ -1,0 +1,145 @@
+{% extends 'login/base.html' %}
+{% block content %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get all div elements with the class "custom-card"
+        const cards = document.querySelectorAll('.custom-card');
+
+        // Add a click event listener to each card
+        cards.forEach(function (card) {
+            card.addEventListener('click', function () {
+                // Get the URL from the data-url attribute
+                const url = card.getAttribute('data-url');
+
+                // Redirect the user to the specified URL
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+</script>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of Files</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% bootstrap_messages %}
+    <style>
+        .custom-card {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .report-block p {
+            margin-bottom: 10px;
+        }
+
+        .file-link {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .custom-text-color {
+            color: rgb(159, 159, 159);
+        }
+
+        .btn-light:hover {
+            background-color: #f2f2f2;
+        }
+         .custom-btn {
+            background-color: #222d4b;
+            color: white;
+        }
+
+        .btn-report {
+            width: 600px;
+            height: auto;
+            margin-bottom: 10px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .custom-card {
+            border: 1px solid #ccc;
+            /* Border to give the card a structure */
+            border-radius: 8px;
+            /* Rounded corners */
+            padding: 16px;
+            /* Padding inside the card */
+            margin: 8px;
+            /* Margin around the card */
+            background-color: #f9f9f9;
+            /* Light background color */
+            transition: box-shadow 0.3s ease, background-color 0.3s ease;
+            /* Smooth transition */
+            cursor: pointer;
+            /* Change cursor to pointer */
+        }
+
+        .custom-card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* Add a soft shadow */
+            background-color: #e9e9e9;
+            /* Slightly change background color */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>List of Reports In Progress</h1>
+    {% if file_data %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="text-center">
+                    {% for report in file_data %}
+                  {% if report.status == 'IN PROGRESS' %}
+                    <div class="custom-card"
+                        data-url="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}">
+                        <input type="hidden" name="report_id" value="{{ report.id }}">
+                        <p><strong>Reported Time: </strong> {{ report.submission_time}}</p>
+                        <p><strong>Status: </strong>{{ report.status }}</p>
+                        <p><strong>ID:</strong> {{ report.id }}</p>
+                        <p><strong>Report Explanation:</strong> {{ report.report_explanation }}</p>
+                        <p><strong>File:</strong>
+                            {% if report.file_name %}
+                            <a href="{% url 'login:file_detail' report.file_name %}" class="file-link">
+                                {{ report.file_name }}
+                            </a>
+                            {% else %}
+                        <p>None</p>
+                        {% endif %}
+                        </p>
+
+                        {% if report.status == 'RESOLVED' %}
+                        <strong>Report Resolve Notes:</strong>
+                        <p
+                            class="card-text {% if report.resolved_notes == 'No report resolve notes provided' %} custom-text-color {% endif %}">
+                            {{ report.report_resolve_notes }}
+                        </p>
+                        {% else %}
+                        <p style="color: red;"><strong>This report has not been resolved yet.</strong></p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <p>No reports submitted by any user.</p>
+    {% endif %}
+    <a href="{% url 'login:auth_home' %}" class="btn btn-primary">Return Home</a>
+    <br>
+    <br>
+    <br>
+    <br>
+</body>
+{% endblock %}

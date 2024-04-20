@@ -12,26 +12,44 @@
             background-color: #222d4b;
             border-bottom: 3px solid #e87423; /* Orange border on the top */
         }
+        .navbar-brand {
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .navbar-nav {
+            align-items: center; /* Center items vertically */
+        }
+        .nav-link {
+            color: white; /* Set color for navbar links */
+            font-weight: bold; /* Set font weight for navbar links */
+            margin-left: 20px; /* Add left margin to navbar links */
+        }
+        .logout-link {
+            margin-top: 10px; /* Add top margin to the logout link */
+        }
         body {
-    color: #222d4b; /* Set the color for all text */
-}
-
-
-
-
+            color: #222d4b; /* Set the color for all text */
+        }
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light custom-navbar">
         <div class="container-fluid">
-            <div class="row w-100">
-                <div class="col-6">
-                    <a href="{% url 'login:auth_home' %}">
-                        <img src="{% static 'login/uvadinereporter.png' %}" alt="UVADine" style="width: 50%; height: auto;">
-                    </a>
-                </div>
-
+            <a href="{% url 'login:auth_home' %}">
+                <img src="{% static 'login/uvadinereporter.png' %}" alt="UVADine" style="width: 50%; height: auto;">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login:home' %}" style = "color:white;">Log Out</a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
