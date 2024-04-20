@@ -1,26 +1,6 @@
 {% extends 'login/base.html' %}
 {% block content %}
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Get all div elements with the class "custom-card"
-        const cards = document.querySelectorAll('.custom-card');
-
-        // Add a click event listener to each card
-        cards.forEach(function (card) {
-            card.addEventListener('click', function () {
-                // Get the URL from the data-url attribute
-                const url = card.getAttribute('data-url');
-
-                // Redirect the user to the specified URL
-                if (url) {
-                    window.location.href = url;
-                }
-            });
-        });
-    });
-</script>
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,41 +10,30 @@
     {% bootstrap_javascript %}
     {% bootstrap_messages %}
     <style>
-        .custom-card {
-            border: 1px solid #ccc;
-            padding: 20px;
-            margin-bottom: 20px;
+        /* Custom styles for the table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
 
-        .report-block p {
-            margin-bottom: 10px;
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
         }
 
-        .file-link {
-            display: block;
-            margin-bottom: 5px;
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
         }
 
-        .custom-text-color {
-            color: rgb(159, 159, 159);
-        }
-
-        .btn-light:hover {
+        tr:hover {
             background-color: #f2f2f2;
         }
-         .custom-btn {
-            background-color: #222d4b;
-            color: white;
-        }
 
-        .btn-report {
-            width: 600px;
-            height: auto;
-            margin-bottom: 10px;
-            padding: 10px;
-            cursor: pointer;
-        }
-
+        /* Rest of your custom styles */
         .custom-card {
             border: 1px solid #ccc;
             /* Border to give the card a structure */
@@ -88,57 +57,64 @@
             background-color: #e9e9e9;
             /* Slightly change background color */
         }
+        body {
+            color: #222d4b; /* Set the color for all text */
+        }
+        .custom-btn {
+            background-color: #222d4b;
+            color: white;
+        }
     </style>
 </head>
 
 <body>
     <h1>List of Submitted Reports</h1>
     {% if file_data %}
+        <p>Please click on an entry to view an individual report and its contents</p>
+    {% endif %}
+    {% if file_data %}
     <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="text-center">
-                    {% for report in file_data %}
-                    <div class="custom-card"
-                        data-url="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}">
-                        <input type="hidden" name="report_id" value="{{ report.id }}">
-                        <p><strong>Reported Time: </strong> {{ report.submission_time}}</p>
-                        <p><strong>Status: </strong>{{ report.status }}</p>
-                        <p><strong>ID:</strong> {{ report.id }}</p>
-                        <p><strong>Report Explanation:</strong> {{ report.report_explanation }}</p>
-                        <p><strong>File:</strong>
-                            {% if report.file_name %}
-                            <a href="{% url 'login:file_detail' report.file_name %}" class="file-link">
-                                {{ report.file_name }}
-                            </a>
-                            {% else %}
-                        <p>None</p>
-                        {% endif %}
-                        </p>
-
-                        {% if report.status == 'RESOLVED' %}
-                        <strong>Report Resolve Notes:</strong>
-                        <p
-                            class="card-text {% if report.resolved_notes == 'No report resolve notes provided' %} custom-text-color {% endif %}">
-                            {{ report.report_resolve_notes }}
-                        </p>
-                        {% else %}
-                        <p style="color: red;"><strong>This report has not been resolved yet.</strong></p>
-                        {% endif %}
-                    </div>
-
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Date Time</th>
+                    <th>ID</th>
+                    <th>Report Explanation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in file_data %}
+                <tr class="clickable-row" data-url="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}">
+                    <td>{{ report.status }}</td>
+                    <td>{{ report.submission_time }}</td>
+                    <td>{{ report.id }}</td>
+                    <td>{{ report.report_explanation }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
     {% else %}
     <p>No reports submitted by any user.</p>
     {% endif %}
-    <a href="{% url 'login:auth_home' %}" class="btn btn-primary">Return Home</a>
     <br>
     <br>
-    <br>
-    <br>
+    <a href="{% url 'login:auth_home' %}" class="btn custom-btn">Return Home</a>
+    <br><br><br><br>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const rows = document.querySelectorAll('.clickable-row');
+            rows.forEach(function (row) {
+                row.addEventListener('click', function () {
+                    const url = row.getAttribute('data-url');
+                    if (url) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 {% endblock %}
