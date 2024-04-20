@@ -4,12 +4,96 @@
 <head>
     <meta charset="UTF-8">
     <title>Welcome, Site Admin</title>
+    <style>
+     .custom-card:hover {
+        cursor: pointer;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+     .custom-card {
+        transition: box-shadow 0.3s ease; /* Add transition to box-shadow property */
+    }
+     .welcome-message {
+            margin-bottom: 20px;
+            font-size: 24px; /* Increased font size */
+            font-weight: bold; /* Bold font weight */
+            color: #222d4b;
+        }
+        body {
+            color: #222d4b; /* Set the color for all text */
+        }
+</style>
 </head>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get all div elements with the class "custom-card"
+        const cards = document.querySelectorAll('.custom-card');
 
+        // Add a click event listener to each card
+        cards.forEach(function (card) {
+            card.addEventListener('click', function () {
+                // Get the URL from the data-url attribute
+                const url = card.getAttribute('data-url');
+
+                // Redirect the user to the specified URL
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+</script>
 <body>
     <h2>Welcome, Admin!</h2>
     <p>You are logged in as a site administrator.</p>
-    <a href="{% url 'login:list_files' %}">View File</a>
-    <p>You can access reports when they come in.</p>
+
+
+
+<div class="col py-3">
+
+    <div class="col py-3">
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            <div class="col">
+                <div class="card pmd-card text-center shadow custom-card" data-url="{% url 'login:list_files' %}">
+                    <div class="card-body">
+                        <img src="https://static.thenounproject.com/png/1131400-200.png" class="rounded-circle img-fluid mb-3" title="" alt="" width="100" height="100">
+                        <h2 class="card-title">All</h2>
+                        <p class="card-subtitle mb-3">Reports</p>
+                        <p class="card-text">View all reports submitted by users in the system.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card pmd-card text-center shadow custom-card" data-url="{% url 'login:user_list_files_new' %}">
+                    <div class="card-body">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Flat_exclamation_icon_-_blue.svg/512px-Flat_exclamation_icon_-_blue.svg.png" class="rounded-circle img-fluid mb-3" title="" alt="" width="100" height="100">
+                        <h2 class="card-title">New</h2>
+                        <p class="card-subtitle mb-3">Reports</p>
+                        <p class="card-text">View the newest, unseen reports submitted by users.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card pmd-card text-center shadow custom-card" data-url="{% url 'login:user_list_files_ip' %}">
+                    <div class="card-body">
+                         <img src="https://media.istockphoto.com/id/1133864494/vector/person-with-clock-icon-vector-thin-line-illustration-for-concepts-of-business-delivery-order.jpg?s=612x612&w=0&k=20&c=c180CVlo7SulUTNXjB1Qaz8Cwi6ewyXfLJ4TIH10u7I=" class="rounded-circle img-fluid mb-3" title="" alt="" width="100" height="100">
+                        <h2 class="card-title">In Progress</h2>
+                        <p class="card-subtitle mb-3">Reports</p>
+                        <p class="card-text">Explore reports currently undergoing evaluation.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card pmd-card text-center shadow custom-card" data-url="{% url 'login:user_list_files_resolved' %}">
+                    <div class="card-body">
+                       <img src="https://static-00.iconduck.com/assets.00/alert-success-icon-512x512-lslkjbep.png" class="rounded-circle img-fluid mb-3" title="" alt="" width="100" height="100">
+                        <h2 class="card-title">Resolved</h2>
+                        <p class="card-subtitle mb-3">Reports</p>
+                        <p class="card-text">Review reports that have been assessed and resolved.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 {% endblock %}
