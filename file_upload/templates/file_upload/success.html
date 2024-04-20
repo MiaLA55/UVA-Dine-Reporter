@@ -19,7 +19,11 @@
 <body>
 <h1><span class="success-text">Report Submitted Successfully!</span></h1>
   <p>Thank you for submitting your report.</p>
-<a href="{% url 'login:auth_home' %}" class="btn custom-btn">Return Home</a>
+{% if user.is_authenticated %}
+        <a href="{% url 'login:auth_home' %}" class="btn custom-btn">Return Home</a>
+    {% else %}
+        <a href="{% url 'login:home' %}" class="btn custom-btn">Return Home</a>
+    {% endif %}
 </body>
 </html>
 {% endblock %}

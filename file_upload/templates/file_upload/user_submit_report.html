@@ -21,10 +21,25 @@
             background-color: #222d4b;
             color: white;
         }
+         .welcome-message {
+            margin-bottom: 20px;
+            font-size: 24px; /* Increased font size */
+            font-weight: bold; /* Bold font weight */
+            color: #222d4b;
+        }
+        body {
+            color: #222d4b; /* Set the color for all text */
+        }
     </style>
 </head>
 <body>
     <div class="container mt-5">
+        <p class="welcome-message">
+        {% if not user.is_authenticated %}
+            You are currently reporting anonymously.
+        {% endif %}
+        </p>
+        <br>
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
@@ -71,7 +86,11 @@
     </div>
     <br>
     <br>
-<a href="{% url 'login:auth_home' %}" class="btn custom-btn">Return Home</a>
+    {% if user.is_authenticated %}
+        <a href="{% url 'login:auth_home' %}" class="btn custom-btn">Return Home</a>
+    {% else %}
+        <a href="{% url 'login:home' %}" class="btn custom-btn">Return Home</a>
+    {% endif %}
 </body>
 {% endblock %}
 

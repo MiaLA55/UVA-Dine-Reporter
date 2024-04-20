@@ -3,13 +3,28 @@
 {% block title %}Logout{% endblock %}
 
 {% block content %}
+<head>
+  <style>
+     .custom-btn {
+            background-color: #222d4b;
+            color: white;
+        }
+                table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+  </style>
+</head>
+<body>
   <div class="container mt-4">
     <div class="card">
       <div class="card-body">
         <h2 class="card-title">Logout</h2>
         <p class="card-text">You have been successfully logged out.</p>
-        <a href="{% url 'login:home' %}" class="btn btn-primary">Login</a>
+        <a href="{% url 'login:home' %}" class="btn custom-btn">Login</a>
       </div>
     </div>
   </div>
+  </body>
 {% endblock %}
