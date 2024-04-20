@@ -95,7 +95,13 @@
             background-color: #222d4b;
             color: white;
         }
-         th,
+                table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
         td {
             padding: 8px;
             text-align: left;
@@ -110,12 +116,13 @@
         tr:hover {
             background-color: #f2f2f2;
         }
+
     </style>
 </head>
 
 <body>
-    <h1>List of Resolved Reports</h1>
-     {% if file_data %}
+    <h1>List of Reports In Progress</h1>
+        {% if file_data %}
         <p>Please click on an entry to view an individual report and its contents</p>
     {% endif %}
     {% if file_data %}
