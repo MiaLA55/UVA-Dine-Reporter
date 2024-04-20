@@ -10,6 +10,9 @@ urlpatterns = [
     path("upload/", views.upload_file, name="upload_file"),
     path("list_files/", views.list_files, name="list_files"),
     path("user_reports/", views.list_specific_user_files, name="user_reports"),
+    path("user_list_files_new/", views.user_list_files_new, name="user_list_files_new"),
+    path("user_list_files_ip/", views.user_list_files_ip, name="user_list_files_ip"),
+    path("user_list_files_resolved/", views.user_list_files_resolved, name="user_list_files_resolved"),
     path("individual_file_view/<int:report_id>/", views.individual_file_view, name="individual_file_view"),
     path("detail/<str:file_name>/", views.file_detail, name="file_detail"),
     path(

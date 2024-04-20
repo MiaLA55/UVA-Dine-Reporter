@@ -226,6 +226,101 @@ def list_specific_user_files(request):
         # If the user is not authenticated, redirect them to the login page
         return redirect("login")
 
+@login_required
+def user_list_files_new(request):
+    if request.user.is_authenticated:
+        user_identifier = request.user.username
+
+        reports = Report.objects.filter(attached_user=user_identifier, status = 'NEW')
+        # Initialize an empty list to store file data
+        file_data = []
+        for report in reports:
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "report_resolve_notes": report.resolved_notes,
+                    "submission_time": report.submission_time,
+                    "id": report.id,
+                    "tags": report.tags.all(),
+                }
+            )
+
+        context = {
+            "username": request.user.username,
+            "file_data": file_data,
+        }
+
+        # Render the template with the file data
+        return render(request, "login/user_list_files_new.html", context)
+    else:
+        # If the user is not authenticated, redirect them to the login page
+        return redirect("login")
+
+@login_required
+def user_list_files_ip(request):
+    if request.user.is_authenticated:
+        user_identifier = request.user.username
+
+        reports = Report.objects.filter(attached_user=user_identifier, status = 'IN PROGRESS')
+        # Initialize an empty list to store file data
+        file_data = []
+        for report in reports:
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "report_resolve_notes": report.resolved_notes,
+                    "submission_time": report.submission_time,
+                    "id": report.id,
+                    "tags": report.tags.all(),
+                }
+            )
+
+        context = {
+            "username": request.user.username,
+            "file_data": file_data,
+        }
+
+        # Render the template with the file data
+        return render(request, "login/user_list_files_ip.html", context)
+    else:
+        # If the user is not authenticated, redirect them to the login page
+        return redirect("login")
+
+@login_required
+def user_list_files_resolved(request):
+    if request.user.is_authenticated:
+        user_identifier = request.user.username
+
+        reports = Report.objects.filter(attached_user=user_identifier, status = 'RESOLVED')
+        # Initialize an empty list to store file data
+        file_data = []
+        for report in reports:
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "report_resolve_notes": report.resolved_notes,
+                    "submission_time": report.submission_time,
+                    "id": report.id,
+                    "tags": report.tags.all(),
+                }
+            )
+
+        context = {
+            "username": request.user.username,
+            "file_data": file_data,
+        }
+
+        # Render the template with the file data
+        return render(request, "login/user_list_files_resolved.html", context)
+    else:
+        # If the user is not authenticated, redirect them to the login page
+        return redirect("login")
 
 def resolve_report(request):
     if request.user.is_authenticated:

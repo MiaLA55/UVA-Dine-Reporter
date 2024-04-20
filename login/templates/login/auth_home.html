@@ -24,6 +24,9 @@
             font-weight: bold; /* Bold font weight */
             color: #222d4b;
         }
+        body {
+            color: #222d4b; /* Set the color for all text */
+        }
 
 
 </style>
@@ -78,13 +81,13 @@
                                 <a href="{% url 'login:user_reports' %}" class="nav-link px-0" style="color: #222d4b;"> <span class="d-none d-sm-inline lead">All Reports</span></a>
                             </li>
                             <li>
-                                <a href="#" class="nav-link px-0 lead" style="color: #222d4b;"> <span class="d-none d-sm-inline">New Reports</span></a>
+                                <a href="{% url 'login:user_list_files_new' %}" class="nav-link px-0 lead" style="color: #222d4b;"> <span class="d-none d-sm-inline">New Reports</span></a>
                             </li>
                             <li>
-                                <a href="#" class="nav-link px-0 lead" style="color: #222d4b;"> <span class="d-none d-sm-inline">In Progress Reports</span></a>
+                                <a href="{% url 'login:user_list_files_ip' %}" class="nav-link px-0 lead" style="color: #222d4b;"> <span class="d-none d-sm-inline">In Progress Reports</span></a>
                             </li>
                             <li>
-                                <a href="#" class="nav-link px-0 lead" style="color: #222d4b;"> <span class="d-none d-sm-inline">Resolved Reports</span></a>
+                                <a href="{% url 'login:user_list_files_resolved' %}" class="nav-link px-0 lead" style="color: #222d4b;"> <span class="d-none d-sm-inline">Resolved Reports</span></a>
                             </li>
                         </ul>
                     </li>
@@ -122,7 +125,7 @@
     {% if user.is_authenticated %}
     <div class="row row-cols-1 row-cols-md-3 g-4">
         <div class="col">
-    <div class="card pmd-card text-center shadow custom-card" data-url="{% url 'login:auth_home' %}">
+    <div class="card pmd-card text-center shadow custom-card" data-url="{% url 'login:user_list_files_new' %}">
         <div class="card-body">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Flat_exclamation_icon_-_blue.svg/512px-Flat_exclamation_icon_-_blue.svg.png" class="rounded-circle img-fluid mb-3" title="" alt="" width="100" height="100">
             <h2 class="card-title">New</h2>
@@ -132,7 +135,7 @@
     </div>
 </div>
 <div class="col">
-    <div class="card pmd-card text-center shadow custom-card" data-url="{% url 'login:logout' %}">
+    <div class="card pmd-card text-center shadow custom-card" data-url="{% url 'login:user_list_files_ip' %}">
         <div class="card-body">
             <img src="https://media.istockphoto.com/id/1133864494/vector/person-with-clock-icon-vector-thin-line-illustration-for-concepts-of-business-delivery-order.jpg?s=612x612&w=0&k=20&c=c180CVlo7SulUTNXjB1Qaz8Cwi6ewyXfLJ4TIH10u7I=" class="rounded-circle img-fluid mb-3" title="" alt="" width="100" height="100">
             <h2 class="card-title">In Progress</h2>
@@ -142,7 +145,7 @@
     </div>
 </div>
 <div class="col">
-    <div class="card pmd-card text-center shadow custom-card" data-url="{% url 'login:auth_home' %}">
+    <div class="card pmd-card text-center shadow custom-card" data-url="{% url 'login:user_list_files_resolved' %}">
         <div class="card-body">
             <img src="https://static-00.iconduck.com/assets.00/alert-success-icon-512x512-lslkjbep.png" class="rounded-circle img-fluid mb-3" title="" alt=""width="100" height="100">
             <h2 class="card-title">Resolved</h2>

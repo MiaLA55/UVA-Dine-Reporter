@@ -32,20 +32,17 @@
             background-color: #222d4b;
             color: white;
         }
-        body {
-    color: #222d4b; /* Set the color for all text */
-}
-
     </style>
 </head>
 
 <body>
-    <h1>{{ username }}'s Submitted Reports</h1>
+    <h1>{{ username }}'s Submitted Reports In Progress</h1>
     {% if file_data %}
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 {% for report in file_data %}
+                 {% if report.status == 'IN PROGRESS' %}
                 <div class="report-block">
                     <p><strong>Submission Time:</strong> {{ report.submission_time }}</p>
                     <p><strong>Status: </strong>
@@ -84,12 +81,13 @@
                         <button type="submit" class="btn btn-danger">Delete</button>
                     </form>
                 </div>
+                {% endif %}
                 {% endfor %}
             </div>
         </div>
     </div>
     {% else %}
-    <p>No reports submitted by this user.</p>
+    <p>You have no reports in progress.</p>
     {% endif %}
     <a href="{% url 'login:auth_home' %}" class="btn custom-btn">Return Home</a>
     <br>
