@@ -10,7 +10,13 @@
     {% bootstrap_javascript %}
     {% bootstrap_messages %}
     <style>
-        /* Add your custom CSS styles here */
+        body {
+            color: #222d4b; /* Set the color for all text */
+        }
+        .custom-btn {
+            background-color: #222d4b;
+            color: white;
+        }
     </style>
 </head>
 
@@ -67,8 +73,7 @@
     {% else %}
     <p>Cannot view the detail.</p>
     {% endif %}
-    <a href="{% url 'login:list_files' %}" class="btn btn-primary">Back to the list</a>
-    <a href="{% url 'login:auth_home' %}" class="btn btn-primary">Return Home</a>
+    <a href="{% url 'login:list_files' %}" class="btn custom-btn">Back to the list</a>
     <br>
     <br>
     <br>

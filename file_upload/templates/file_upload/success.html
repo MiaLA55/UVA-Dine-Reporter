@@ -7,12 +7,19 @@
         .success-text {
             color: green;
         }
+         body {
+            color: #222d4b; /* Set the color for all text */
+        }
+        .custom-btn {
+            background-color: #222d4b;
+            color: white;
+        }
     </style>
 </head>
 <body>
 <h1><span class="success-text">Report Submitted Successfully!</span></h1>
   <p>Thank you for submitting your report.</p>
-<a href="{% url 'login:auth_home' %}" class="btn btn-primary">Return Home</a>
+<a href="{% url 'login:auth_home' %}" class="btn custom-btn">Return Home</a>
 </body>
 </html>
 {% endblock %}
