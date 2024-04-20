@@ -43,52 +43,88 @@
             border: 5px solid #e87423; /* Orange border */
             border-radius: 1rem; /* Rounded corners */
         }
+        /* Default height for small devices */
+        #intro-example {
+            height: 400px;
+            position: relative;
+        }
+
+        /* Height for devices larger than 992px */
+        @media (min-width: 992px) {
+            #intro-example {
+                height: 600px;
+            }
+        }
+        .navbar1 {
+            border-top: 3px solid #e87423; /* Orange border on the top */
+        }
+
+        /* Adjust mask to cover only the background image */
+        .mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mask .text-white {
+            z-index: 1;
+        }
+
+
     </style>
 </head>
-<section class="bg-image"
-     style="background-image: url('https://harvesttableuva.com/wp-content/uploads/2020/12/20201103_161130030_iOS-scaled-2100x900-c-default.jpg');
-            height: 50vh;">
 
-</section>
 
 <body>
-<div class="container py-5 h-100">
-    <div class="row justify-content-between">
-        <div class="col-md-4 mb-4">
-            <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="{% static 'login/carddine.jpg' %}" alt="UVA Dine">
-                <div class="card-body">
-                    <h5 class="card-title">UVA Dine</h5>
-                    <p class="card-text">Visit the UVA Dine site to see UVA's dining locations, menus, and hours of operation.</p>
-                    <a href="https://virginia.campusdish.com/en/locationsandmenus/" class="btn custom-btn">Visit</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="{% static 'login/cardmap.png' %}" alt="Map">
-                <div class="card-body">
-                    <h5 class="card-title">Dining Locations</h5>
-                    <p class="card-text">Find the perfect dining hall location for you on grounds.</p>
-                    <br>
-                    <a href="https://virginia.campusdish.com/-/media/Local/Higher-Education/GroupC/Virginia/Images/UVA-Map.ashx" class="btn custom-btn">Visit</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4 mb-4">
-            <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="{% static 'login/events.jpg' %}" alt="Events">
-                <div class="card-body">
-                    <h5 class="card-title">Events</h5>
-                    <p class="card-text">Take a look at upcoming dining hall events and their locations.</p>
-                    <br>
-
-                    <a href="https://virginia.campusdish.com/Events" class="btn custom-btn">Visit</a>
-                </div>
-            </div>
-        </div>
+<nav class="navbar1 navbar-expand-lg navbar-light bg-white">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-mdb-collapse-init
+        data-mdb-target="#navbarExample01" aria-controls="navbarExample01" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <i class="fas fa-bars"></i>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarExample01">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item active">
+            <a class="nav-link" aria-current="page" href="https://virginia.campusdish.com/en/locationsandmenus/">UVA Dine</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://virginia.campusdish.com/-/media/Local/Higher-Education/GroupC/Virginia/Images/UVA-Map.ashx">Map of Dining Locations</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://virginia.campusdish.com/Events">UVA Dine Events</a>
+          </li>
+        </ul>
+      </div>
     </div>
-</div>
+  </nav>
+  <!-- Navbar -->
+
+  <!-- Background image -->
+  <div id="intro-example" class="p-5 text-center bg-image"
+    style="background-image: url('https://harvesttableuva.com/wp-content/uploads/2020/12/20201103_161130030_iOS-scaled-2100x900-c-default.jpg');">
+    <div class="mask" style="background-color: rgba(0, 0, 0, 0.7);">
+      <div class="d-flex justify-content-center align-items-center h-100">
+        <div class="text-white">
+          <h1 class="mb-3">UVA Dine Reporter</h1>
+          <h5 class="mb-4">
+            Report. Share. Improve: Together, We Raise Dining Standards.
+          </h5>
+          <a data-mdb-ripple-init class="btn btn-outline-light btn-lg m-2" href="{% url 'account_login' %}"
+            role="button" >Login</a>
+          <a data-mdb-ripple-init class="btn btn-outline-light btn-lg m-2" href="{% url 'login:auth_home' %}"
+            role="button">Report Anonymously</a>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </body>
+
 {% endblock %}
