@@ -13,24 +13,18 @@
             border-bottom: 3px solid #e87423; /* Orange border on the top */
         }
 
+
+
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light custom-navbar">
-        <div class="container-fluid">
-            <div class="row w-100">
-                <div class="col-6">
-                        <img src="{% static 'login/uvadinereporter.png' %}" alt="UVADine" style="width: 50%; height: auto;">
-                </div>
-            </div>
-        </div>
-    </nav>
 
 
+    <div class="container mt-4">
         {% block content %}
         {% endblock %}
-
+    </div>
     <footer class="footer fixed-bottom bg-light navbar-light text-center">
         <div class="container">
             <span class="text-muted">This system is a class project, the system is not monitored, and no real
