@@ -49,12 +49,12 @@ class FileUploadTest(TestCase):
         # test downloading
         s3.download_file(AWS_STORAGE_BUCKET_NAME, "test.pdf", "test_passed.pdf")
 
-        s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key="test.txt")
+        s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key="test.pdf")  # Corrected key
 
         # Assertions for successful download
         self.assertTrue(os.path.isfile("test_passed.pdf"), "Downloaded file not found")
 
-        # delete ./test_passed.txt for future
+        # delete ./test_passed.pdf for future
         if os.path.isfile("test_passed.pdf"):
             os.remove("test_passed.pdf")
 
@@ -69,15 +69,14 @@ class FileUploadTest(TestCase):
         # test downloading
         s3.download_file(AWS_STORAGE_BUCKET_NAME, "test.jpg", "test_passed.jpg")
 
-        s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key="test.txt")
+        s3.delete_object(Bucket=AWS_STORAGE_BUCKET_NAME, Key="test.jpg")  # Corrected key
 
         # Assertions for successful download
         self.assertTrue(os.path.isfile("test_passed.jpg"), "Downloaded file not found")
 
-        # delete ./test_passed.txt for future
+        # delete ./test_passed.jpg for future
         if os.path.isfile("test_passed.jpg"):
             os.remove("test_passed.jpg")
-
 class ReportModelTest(TestCase):
     def setUp(self):
         self.test_user = User.objects.create(username="test_user", password="password")
