@@ -3,6 +3,9 @@
 *  Title: Bootstrap 5 Sidebar Examples
 *  Author: DEV Community, Carol Skelly
 *  URL: https://dev.to/codeply/bootstrap-5-sidebar-examples-38pb
+*
+*  Source: ChatGPT
+*  Use: Making cards clickable
 ***************************************************************************************/ -->
 {% extends 'login/basehome.html' %}
 {% load socialaccount %}
@@ -125,14 +128,24 @@
         {% endif %}
     </p>
     {% if user.is_authenticated %}
-    <div class="row row-cols-1 row-cols-md-3 g-4">
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        <div class="col">
+    <div class="card pmd-card text-center shadow custom-card" data-url="{% url 'login:user_reports' %}">
+        <div class="card-body">
+            <img src="https://static.thenounproject.com/png/1131400-200.png" class="rounded-circle img-fluid mb-3" title="" alt=""width="100" height="100">
+            <h2 class="card-title">All Reports</h2>
+            <p class="card-subtitle mb-3">Reports</p>
+            <p class="card-text">Review all of your reports, in the system</p>
+        </div>
+    </div>
+</div>
         <div class="col">
     <div class="card pmd-card text-center shadow custom-card" data-url="{% url 'login:user_list_files_new' %}">
         <div class="card-body">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Flat_exclamation_icon_-_blue.svg/512px-Flat_exclamation_icon_-_blue.svg.png" class="rounded-circle img-fluid mb-3" title="" alt="" width="100" height="100">
             <h2 class="card-title">New</h2>
             <p class="card-subtitle mb-3">Reports</p>
-            <p class="card-text">View your newest reports. These reports are actively being evaluated and scrutinized by our administration, aiming to provide accurate assessments and actionable resolutions.</p>
+            <p class="card-text">View your newest reports waiting to be viewed by admin</p>
         </div>
     </div>
 </div>
@@ -142,7 +155,7 @@
             <img src="https://media.istockphoto.com/id/1133864494/vector/person-with-clock-icon-vector-thin-line-illustration-for-concepts-of-business-delivery-order.jpg?s=612x612&w=0&k=20&c=c180CVlo7SulUTNXjB1Qaz8Cwi6ewyXfLJ4TIH10u7I=" class="rounded-circle img-fluid mb-3" title="" alt="" width="100" height="100">
             <h2 class="card-title">In Progress</h2>
             <p class="card-subtitle mb-3">Reports</p>
-            <p class="card-text">Explore reports currently in progress, undergoing thorough evaluation and scrutiny by our administration. Our aim is to offer precise assessments and actionable resolutions.</p>
+            <p class="card-text">Explore reports currently in progress, undergoing evaluation</p>
         </div>
     </div>
 </div>
@@ -152,11 +165,10 @@
             <img src="https://static-00.iconduck.com/assets.00/alert-success-icon-512x512-lslkjbep.png" class="rounded-circle img-fluid mb-3" title="" alt=""width="100" height="100">
             <h2 class="card-title">Resolved</h2>
             <p class="card-subtitle mb-3">Reports</p>
-            <p class="card-text">Review your resolved reports, where comprehensive evaluations have been carried out, resulting in precise assessments and actionable resolutions.</p>
+            <p class="card-text">See your reports resolved by admin with notes and courses of action</p>
         </div>
     </div>
 </div>
-
     </div>
 </div>
         {% else %}
@@ -164,5 +176,5 @@
 {% endif %}
 
 </div><!--Main layout-->
-    </body>
+</body>
 {% endblock %}
