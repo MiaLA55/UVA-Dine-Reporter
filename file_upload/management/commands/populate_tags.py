@@ -8,7 +8,10 @@ class Command(BaseCommand):
         tags_data = [
             {'name': 'Allergens, Other Special Dietary Needs'},
             {'name': 'Cleanliness'},
-            {'name': 'Quality of Ingredients'},
+            {'name': 'Food Quality'},
+            {'name': 'Inconsistent Menu Online'},
+            {'name': 'Item Out of Stock'},
+            {'name': 'Poor Portion Sizes'},
             {'name': 'Service'},
             {'name': 'Spoiled Food'},
             {'name': 'Taste'},
