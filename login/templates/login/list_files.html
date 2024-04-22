@@ -57,9 +57,12 @@
             background-color: #e9e9e9;
             /* Slightly change background color */
         }
+
         body {
-            color: #222d4b; /* Set the color for all text */
+            color: #222d4b;
+            /* Set the color for all text */
         }
+
         .custom-btn {
             background-color: #222d4b;
             color: white;
@@ -70,7 +73,7 @@
 <body>
     <h1>List of Submitted Reports</h1>
     {% if file_data %}
-        <p>Please click on an entry to view an individual report and its contents</p>
+    <p>Please click on an entry to view an individual report and its contents</p>
     {% endif %}
     {% if file_data %}
     <div class="container mt-5">
@@ -78,18 +81,21 @@
             <thead>
                 <tr>
                     <th>Status</th>
-                    <th>Date Time</th>
-                    <th>ID</th>
+                    <th>Submission Time</th>
                     <th>Report Explanation</th>
+                    <th>Location</th>
+                    <th>ID</th>
                 </tr>
             </thead>
             <tbody>
                 {% for report in file_data %}
-                <tr class="clickable-row" data-url="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}">
+                <tr class="clickable-row"
+                    data-url="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}">
                     <td>{{ report.status }}</td>
                     <td>{{ report.submission_time }}</td>
-                    <td>{{ report.id }}</td>
                     <td>{{ report.report_explanation }}</td>
+                    <td>{{ report.location }}</td>
+                    <td>{{ report.id }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
