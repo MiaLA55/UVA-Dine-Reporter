@@ -119,8 +119,7 @@ def upload_file(request):
             )
             report.tags.add(*selected_tags)
             return render(request, template_name="file_upload/success.html")
-
-        if request.POST.get("explanation") and not request.FILES.get("file"):
+        elif request.POST.get("explanation"):
             username = request.POST.get("username")
             report_explanation = request.POST.get("explanation")
             selected_tags = request.POST.getlist("tags")
