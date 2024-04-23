@@ -120,7 +120,7 @@ def upload_file(request):
             report.tags.add(*selected_tags)
             return render(request, template_name="file_upload/success.html")
 
-        if request.POST.get("explanation"):
+        if request.POST.get("explanation") and not request.FILES.get("file"):
             username = request.POST.get("username")
             report_explanation = request.POST.get("explanation")
             selected_tags = request.POST.getlist("tags")
@@ -128,7 +128,6 @@ def upload_file(request):
             report = Report.objects.create(
                 attached_user=username,
                 explanation=report_explanation,
-                filenames=uploaded_file.name,
                 location=location,
             )
             report.tags.add(*selected_tags)
