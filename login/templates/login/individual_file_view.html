@@ -11,8 +11,10 @@
     {% bootstrap_messages %}
     <style>
         body {
-            color: #222d4b; /* Set the color for all text */
+            color: #222d4b;
+            /* Set the color for all text */
         }
+
         .custom-btn {
             background-color: #222d4b;
             color: white;
@@ -21,7 +23,7 @@
 </head>
 
 <body>
-    <h1>File Details</h1>
+    <h1>Report Details</h1>
     {% if report %}
     <div class="container mt-5">
         <div class="row justify-content-center">
@@ -29,6 +31,9 @@
                 <div class="text-center">
                     <div class="custom-card">
                         <p><strong>Status: </strong>{{ report.status }}</p>
+                        <p><strong>Location:</strong>
+                            {{ report.location }}</p>
+
                         <strong>Report Explanation:</strong>
                         <p
                             class="card-text {% if report.explanation == 'No report explanation provided' %} custom-text-color {% endif %}">

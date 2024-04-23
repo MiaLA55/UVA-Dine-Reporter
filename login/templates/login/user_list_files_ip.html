@@ -28,13 +28,17 @@
         .custom-text-color {
             color: rgb(159, 159, 159);
         }
-         .custom-btn {
+
+        .custom-btn {
             background-color: #222d4b;
             color: white;
         }
+
         body {
-            color: #222d4b; /* Set the color for all text */
+            color: #222d4b;
+            /* Set the color for all text */
         }
+
         .custom-btn {
             background-color: #222d4b;
             color: white;
@@ -49,39 +53,45 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 {% for report in file_data %}
-                 {% if report.status == 'IN PROGRESS' %}
+                {% if report.status == 'IN PROGRESS' %}
                 <div class="report-block">
                     <p><strong>Submission Time:</strong> {{ report.submission_time }}</p>
                     <p><strong>Status: </strong>
                         {{ report.status }}
                     </p>
+
+                    <p><strong>Location:</strong>
+                        {{ report.location }}</p>
+
+
+                    {% if report.tags.exists %}
+                    <p><strong>Tags:</strong></p>
+                    <ul>
+                        {% for tag in report.tags.all %}
+                        <li>{{ tag.name }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p>No tags associated with this report.</p>
+                    {% endif %}
+
+                    <p><strong>File:</strong></p>
+                    {% if report.file_name %}
+                    <a href="{% url 'login:file_detail' report.file_name %}" class="file-link">{{ report.file_name
+                        }}</a>
+                    {% else %}
+                    <p>None</p>
+                    {% endif %}
+
                     <p
                         class="card-text {% if report_explanation == 'No report explanation provided' %} custom-text-color {% endif %}">
                         <strong>Report Explanation:</strong> {{ report.report_explanation }}
                     </p>
-                    <p><strong>File:</strong></p>
-                            {% if report.file_name %}
-                                <a href="{% url 'login:file_detail' report.file_name %}" class="file-link">{{ report.file_name }}</a>
-                            {% else %}
-                                <p>None</p>
-                            {% endif %}
-
 
                     <p
                         class="card-text {% if report_resolve_notes == 'No report resolve notes provided' %} custom-text-color {% endif %}">
                         <strong>Report Resolve Notes:</strong> {{ report.report_resolve_notes }}
                     </p>
-
-                    {% if report.tags.exists %}
-                        <p><strong>Tags:</strong></p>
-                        <ul>
-                            {% for tag in report.tags.all %}
-                                <li>{{ tag.name }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p>No tags associated with this report.</p>
-                    {% endif %}
 
                     <form method="post" action="{% url 'login:delete_report' report.id %}">
                         {% csrf_token %}

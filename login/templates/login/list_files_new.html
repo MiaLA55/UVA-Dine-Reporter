@@ -52,7 +52,8 @@
         .btn-light:hover {
             background-color: #f2f2f2;
         }
-         .custom-btn {
+
+        .custom-btn {
             background-color: #222d4b;
             color: white;
         }
@@ -88,14 +89,18 @@
             background-color: #e9e9e9;
             /* Slightly change background color */
         }
+
         body {
-            color: #222d4b; /* Set the color for all text */
+            color: #222d4b;
+            /* Set the color for all text */
         }
+
         .custom-btn {
             background-color: #222d4b;
             color: white;
         }
-                table {
+
+        table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
@@ -116,14 +121,13 @@
         tr:hover {
             background-color: #f2f2f2;
         }
-
     </style>
 </head>
 
 <body>
     <h1>List of New Submitted Reports</h1>
-       {% if file_data %}
-        <p>Please click on an entry to view an individual report and its contents</p>
+    {% if file_data %}
+    <p>Please click on an entry to view an individual report and its contents</p>
     {% endif %}
     {% if file_data %}
     <div class="container mt-5">
@@ -131,18 +135,21 @@
             <thead>
                 <tr>
                     <th>Status</th>
-                    <th>Date Time</th>
-                    <th>ID</th>
+                    <th>Submission Time</th>
                     <th>Report Explanation</th>
+                    <th>Location</th>
+                    <th>ID</th>
                 </tr>
             </thead>
             <tbody>
                 {% for report in file_data %}
-                <tr class="clickable-row" data-url="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}">
+                <tr class="clickable-row"
+                    data-url="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}">
                     <td>{{ report.status }}</td>
                     <td>{{ report.submission_time }}</td>
-                    <td>{{ report.id }}</td>
                     <td>{{ report.report_explanation }}</td>
+                    <td>{{ report.location }}</td>
+                    <td>{{ report.id }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -158,7 +165,7 @@
     <br>
     <br>
     <br>
- <script>
+    <script>
         document.addEventListener('DOMContentLoaded', function () {
             const rows = document.querySelectorAll('.clickable-row');
             rows.forEach(function (row) {
