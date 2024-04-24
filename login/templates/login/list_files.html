@@ -121,6 +121,7 @@
         <div class="mb-3">
             <label for="sort-select" class="form-label">Sort by:</label>
             <select class="form-select" id="sort-select">
+                <option value="" selected></option>
                 <option value="status">Status</option>
                 <option value="submission_time">Submission Time (Earliest → Latest)</option>
                 <option value="location">Location (A-Z)</option>
@@ -169,6 +170,7 @@
     <br><br><br><br>
 
     <script>
+
         document.addEventListener('DOMContentLoaded', function () {
             const rows = document.querySelectorAll('.clickable-row');
             rows.forEach(function (row) {
@@ -179,6 +181,7 @@
                     }
                 });
             });
+
 
             document.getElementById('sort-select').addEventListener('change', function () {
                 const selectedValue = this.value;
