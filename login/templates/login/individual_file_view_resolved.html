@@ -91,6 +91,7 @@
                     </p>
                     {% else %}
                     <p><strong>Tags:</strong> <span class="text-muted">None</span></p>
+                    {% endif %}
                     <p><strong>Location:</strong> {{ report.location }}</p>
                     <p><strong>ID:</strong> {{ report.id }}</p>
                     <strong>Report Explanation:</strong>
@@ -120,7 +121,7 @@
                         <span class="text-muted">No report resolve notes provided</span>
                         {% endif %}
                     </p>
-                    <a href="{% url 'login:list_files' %}" class="btn custom-btn">Back to the List</a>
+                    <a href="{% url 'login:list_files_resolved' %}" class="btn custom-btn">Back to the List</a>
                     {% else %}
                     <form id="file-upload-form" method="post" enctype="multipart/form-data"
                           action="{% url 'login:resolve_report_submit' report.id%}">

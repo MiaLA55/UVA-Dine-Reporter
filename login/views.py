@@ -123,30 +123,45 @@ def upload_file(request):
 
             s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
 
-            selected_tags = request.POST.getlist("tags")
+            # Get the comma-separated string of tag IDs
+            selected_tags_str = request.POST.get("tags", "")
 
+            # Convert the comma-separated string to a list of integers
+            selected_tags_ids = [int(tag_id) for tag_id in selected_tags_str.split(",") if tag_id.isdigit()]
+
+            # Create the report object
             report = Report.objects.create(
                 attached_user=username,
                 explanation=report_explanation,
                 filenames=uploaded_file.name,
                 location=location,
             )
-            report.tags.add(*selected_tags)
+
+            # Add the selected tags to the report
+            report.tags.add(*selected_tags_ids)
+
             return render(request, template_name="file_upload/success.html")
         elif request.POST.get("explanation"):
             username = request.POST.get("username")
             report_explanation = request.POST.get("explanation")
-            selected_tags = request.POST.getlist("tags")
+
+            # Get the comma-separated string of tag IDs
+            selected_tags_str = request.POST.get("tags", "")
+
+            # Convert the comma-separated string to a list of integers
+            selected_tags_ids = [int(tag_id) for tag_id in selected_tags_str.split(",") if tag_id.isdigit()]
+
             location = request.POST.get("location")
             report = Report.objects.create(
                 attached_user=username,
                 explanation=report_explanation,
                 location=location,
             )
-            report.tags.add(*selected_tags)
+            report.tags.add(*selected_tags_ids)
             return render(request, template_name="file_upload/success.html")
 
     return HttpResponse("Nothing uploaded.")
+
 
 
 def check_existing_filename(s3_client, bucket_name, file_name):
