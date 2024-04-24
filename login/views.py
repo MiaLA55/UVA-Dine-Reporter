@@ -1,17 +1,17 @@
 import os
-
-from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
 from file_upload.models import Report, Tag
 from django.urls import reverse
 import boto3
+from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
+
 from django.utils import timezone
 from datetime import datetime
 
@@ -20,6 +20,21 @@ AWS_ACCESS_KEY_ID = "AKIAU6GD2ERXH4XMKEH5"
 AWS_SECRET_ACCESS_KEY = "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"
 AWS_STORAGE_BUCKET_NAME = "dininghallapp"
 
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            # Redirect to a success page or perform any other actions
+            return redirect('success_url')
+        else:
+            # If authentication fails, display an error message
+            messages.error(request, 'Invalid username or password.')
+    # If the request method is GET or authentication fails, render the login form
+    return render(request, 'login.html')
 
 def auth_home(request):
     if request.user.is_authenticated:
