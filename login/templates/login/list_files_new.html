@@ -1,3 +1,7 @@
+<!-- /***************************************************************************************
+*  Source: ChatGPT
+*  Use: Sorting tables feature
+***************************************************************************************/ -->
 {% extends 'login/base.html' %}
 {% block content %}
 
@@ -131,6 +135,14 @@
     {% endif %}
     {% if file_data %}
     <div class="container mt-5">
+        <div class="mb-3">
+            <label for="sort-select" class="form-label">Sort by:</label>
+            <select class="form-select" id="sort-select">
+                <option value="submission_time">Submission Time (Earliest → Latest)</option>
+                <option value="location">Location (A-Z)</option>
+                <option value="id">Report ID</option>
+            </select>
+        </div>
         <table>
             <thead>
                 <tr>
@@ -146,7 +158,7 @@
                 <tr class="clickable-row"
                     data-url="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}">
                     <td>{{ report.status }}</td>
-                    <td>{{ report.submission_time }}</td>
+                    <td>{{ report.submission_time|date:"Y-m-dTH:i:s" }}</td>
                     <td>{{ report.report_explanation }}</td>
                     <td>{{ report.location }}</td>
                     <td>{{ report.id }}</td>
@@ -176,6 +188,46 @@
                     }
                 });
             });
+
+            document.getElementById('sort-select').addEventListener('change', function () {
+                const selectedValue = this.value;
+                sortTable(selectedValue);
+            });
+
+            const sortTable = (sortBy) => {
+                const table = document.querySelector('table');
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+
+                rows.sort((a, b) => {
+                    const cellA = a.querySelector(`td:nth-child(${getSortIndex(sortBy)})`).innerText;
+                    const cellB = b.querySelector(`td:nth-child(${getSortIndex(sortBy)})`).innerText;
+
+                    if (sortBy === 'location') {
+                        return cellA.localeCompare(cellB);
+                   }else if (sortBy === 'submission_time') {
+                        return new Date(cellA).getTime() - new Date(cellB).getTime();
+                    }else if (sortBy === 'id') {
+                        return parseInt(cellA) - parseInt(cellB);
+                    }
+                });
+
+                tbody.innerHTML = '';
+                rows.forEach(row => tbody.appendChild(row));
+            };
+
+            const getSortIndex = (sortBy) => {
+                switch (sortBy) {
+                    case 'submission_time':
+                        return 2;
+                    case 'report_explanation':
+                        return 3;
+                    case 'location':
+                        return 4;
+                    case 'id':
+                        return 5;
+                }
+            };
         });
     </script>
 </body>
