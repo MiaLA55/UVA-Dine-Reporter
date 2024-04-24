@@ -493,6 +493,51 @@ def individual_file_view(request, report_id):
     # Render the individual file view template with the context
     return render(request, "login/individual_file_view.html", context)
 
+def individual_file_view_new(request, report_id):
+    # Retrieve the corresponding report from the database
+    report = get_object_or_404(Report, pk=report_id)
+    if report.status != "RESOLVED":
+        report.status = "IN PROGRESS"
+        report.save()
+
+    # Prepare the context with the details of the specific report
+    context = {
+        "report": report,
+    }
+
+    # Render the individual file view template with the context
+    return render(request, "login/individual_file_view_new.html", context)
+
+def individual_file_view_ip(request, report_id):
+    # Retrieve the corresponding report from the database
+    report = get_object_or_404(Report, pk=report_id)
+    if report.status != "RESOLVED":
+        report.status = "IN PROGRESS"
+        report.save()
+
+    # Prepare the context with the details of the specific report
+    context = {
+        "report": report,
+    }
+
+    # Render the individual file view template with the context
+    return render(request, "login/individual_file_view_ip.html", context)
+
+
+def individual_file_view_resolved(request, report_id):
+    # Retrieve the corresponding report from the database
+    report = get_object_or_404(Report, pk=report_id)
+    if report.status != "RESOLVED":
+        report.status = "IN PROGRESS"
+        report.save()
+
+    # Prepare the context with the details of the specific report
+    context = {
+        "report": report,
+    }
+
+    # Render the individual file view template with the context
+    return render(request, "login/individual_file_view_resolved.html", context)
 
 def delete_report(request, report_id):
     if request.user.is_authenticated:

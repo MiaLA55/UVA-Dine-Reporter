@@ -131,7 +131,7 @@
                             </div>
                             <input type="hidden" name="file_name" value="{{ report.filenames }}">
                             <br>
-                            <a href="{% url 'login:list_files' %}" class="btn custom-btn">Back to the List</a>
+                            <a href="{% url 'login:list_files_resolved' %}" class="btn custom-btn">Back to the List</a>
                             <button type="submit" class="btn btn-primary">Resolve Report</button>
                         </form>
                     {% endif %}

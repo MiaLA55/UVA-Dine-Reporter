@@ -172,7 +172,7 @@
             <tbody>
                 {% for report in file_data %}
                 <tr class="clickable-row"
-                    data-url="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}">
+                    data-url="{% if report.id %}{% url 'login:individual_file_view_new' report.id %}{% endif %}">
                      <td>
                         <span class="status-label status-new">New</span>
                     </td>
