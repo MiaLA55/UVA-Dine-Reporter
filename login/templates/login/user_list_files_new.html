@@ -38,6 +38,21 @@
             color: #222d4b;
             /* Set the color for all text */
         }
+        .status-label {
+            display: inline-block;
+            padding: 0.25em 0.5em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+        }
+        .status-new {
+            color: #004085;
+            background-color: #cce5ff;
+        }
     </style>
 </head>
 
@@ -52,7 +67,7 @@
                 <div class="report-block">
                     <p><strong>Submission Time:</strong> {{ report.submission_time }}</p>
                     <p><strong>Status: </strong>
-                        {{ report.status }}
+                         <span class="status-label status-new">{{ report.status|title }}</span>
                     </p>
 
                     <p><strong>Location:</strong>

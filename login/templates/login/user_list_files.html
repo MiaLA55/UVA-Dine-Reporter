@@ -38,6 +38,31 @@
             color: #222d4b;
             /* Set the color for all text */
         }
+         .status-resolved {
+            color: #155724;
+            background-color: #d4edda;
+        }
+
+        .status-in-progress {
+             color: #856404;
+            background-color: #ffeeba;
+        }
+
+        .status-new {
+            color: #004085;
+            background-color: #cce5ff;
+        }
+        .status-label {
+            display: inline-block;
+            padding: 0.25em 0.5em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+        }
     </style>
 </head>
 
@@ -51,7 +76,13 @@
                 <div class="report-block">
                     <p><strong>Submission Time:</strong> {{ report.submission_time }}</p>
                     <p><strong>Status: </strong>
-                        {{ report.status }}
+                        {% if report.status == 'RESOLVED' %}
+                                <span class="status-label status-resolved">Resolved</span>
+                            {% elif report.status == 'IN PROGRESS' %}
+                                <span class="status-label status-in-progress">In Progress</span>
+                            {% else %}
+                                <span class="status-label status-new">New</span>
+                            {% endif %}
                     </p>
 
                     <p><strong>Location:</strong>
