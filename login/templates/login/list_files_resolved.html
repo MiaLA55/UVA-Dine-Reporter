@@ -125,6 +125,21 @@
         tr:hover {
             background-color: #f2f2f2;
         }
+        .status-resolved {
+            color: #155724;
+            background-color: #d4edda;
+        }
+        .status-label {
+            display: inline-block;
+            padding: 0.25em 0.5em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+        }
     </style>
 </head>
 
@@ -157,7 +172,9 @@
                 {% for report in file_data %}
                 <tr class="clickable-row"
                     data-url="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}">
-                    <td>{{ report.status }}</td>
+                    <td>
+                        <span class="status-label status-resolved">Resolved</span>
+                    </td>
                     <td>{{ report.submission_time|date:"Y-m-dTH:i:s" }}</td>
                     <td>{{ report.report_explanation }}</td>
                     <td>{{ report.location }}</td>

@@ -83,6 +83,31 @@
         .sort-desc::after {
             content: '▼';
         }
+         .status-resolved {
+            color: #155724;
+            background-color: #d4edda;
+        }
+
+        .status-in-progress {
+             color: #856404;
+            background-color: #ffeeba;
+        }
+
+        .status-new {
+            color: #004085;
+            background-color: #cce5ff;
+        }
+        .status-label {
+            display: inline-block;
+            padding: 0.25em 0.5em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+        }
     </style>
 </head>
 
@@ -117,7 +142,15 @@
                 {% for report in file_data %}
                 <tr class="clickable-row"
                     data-url="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}">
-                    <td>{{ report.status }}</td>
+                    <td>
+                        {% if report.status == 'RESOLVED' %}
+                            <span class="status-label status-resolved">{{ report.status|title }}</span>
+                        {% elif report.status == 'IN PROGRESS' %}
+                            <span class="status-label status-in-progress">{{ report.status|title }}</span>
+                        {% else %}
+                            <span class="status-label status-new">{{ report.status|title }}</span>
+                        {% endif %}
+                    </td>
                     <td>{{ report.submission_time|date:"Y-m-dTH:i:s" }}</td>
                     <td>{{ report.report_explanation }}</td>
                     <td>{{ report.location }}</td>
@@ -164,7 +197,7 @@
                     if (sortBy === 'location') {
                         return cellA.localeCompare(cellB);
                     } else if (sortBy == 'status') {
-                        const order = { 'NEW': 1, 'IN PROGRESS': 2, 'RESOLVED': 3 };
+                        const order = { 'New': 1, 'In Progress': 2, 'Resolved': 3 };
                         return order[cellA] - order[cellB];
                     }else if (sortBy === 'submission_time') {
                         return new Date(cellA).getTime() - new Date(cellB).getTime();

@@ -18,6 +18,33 @@
             background-color: #222d4b;
             color: white;
         }
+
+        .status-label {
+            display: inline-block;
+            padding: 0.25em 0.5em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+        }
+
+        .status-resolved {
+            color: #155724;
+            background-color: #d4edda;
+        }
+
+        .status-in-progress {
+             color: #856404;
+            background-color: #ffeeba;
+        }
+
+        .status-new {
+            color: #004085;
+            background-color: #cce5ff;
+        }
     </style>
 </head>
 
@@ -29,7 +56,15 @@
                 {% if report %}
                 <div class="custom-card">
                     <div class="card-body">
-                        <p><strong>Status: </strong>{{ report.status }}</p>
+                        <p><strong>Status: </strong>
+                            {% if report.status == 'RESOLVED' %}
+                                <span class="status-label status-resolved">Resolved</span>
+                            {% elif report.status == 'IN PROGRESS' %}
+                                <span class="status-label status-in-progress">In Progress</span>
+                            {% else %}
+                                <span class="status-label status-new">New</span>
+                            {% endif %}
+                        </p>
                         <p><strong>Location:</strong> {{ report.location }}</p>
                         <strong>Report Explanation:</strong>
                         <p>
@@ -70,7 +105,6 @@
                                 <br>
                                 <a href="{% url 'login:list_files' %}" class="btn custom-btn">Back to the List</a>
                                 <button type="submit" class="btn btn-primary">Resolve Report</button>
-
                             </form>
                         {% endif %}
                     </div>
@@ -78,7 +112,6 @@
                 {% else %}
                 <p class="text-muted">Cannot view the detail.</p>
                 {% endif %}
-
             </div>
         </div>
     </div>
