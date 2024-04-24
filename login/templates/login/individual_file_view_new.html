@@ -81,8 +81,7 @@
                             <span class="status-label status-new">New</span>
                         {% endif %}
                     </p>
-                    <p><strong>Location:</strong> {{ report.location }}</p>
-                    {% if report.tags.exists %}
+                     {% if report.tags.exists %}
                         <p><strong>Tags:</strong>
 
                             {% for tag in report.tags.all %}
@@ -91,8 +90,8 @@
                        </p>
                     {% else %}
                         <p><strong>Tags:</strong> <span class="text-muted">None</span></p>
+                    <p><strong>Location:</strong> {{ report.location }}</p>
 
-                    {% endif %}
                     <p><strong>ID:</strong> {{ report.id }}</p>
                     <strong>Report Explanation:</strong>
                     <p>

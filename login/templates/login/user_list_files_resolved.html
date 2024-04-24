@@ -53,6 +53,22 @@
             color: #155724;
             background-color: #d4edda;
         }
+        .custom-tag {
+            display: inline-block;
+            padding: 0.25em 0.5em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+            color: #222d4b;
+            background-color: white;
+            border-radius: 0.25rem;
+            border: 1px solid #222d4b;
+        }
+
     </style>
 </head>
 
@@ -70,20 +86,21 @@
                         <span class="status-label status-resolved">Resolved</span>
                     </p>
 
+
+                   {% if report.tags.exists %}
+                        <p><strong>Tags:</strong>
+
+                            {% for tag in report.tags.all %}
+                            <span class="custom-tag">{{ tag.name }}</span>
+                            {% endfor %}
+                       </p>
+                    {% else %}
+                        <p><strong>Tags:</strong> <span class="text-muted">None</span></p>
+                     {% endif %}
+
                     <p><strong>Location:</strong>
                         {{ report.location }}</p>
 
-
-                    {% if report.tags.exists %}
-                    <p><strong>Tags:</strong></p>
-                    <ul>
-                        {% for tag in report.tags.all %}
-                        <li>{{ tag.name }}</li>
-                        {% endfor %}
-                    </ul>
-                    {% else %}
-                    <p>No tags associated with this report.</p>
-                    {% endif %}
 
                     <p><strong>File:</strong></p>
                     {% if report.file_name %}
