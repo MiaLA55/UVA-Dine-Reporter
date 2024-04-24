@@ -29,3 +29,4 @@ class Report(models.Model):
     submission_time = models.DateTimeField(default=timezone.now)
     id = models.AutoField(primary_key=True)
     location = models.TextField(blank=True, null=True)
+    rating = models.IntegerField(null=True, blank=True, default=1)

@@ -114,6 +114,7 @@ def upload_file(request):
             uploaded_file = request.FILES["file"]
             file_name = uploaded_file.name
             location = request.POST.get("location")
+            rating = request.POST.get("rating")
             accepted_extensions = ["txt", "pdf", "jpg"]
             file_extension = file_name.split(".")[-1]
             if file_extension not in accepted_extensions:
@@ -135,6 +136,7 @@ def upload_file(request):
                 explanation=report_explanation,
                 filenames=uploaded_file.name,
                 location=location,
+                rating=rating,
             )
 
             # Add the selected tags to the report
@@ -152,10 +154,12 @@ def upload_file(request):
             selected_tags_ids = [int(tag_id) for tag_id in selected_tags_str.split(",") if tag_id.isdigit()]
 
             location = request.POST.get("location")
+            rating = request.POST.get("rating")
             report = Report.objects.create(
                 attached_user=username,
                 explanation=report_explanation,
                 location=location,
+                rating=rating,
             )
             report.tags.add(*selected_tags_ids)
             return render(request, template_name="file_upload/success.html")
@@ -341,6 +345,7 @@ def list_specific_user_files(request):
                     "id": report.id,
                     "tags": report.tags.all(),
                     "location": report.location,
+                    "rating": report.rating,
                 }
             )
 
@@ -375,6 +380,7 @@ def user_list_files_new(request):
                     "id": report.id,
                     "tags": report.tags.all(),
                     "location": report.location,
+                    "rating": report.rating,
                 }
             )
 
@@ -411,6 +417,7 @@ def user_list_files_ip(request):
                     "id": report.id,
                     "tags": report.tags.all(),
                     "location": report.location,
+                    "rating": report.rating,
                 }
             )
 
@@ -447,6 +454,7 @@ def user_list_files_resolved(request):
                     "id": report.id,
                     "tags": report.tags.all(),
                     "location": report.location,
+                    "rating": report.rating,
                 }
             )
 

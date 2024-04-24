@@ -85,7 +85,7 @@
                 {% else %}
                 <p>No tags associated with this report.</p>
                 {% endif %}
-
+                 <p><strong>Rating: </strong>{{ report.rating }}</p>
                 <p><strong>File:</strong></p>
                 {% if report.file_name %}
                 <a href="{% url 'login:file_detail' report.file_name %}" class="file-link">
