@@ -49,6 +49,7 @@
         right: 15px;
         transform: translateY(-50%);
     }
+
 </style>
 
 <head>
@@ -77,95 +78,97 @@
             color: #222d4b;
             /* Set the color for all text */
         }
+
     </style>
 </head>
 
 <body>
-    <div class="container mt-5">
-        <p class="welcome-message">
-            {% if not user.is_authenticated %}
-            You are currently reporting anonymously.
-            {% endif %}
-        </p>
-        <br>
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Make a Report</h2>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">Fill in the fields below to make a report on UVA Dine.</p>
-                        <form id="reportForm" method="post" enctype="multipart/form-data"
-                            action="{% url 'login:upload_file' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="username" value="{{ user.username }}">
-                            <div class="form-group">
-                                <label for="available_tags"><strong>Tags:</strong></label>
-                                <br>
-                                {% for tag in available_tags %}
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="checkbox" id="tag{{ tag.id }}" name="tags"
-                                        value="{{ tag.id }}">
-                                    <label class="form-check-label" for="tag{{ tag.id }}">{{ tag.name }}</label>
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <br>
-                            <div class="form-group custom-dropdown">
-                                <label for="location"><strong>Location:</strong></label>
-                                <select class="form-control" id="location" name="location">
-                                    <option value="General Report (No specific dining hall)">General Report (No specific
-                                        dining hall)</option>
-                                    <option value="Runk Dining Hall">Runk Dining Hall</option>
-                                    <option value="O'Hill Dining Hall">O'Hill Dining Hall</option>
-                                    <option value="New Comb Dining Hall">Newcomb Dining Hall</option>
-                                    <option value="Food Trucks">Food Trucks</option>
-                                    <option value="Food At PAV">Food at Pavilion XI</option>
-                                    <!-- Add more options as needed -->
-                                </select>
-                            </div>
-                            <br>
-                            <p class="card-text"><strong>Upload files as needed </strong>
-                                (accepted file types are .txt / plain text, .pdf / Adobe PDF documents, .jpg / JPEG
-                                images)</p>
-                            <div class="form-group">
-                                <input type="file" class="form-control-file" name="file" accept=".txt,.pdf,.jpg">
-                            </div>
-                            <br>
-                            <div class="form-group">
-                                <label for="explanation">Report Explanation (optional):</label>
-                                <textarea class="form-control" id="explanation" name="explanation" rows="4"
-                                    cols="50"></textarea>
-                            </div>
-                            <br>
-                            <div class="text-center"> <!-- Center aligns content -->
-                                <button type="submit" class="btn btn-primary">Submit Report</button>
-                            </div>
-                        </form>
-                    </div>
-                    {% if error_message %}
-                    <div class="card-footer">
-                        <div class="alert alert-danger" role="alert">
-                            <p>{{ error_message }}</p>
-                        </div>
-                    </div>
-                    {% endif %}
+<div class="container mt-5">
+    <p class="welcome-message">
+        {% if not user.is_authenticated %}
+        You are currently reporting anonymously.
+        {% endif %}
+    </p>
+    <br>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Make a Report</h2>
                 </div>
+                <div class="card-body">
+                    <p class="card-text">Fill in the fields below to make a report on UVA Dine.</p>
+                    <form id="reportForm" method="post" enctype="multipart/form-data"
+                          action="{% url 'login:upload_file' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="username" value="{{ user.username }}">
+                        <div class="form-group">
+                            <label for="available_tags"><strong>Tags:</strong></label>
+                            <br>
+                            {% for tag in available_tags %}
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="tag{{ tag.id }}" name="tags"
+                                       value="{{ tag.id }}">
+                                <label class="form-check-label" for="tag{{ tag.id }}">{{ tag.name }}</label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <br>
+                        <div class="form-group custom-dropdown">
+                            <label for="location"><strong>Location:</strong></label>
+                            <select class="form-control" id="location" name="location">
+                                <option value="General Report (No specific dining hall)">General Report (No specific
+                                    dining hall)
+                                </option>
+                                <option value="Runk Dining Hall">Runk Dining Hall</option>
+                                <option value="O'Hill Dining Hall">O'Hill Dining Hall</option>
+                                <option value="New Comb Dining Hall">Newcomb Dining Hall</option>
+                                <option value="Food Trucks">Food Trucks</option>
+                                <option value="Food At PAV">Food at Pavilion XI</option>
+                                <!-- Add more options as needed -->
+                            </select>
+                        </div>
+                        <br>
+                        <p class="card-text"><strong>Upload files as needed </strong>
+                            (accepted file types are .txt / plain text, .pdf / Adobe PDF documents, .jpg / JPEG
+                            images)</p>
+                        <div class="form-group">
+                            <input type="file" class="form-control-file" name="file" accept=".txt,.pdf,.jpg">
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="explanation">Report Explanation (optional):</label>
+                            <textarea class="form-control" id="explanation" name="explanation" rows="4"
+                                      cols="50"></textarea>
+                        </div>
+                        <br>
+                        <div class="text-center"> <!-- Center aligns content -->
+                            <button type="submit" class="btn btn-primary">Submit Report</button>
+                        </div>
+                    </form>
+                </div>
+                {% if error_message %}
+                <div class="card-footer">
+                    <div class="alert alert-danger" role="alert">
+                        <p>{{ error_message }}</p>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
-
     </div>
-    <br>
-    <br>
-    {% if user.is_authenticated %}
-    <a href="{% url 'login:auth_home' %}" class="btn custom-btn">Return Home</a>
-    {% else %}
-    <a href="{% url 'login:home' %}" class="btn custom-btn">Return Home</a>
-    {% endif %}
-    <br>
-    <br>
-    <br>
-    <br>
+
+</div>
+<br>
+<br>
+{% if user.is_authenticated %}
+<a href="{% url 'login:auth_home' %}" class="btn custom-btn">Return Home</a>
+{% else %}
+<a href="{% url 'login:home' %}" class="btn custom-btn">Return Home</a>
+{% endif %}
+<br>
+<br>
+<br>
+<br>
 </body>
 {% endblock %}

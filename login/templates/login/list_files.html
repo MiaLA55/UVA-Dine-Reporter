@@ -149,7 +149,7 @@
                         {% elif report.status == 'IN PROGRESS' %}
                             <span class="status-label status-in-progress">{{ report.status|title }}</span>
                         {% else %}
-                            <span class="status-label status-new">{{ report.status|title }}</span>
+                        <span class="status-label status-new">{{ report.status|title }}</span>
                         {% endif %}
                     </td>
                     <td>{{ report.submission_time|date:"Y-m-dTH:i:s" }}</td>

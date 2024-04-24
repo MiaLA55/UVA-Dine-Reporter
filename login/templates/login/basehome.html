@@ -13,31 +13,32 @@
             border-bottom: 3px solid #e87423; /* Orange border on the top */
         }
 
+
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light custom-navbar">
-        <div class="container-fluid">
-            <div class="row w-100">
-                <div class="col-6">
-                        <img src="{% static 'login/uvadinereporter.png' %}" alt="UVADine" style="width: 50%; height: auto;">
-                </div>
+<nav class="navbar navbar-expand-lg navbar-light custom-navbar">
+    <div class="container-fluid">
+        <div class="row w-100">
+            <div class="col-6">
+                <img src="{% static 'login/uvadinereporter.png' %}" alt="UVADine" style="width: 50%; height: auto;">
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
 
-        {% block content %}
-        {% endblock %}
+{% block content %}
+{% endblock %}
 
-    <footer class="footer fixed-bottom bg-light navbar-light text-center">
-        <div class="container">
+<footer class="footer fixed-bottom bg-light navbar-light text-center">
+    <div class="container">
             <span class="text-muted">This system is a class project, the system is not monitored, and no real
                 information should be submitted</span>
-        </div>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

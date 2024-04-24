@@ -75,6 +75,7 @@
         }
 
 
+
     </style>
 </head>
 
@@ -82,46 +83,50 @@
 <body>
 <nav class="navbar1 navbar-expand-lg navbar-light bg-white">
     <div class="container-fluid">
-      <button class="navbar-toggler" type="button" data-mdb-collapse-init
-        data-mdb-target="#navbarExample01" aria-controls="navbarExample01" aria-expanded="false"
-        aria-label="Toggle navigation">
-        <i class="fas fa-bars"></i>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarExample01">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item active">
-            <a class="nav-link" aria-current="page" href="https://virginia.campusdish.com/en/locationsandmenus/">UVA Dine</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="https://virginia.campusdish.com/-/media/Local/Higher-Education/GroupC/Virginia/Images/UVA-Map.ashx">Map of Dining Locations</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="https://virginia.campusdish.com/Events">UVA Dine Events</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-  <!-- Navbar -->
-
-  <!-- Background image -->
-  <div id="intro-example" class="p-5 text-center bg-image"
-    style="background-image: url('https://harvesttableuva.com/wp-content/uploads/2020/12/20201103_161130030_iOS-scaled-2100x900-c-default.jpg');">
-    <div class="mask" style="background-color: rgba(0, 0, 0, 0.7);">
-      <div class="d-flex justify-content-center align-items-center h-100">
-        <div class="text-white">
-          <h1 class="mb-3">UVA Dine Reporter</h1>
-          <h5 class="mb-4">
-            Report. Share. Improve: Together, We Raise Dining Standards.
-          </h5>
-          <a data-mdb-ripple-init class="btn btn-outline-light btn-lg m-2" href="{% url 'account_login' %}"
-            role="button" >Login</a>
-          <a data-mdb-ripple-init class="btn btn-outline-light btn-lg m-2" href="{% url 'file_upload:user_submit_report' %}"
-            role="button">Report Anonymously</a>
+        <button class="navbar-toggler" type="button" data-mdb-collapse-init
+                data-mdb-target="#navbarExample01" aria-controls="navbarExample01" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarExample01">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item active">
+                    <a class="nav-link" aria-current="page"
+                       href="https://virginia.campusdish.com/en/locationsandmenus/">UVA Dine</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"
+                       href="https://virginia.campusdish.com/-/media/Local/Higher-Education/GroupC/Virginia/Images/UVA-Map.ashx">Map
+                        of Dining Locations</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://virginia.campusdish.com/Events">UVA Dine Events</a>
+                </li>
+            </ul>
         </div>
-      </div>
     </div>
-  </div>
+</nav>
+<!-- Navbar -->
+
+<!-- Background image -->
+<div id="intro-example" class="p-5 text-center bg-image"
+     style="background-image: url('https://harvesttableuva.com/wp-content/uploads/2020/12/20201103_161130030_iOS-scaled-2100x900-c-default.jpg');">
+    <div class="mask" style="background-color: rgba(0, 0, 0, 0.7);">
+        <div class="d-flex justify-content-center align-items-center h-100">
+            <div class="text-white">
+                <h1 class="mb-3">UVA Dine Reporter</h1>
+                <h5 class="mb-4">
+                    Report. Share. Improve: Together, We Raise Dining Standards.
+                </h5>
+                <a data-mdb-ripple-init class="btn btn-outline-light btn-lg m-2" href="{% url 'account_login' %}"
+                   role="button">Login</a>
+                <a data-mdb-ripple-init class="btn btn-outline-light btn-lg m-2"
+                   href="{% url 'file_upload:user_submit_report' %}"
+                   role="button">Report Anonymously</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 </body>

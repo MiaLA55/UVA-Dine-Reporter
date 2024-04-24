@@ -61,11 +61,12 @@
             border: 1px solid #222d4b;
         }
 
+
     </style>
 </head>
 
 <body>
-    <div class="container">
+<div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <h1 class="text-center">Report Details</h1>
@@ -74,64 +75,67 @@
                 <div class="card-body">
                     <p><strong>Status: </strong>
                         {% if report.status == 'RESOLVED' %}
-                            <span class="status-label status-resolved">Resolved</span>
+                        <span class="status-label status-resolved">Resolved</span>
                         {% elif report.status == 'IN PROGRESS' %}
-                            <span class="status-label status-in-progress">In Progress</span>
+                        <span class="status-label status-in-progress">In Progress</span>
                         {% else %}
-                            <span class="status-label status-new">New</span>
+                        <span class="status-label status-new">New</span>
                         {% endif %}
                     </p>
-                     {% if report.tags.exists %}
-                        <p><strong>Tags:</strong>
+                    {% if report.tags.exists %}
+                    <p><strong>Tags:</strong>
 
-                            {% for tag in report.tags.all %}
-                            <span class="custom-tag">{{ tag.name }}</span>
-                            {% endfor %}
-                       </p>
+                        {% for tag in report.tags.all %}
+                        <span class="custom-tag">{{ tag.name }}</span>
+                        {% endfor %}
+                    </p>
                     {% else %}
-                        <p><strong>Tags:</strong> <span class="text-muted">None</span></p>
+                    <p><strong>Tags:</strong> <span class="text-muted">None</span></p>
                     <p><strong>Location:</strong> {{ report.location }}</p>
                     <p><strong>ID:</strong> {{ report.id }}</p>
                     <strong>Report Explanation:</strong>
                     <p>
                         {% if report.explanation %}
-                            {{ report.explanation }}
+                        {{ report.explanation }}
                         {% else %}
-                            <span class="text-muted">No report explanation provided</span>
+                        <span class="text-muted">No report explanation provided</span>
                         {% endif %}
                     </p>
                     <p><strong>File:</strong>
-                    {% if report.filenames %}
+                        {% if report.filenames %}
                         <a href="{% url 'login:file_detail' report.filenames %}" class="file-link">
                             {{ report.filenames }}
                         </a>
-                    {% else %}
+                        {% else %}
                         <span>None</span>
-                    {% endif %}
+                        {% endif %}
                     </p>
                     <hr>
                     {% if report.status == 'RESOLVED' %}
-                        <p><strong>Report Resolve Notes:</strong></p>
-                        <p>
-                            {% if report.resolved_notes %}
-                                {{ report.resolved_notes }}
-                            {% else %}
-                                <span class="text-muted">No report resolve notes provided</span>
-                            {% endif %}
-                        </p>
-                        <a href="{% url 'login:list_files' %}" class="btn custom-btn">Back to the List</a>
+                    <p><strong>Report Resolve Notes:</strong></p>
+                    <p>
+                        {% if report.resolved_notes %}
+                        {{ report.resolved_notes }}
+                        {% else %}
+                        <span class="text-muted">No report resolve notes provided</span>
+                        {% endif %}
+                    </p>
+                    <a href="{% url 'login:list_files' %}" class="btn custom-btn">Back to the List</a>
                     {% else %}
-                        <form id="file-upload-form" method="post" enctype="multipart/form-data" action="{% url 'login:resolve_report_submit' report.id%}">
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="resolveNotes">Please provide any additional notes for resolution (optional):</label>
-                                <textarea class="form-control" id="resolveNotes" name="resolveNotes" rows="4" cols="50"></textarea>
-                            </div>
-                            <input type="hidden" name="file_name" value="{{ report.filenames }}">
-                            <br>
-                            <a href="{% url 'login:list_files_resolved' %}" class="btn custom-btn">Back to the List</a>
-                            <button type="submit" class="btn btn-primary">Resolve Report</button>
-                        </form>
+                    <form id="file-upload-form" method="post" enctype="multipart/form-data"
+                          action="{% url 'login:resolve_report_submit' report.id%}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="resolveNotes">Please provide any additional notes for resolution
+                                (optional):</label>
+                            <textarea class="form-control" id="resolveNotes" name="resolveNotes" rows="4"
+                                      cols="50"></textarea>
+                        </div>
+                        <input type="hidden" name="file_name" value="{{ report.filenames }}">
+                        <br>
+                        <a href="{% url 'login:list_files_resolved' %}" class="btn custom-btn">Back to the List</a>
+                        <button type="submit" class="btn btn-primary">Resolve Report</button>
+                    </form>
                     {% endif %}
                 </div>
             </div>

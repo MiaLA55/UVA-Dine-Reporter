@@ -23,6 +23,7 @@
             });
         });
     });
+
 </script>
 
 <head>
@@ -140,62 +141,63 @@
             vertical-align: baseline;
             border-radius: 0.25rem;
         }
+
     </style>
 </head>
 
 <body>
-    <h1>List of Reports In Progress</h1>
-    {% if file_data %}
-    <p>Please click on an entry to view an individual report and its contents</p>
-    {% endif %}
-    {% if file_data %}
-    <div class="container mt-5">
-        <div class="mb-3">
-            <label for="sort-select" class="form-label">Sort by:</label>
-            <select class="form-select" id="sort-select">
-                <option value="" selected></option>
-                <option value="submission_time">Submission Time (Earliest → Latest)</option>
-                <option value="location">Location (A-Z)</option>
-                <option value="id">Report ID</option>
-            </select>
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Status</th>
-                    <th>Submission Time</th>
-                    <th>Report Explanation</th>
-                    <th>Location</th>
-                    <th>ID</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for report in file_data %}
-                <tr class="clickable-row"
-                    data-url="{% if report.id %}{% url 'login:individual_file_view_resolved' report.id %}{% endif %}">
-                    <td>
-                        <span class="status-label status-resolved">Resolved</span>
-                    </td>
-                    <td>{{ report.submission_time|date:"Y-m-dTH:i:s" }}</td>
-                    <td>{{ report.report_explanation }}</td>
-                    <td>{{ report.location }}</td>
-                    <td>{{ report.id }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+<h1>List of Reports In Progress</h1>
+{% if file_data %}
+<p>Please click on an entry to view an individual report and its contents</p>
+{% endif %}
+{% if file_data %}
+<div class="container mt-5">
+    <div class="mb-3">
+        <label for="sort-select" class="form-label">Sort by:</label>
+        <select class="form-select" id="sort-select">
+            <option value="" selected></option>
+            <option value="submission_time">Submission Time (Earliest → Latest)</option>
+            <option value="location">Location (A-Z)</option>
+            <option value="id">Report ID</option>
+        </select>
     </div>
-    {% else %}
-    <p>There are no resolved reports.</p>
-    {% endif %}
-    <br>
-    <br>
-    <a href="{% url 'login:auth_home' %}" class="btn custom-btn">Return Home</a>
-    <br>
-    <br>
-    <br>
-    <br>
-    <script>
+    <table>
+        <thead>
+        <tr>
+            <th>Status</th>
+            <th>Submission Time</th>
+            <th>Report Explanation</th>
+            <th>Location</th>
+            <th>ID</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for report in file_data %}
+        <tr class="clickable-row"
+            data-url="{% if report.id %}{% url 'login:individual_file_view_resolved' report.id %}{% endif %}">
+            <td>
+                <span class="status-label status-resolved">Resolved</span>
+            </td>
+            <td>{{ report.submission_time|date:"Y-m-dTH:i:s" }}</td>
+            <td>{{ report.report_explanation }}</td>
+            <td>{{ report.location }}</td>
+            <td>{{ report.id }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p>There are no resolved reports.</p>
+{% endif %}
+<br>
+<br>
+<a href="{% url 'login:auth_home' %}" class="btn custom-btn">Return Home</a>
+<br>
+<br>
+<br>
+<br>
+<script>
         document.addEventListener('DOMContentLoaded', function () {
             const rows = document.querySelectorAll('.clickable-row');
             rows.forEach(function (row) {
@@ -247,6 +249,7 @@
                 }
             };
         });
-    </script>
+
+</script>
 </body>
 {% endblock %}

@@ -31,7 +31,8 @@
             background-color: #222d4b;
             color: white;
         }
-</style>
+
+    </style>
 </head>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -51,11 +52,11 @@
             });
         });
     });
+
 </script>
 <body>
-    <h2>Welcome, Admin!</h2>
-    <p>You are logged in as a site administrator.</p>
-
+<h2>Welcome, Admin!</h2>
+<p>You are logged in as a site administrator.</p>
 
 
 <div class="col py-3">
@@ -65,7 +66,8 @@
             <div class="col">
                 <div class="card pmd-card text-center shadow custom-card" data-url="{% url 'login:list_files' %}">
                     <div class="card-body">
-                        <img src="https://static.thenounproject.com/png/1131400-200.png" class="rounded-circle img-fluid mb-3" title="" alt="" width="100" height="100">
+                        <img src="https://static.thenounproject.com/png/1131400-200.png"
+                             class="rounded-circle img-fluid mb-3" title="" alt="" width="100" height="100">
                         <h2 class="card-title">All</h2>
                         <p class="card-subtitle mb-3">Reports</p>
                         <p class="card-text">View all reports submitted by users in the system</p>
@@ -75,7 +77,8 @@
             <div class="col">
                 <div class="card pmd-card text-center shadow custom-card" data-url="{% url 'login:list_files_new' %}">
                     <div class="card-body">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Flat_exclamation_icon_-_blue.svg/512px-Flat_exclamation_icon_-_blue.svg.png" class="rounded-circle img-fluid mb-3" title="" alt="" width="100" height="100">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Flat_exclamation_icon_-_blue.svg/512px-Flat_exclamation_icon_-_blue.svg.png"
+                             class="rounded-circle img-fluid mb-3" title="" alt="" width="100" height="100">
                         <h2 class="card-title">New</h2>
                         <p class="card-subtitle mb-3">Reports</p>
                         <p class="card-text">View the newest, unseen reports submitted by users</p>
@@ -85,7 +88,8 @@
             <div class="col">
                 <div class="card pmd-card text-center shadow custom-card" data-url="{% url 'login:list_files_ip' %}">
                     <div class="card-body">
-                         <img src="https://media.istockphoto.com/id/1133864494/vector/person-with-clock-icon-vector-thin-line-illustration-for-concepts-of-business-delivery-order.jpg?s=612x612&w=0&k=20&c=c180CVlo7SulUTNXjB1Qaz8Cwi6ewyXfLJ4TIH10u7I=" class="rounded-circle img-fluid mb-3" title="" alt="" width="100" height="100">
+                        <img src="https://media.istockphoto.com/id/1133864494/vector/person-with-clock-icon-vector-thin-line-illustration-for-concepts-of-business-delivery-order.jpg?s=612x612&w=0&k=20&c=c180CVlo7SulUTNXjB1Qaz8Cwi6ewyXfLJ4TIH10u7I="
+                             class="rounded-circle img-fluid mb-3" title="" alt="" width="100" height="100">
                         <h2 class="card-title">In Progress</h2>
                         <p class="card-subtitle mb-3">Reports</p>
                         <p class="card-text">View reports currently undergoing evaluation</p>
@@ -93,9 +97,11 @@
                 </div>
             </div>
             <div class="col">
-                <div class="card pmd-card text-center shadow custom-card" data-url="{% url 'login:list_files_resolved' %}">
+                <div class="card pmd-card text-center shadow custom-card"
+                     data-url="{% url 'login:list_files_resolved' %}">
                     <div class="card-body">
-                       <img src="https://static-00.iconduck.com/assets.00/alert-success-icon-512x512-lslkjbep.png" class="rounded-circle img-fluid mb-3" title="" alt="" width="100" height="100">
+                        <img src="https://static-00.iconduck.com/assets.00/alert-success-icon-512x512-lslkjbep.png"
+                             class="rounded-circle img-fluid mb-3" title="" alt="" width="100" height="100">
                         <h2 class="card-title">Resolved</h2>
                         <p class="card-subtitle mb-3">Reports</p>
                         <p class="card-text">View reports that have been assessed and resolved</p>

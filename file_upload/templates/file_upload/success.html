@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-     <style>
+    <style>
         .success-text {
             color: green;
         }
@@ -21,19 +21,21 @@
             width: 200px;
             height: 200px;
         }
+
     </style>
 </head>
 <body>
 <div class="container">
-    <img src="https://icons.veryicon.com/png/o/miscellaneous/8atour/success-35.png" alt="Success Image" class="success-image">
+    <img src="https://icons.veryicon.com/png/o/miscellaneous/8atour/success-35.png" alt="Success Image"
+         class="success-image">
     <br><br>
     <h1><span class="success-text">Report Submitted Successfully!</span></h1>
     <p>Thank you for submitting your report.</p>
     <br><br>
     {% if user.is_authenticated %}
-        <a href="{% url 'login:auth_home' %}" class="btn custom-btn">Return Home</a>
+    <a href="{% url 'login:auth_home' %}" class="btn custom-btn">Return Home</a>
     {% else %}
-        <a href="{% url 'login:home' %}" class="btn custom-btn">Return Home</a>
+    <a href="{% url 'login:home' %}" class="btn custom-btn">Return Home</a>
     {% endif %}
 
 </div>
