@@ -231,7 +231,7 @@
                     if (sortBy === 'location') {
                         return cellA.localeCompare(cellB);
                    }else if (sortBy === 'submission_time') {
-                        return new Date(cellA).getTime() - new Date(cellB).getTime();
+                        return new Date(cellB).getTime() - new Date(cellA).getTime();
                     }else if (sortBy === 'id') {
                         return parseInt(cellA) - parseInt(cellB);
                     }

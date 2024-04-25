@@ -203,7 +203,7 @@
                         const order = { 'New': 1, 'In Progress': 2, 'Resolved': 3 };
                         return order[cellA] - order[cellB];
                     }else if (sortBy === 'submission_time') {
-                        return new Date(cellA).getTime() - new Date(cellB).getTime();
+                        return new Date(cellB).getTime() - new Date(cellA).getTime();
                     }else if (sortBy === 'id') {
                         return parseInt(cellA) - parseInt(cellB);
                     }
