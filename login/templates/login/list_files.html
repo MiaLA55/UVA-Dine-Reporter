@@ -117,68 +117,73 @@
         background-color:#0e1424;
         color: white;
     }
+
     </style>
 </head>
 
 <body>
 <h1 class="header-heading"><strong>List of Submitted Reports</strong></h1>
-    {% if file_data %}
-    <p>Please click on an entry to view an individual report and its contents</p>
-    {% endif %}
-    {% if file_data %}
-    <div class="container mt-5">
-        <div class="mb-3">
-            <label for="sort-select" class="form-label"><strong>Sort by:</strong></label>
-            <select class="form-select" id="sort-select">
-                <option value="" selected></option>
-                <option value="status">Status</option>
-                <option value="submission_time">Submission Time (Newest → Oldest)</option>
-                <option value="location">Location (A-Z)</option>
-                <option value="id">Report ID</option>
-            </select>
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Status</th>
-                    <th>Submission Time</th>
-                    <th>Report Explanation</th>
-                    <th>Location</th>
-                    <th>ID</th>
-                </tr>
-            </thead>
-
-            <tbody>
-                {% for report in file_data %}
-                <tr class="clickable-row"
-                    data-url="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}">
-                    <td>
-                        {% if report.status == 'RESOLVED' %}
-                            <span class="status-label status-resolved">{{ report.status|title }}</span>
-                        {% elif report.status == 'IN PROGRESS' %}
-                            <span class="status-label status-in-progress">{{ report.status|title }}</span>
-                        {% else %}
-                        <span class="status-label status-new">{{ report.status|title }}</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ report.submission_time|date:"Y-m-dTH:i:s" }}</td>
-                    <td>{{ report.report_explanation }}</td>
-                    <td>{{ report.location }}</td>
-                    <td>{{ report.id }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+{% if file_data %}
+<p>Please click on an entry to view an individual report and its contents</p>
+{% endif %}
+{% if file_data %}
+<div class="container mt-5">
+    <div class="mb-3">
+        <label for="sort-select" class="form-label"><strong>Sort by:</strong></label>
+        <select class="form-select" id="sort-select">
+            <option value="" selected></option>
+            <option value="status">Status</option>
+            <option value="submission_time">Submission Time (Newest → Oldest)</option>
+            <option value="location">Location (A-Z)</option>
+            <option value="id">Report ID</option>
+        </select>
     </div>
-    {% else %}
-    <p>No reports submitted by any user.</p>
-    {% endif %}
-    <br>
-    <br>
-<a href="{% url 'login:auth_home' %}" class="btn custom-btn"><strong>Return Home</strong></a>
-    <br><br><br><br>
+    <table>
+        <thead>
+        <tr>
+            <th>Status</th>
+            <th>Submission Time</th>
+            <th>Report Explanation</th>
+            <th>Location</th>
+            <th>ID</th>
+        </tr>
+        </thead>
 
-    <script>
+        <tbody>
+        {% for report in file_data %}
+        <tr class="clickable-row"
+            data-url="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}">
+            <td>
+                {% if report.status == 'RESOLVED' %}
+                <span class="status-label status-resolved">{{ report.status|title }}</span>
+                {% elif report.status == 'IN PROGRESS' %}
+                <span class="status-label status-in-progress">{{ report.status|title }}</span>
+                {% else %}
+                <span class="status-label status-new">{{ report.status|title }}</span>
+                {% endif %}
+            </td>
+            <td>{{ report.submission_time|date:"Y-m-dTH:i:s" }}</td>
+            <td>{{ report.report_explanation }}</td>
+            <td>{{ report.location }}</td>
+            <td>{{ report.id }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p>No reports submitted by any user.</p>
+{% endif %}
+<br>
+<br>
+
+<a href="{% url 'login:auth_home' %}" class="btn custom-btn"><strong>Return Home</strong></a>
+
+
+<br><br><br><br>
+
+
+<script>
 
         document.addEventListener('DOMContentLoaded', function () {
             const rows = document.querySelectorAll('.clickable-row');
@@ -237,6 +242,26 @@
                 }
             };
         });
-    </script>
+
+        var scrollToTopBtn = document.getElementById("scrollToTopBtn");
+
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() {scrollFunction()};
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                scrollToTopBtn.style.display = "block";
+            } else {
+                scrollToTopBtn.style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        scrollToTopBtn.addEventListener("click", function() {
+            document.body.scrollTop = 0; // For Safari
+            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+        });
+
+</script>
 </body>
 {% endblock %}
