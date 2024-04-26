@@ -284,7 +284,8 @@ def list_files_resolved(request):
                     "report_resolve_notes": report.resolved_notes,
                     "id": report.id,
                     "location": report.location,
-                    "rating": report.rating
+                    "rating": report.rating,
+                    "attached_user": report.attached_user,
                 }
             )
 

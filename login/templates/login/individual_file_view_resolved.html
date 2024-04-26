@@ -70,6 +70,7 @@
         background-color:#0e1424;
         color: white;
     }
+
     </style>
 </head>
 
@@ -90,6 +91,7 @@
                         <span class="status-label status-new">New</span>
                         {% endif %}
                     </p>
+
                     {% if report.tags.exists %}
                     <p><strong>Tags:</strong>
 
@@ -99,11 +101,15 @@
                     </p>
                     {% else %}
                     <p><strong>Tags:</strong> <span class="text-muted">None</span></p>
-                    <p><strong>Location:</strong> {{ report.location }}</p>
-
                     {% endif %}
+                    {% if report.attached_user %}
+                    <p><strong>User:</strong> {{ report.attached_user }}</p>
+                    {% else %}
+                    <p><strong>User:</strong><span class="text-muted"> Anonymous</span></p>
+                    {% endif %}
+                    <p><strong>Location:</strong> {{ report.location }}</p>
                     <p><strong>Submission Time: </strong>{{ report.submission_time }}</p>
-                     <p><strong>Rating: </strong>{{ report.rating }}</p>
+                    <p><strong>Rating: </strong>{{ report.rating }}</p>
                     <p><strong>ID:</strong> {{ report.id }}</p>
                     <strong>Report Explanation:</strong>
                     <p>
@@ -132,7 +138,8 @@
                         <span class="text-muted">No report resolve notes provided</span>
                         {% endif %}
                     </p>
-                    <a href="{% url 'login:list_files_resolved' %}" class="btn custom-btn"><strong>Back to the List</strong></a>
+                    <a href="{% url 'login:list_files_resolved' %}" class="btn custom-btn"><strong>Back to the
+                        List</strong></a>
                     {% else %}
                     <form id="file-upload-form" method="post" enctype="multipart/form-data"
                           action="{% url 'login:resolve_report_submit' report.id%}">
@@ -145,7 +152,8 @@
                         </div>
                         <input type="hidden" name="file_name" value="{{ report.filenames }}">
                         <br>
-                        <a href="{% url 'login:list_files_resolved' %}" class="btn custom-btn"><strong>Back to the List</strong></a>
+                        <a href="{% url 'login:list_files_resolved' %}" class="btn custom-btn"><strong>Back to the
+                            List</strong></a>
                         <button type="submit" class="btn btn-primary"><strong>Resolve Report</strong></button>
                     </form>
                     {% endif %}

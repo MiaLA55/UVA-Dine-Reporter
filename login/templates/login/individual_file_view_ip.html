@@ -70,6 +70,7 @@
         background-color:#0e1424;
         color: white;
     }
+
     </style>
 </head>
 
@@ -99,11 +100,15 @@
                     </p>
                     {% else %}
                     <p><strong>Tags:</strong> <span class="text-muted">None</span></p>
-                    <p><strong>Location:</strong> {{ report.location }}</p>
-
                     {% endif %}
+                    {% if report.attached_user %}
+                    <p><strong>User:</strong> {{ report.attached_user }}</p>
+                    {% else %}
+                    <p><strong>User:</strong><span class="text-muted"> Anonymous</span></p>
+                    {% endif %}
+                    <p><strong>Location:</strong> {{ report.location }}</p>
                     <p><strong>Submission Time: </strong>{{ report.submission_time }}</p>
-                     <p><strong>Rating: </strong>{{ report.rating }}</p>
+                    <p><strong>Rating: </strong>{{ report.rating }}</p>
                     <p><strong>ID:</strong> {{ report.id }}</p>
                     <strong>Report Explanation:</strong>
                     <p>
@@ -145,7 +150,8 @@
                         </div>
                         <input type="hidden" name="file_name" value="{{ report.filenames }}">
                         <br>
-                        <a href="{% url 'login:list_files_ip' %}" class="btn custom-btn"><strong>Back to the List</strong></a>
+                        <a href="{% url 'login:list_files_ip' %}" class="btn custom-btn"><strong>Back to the
+                            List</strong></a>
                         <button type="submit" class="btn btn-primary"><strong>Resolve Report</strong></button>
                     </form>
                     {% endif %}

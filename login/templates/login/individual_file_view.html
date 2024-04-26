@@ -70,6 +70,7 @@
         background-color:#0e1424;
         color: white;
     }
+
     </style>
 </head>
 
@@ -81,7 +82,7 @@
             {% if report %}
             <div class="custom-card">
                 <div class="card-body">
-                    <p><strong>Status: </strong>
+                    <p style=><strong>Status: </strong>
                         {% if report.status == 'RESOLVED' %}
                         <span class="status-label status-resolved">Resolved</span>
                         {% elif report.status == 'IN PROGRESS' %}
@@ -99,11 +100,15 @@
                     </p>
                     {% else %}
                     <p><strong>Tags:</strong> <span class="text-muted">None</span></p>
-                    <p><strong>Location:</strong> {{ report.location }}</p>
-
                     {% endif %}
+                    {% if report.attached_user %}
+                    <p><strong>User:</strong> {{ report.attached_user }}</p>
+                    {% else %}
+                    <p><strong>User:</strong><span class="text-muted"> Anonymous</span></p>
+                    {% endif %}
+                    <p><strong>Location:</strong> {{ report.location }}</p>
                     <p><strong>Submission Time: </strong>{{ report.submission_time }}</p>
-                     <p><strong>Rating: </strong>{{ report.rating }}</p>
+                    <p><strong>Rating: </strong>{{ report.rating }}</p>
                     <p><strong>ID:</strong> {{ report.id }}</p>
                     <strong>Report Explanation:</strong>
                     <p>
