@@ -107,7 +107,7 @@ class ReportViewTests(TestCase):
 
     def test_no_reports_user_end(self):
         response = self.client.get(reverse("login:user_reports"))
-        self.assertContains(response, "No reports submitted by this user.")
+        self.assertContains(response, "You have no submitted reports.")
         self.assertQuerySetEqual(response.context["file_data"], [])
 
 
