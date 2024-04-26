@@ -9,6 +9,50 @@
 ***************************************************************************************/ -->
 {% extends 'login/base.html' %}
 {% block content %}
+<style>
+    /* Style for the dropdown arrow */
+    .custom-dropdown {
+        position: relative;
+    }
+
+    .custom-dropdown select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background: transparent;
+        padding: 10px;
+        /* Adjust padding as needed */
+        border: 1px solid #ccc;
+        /* Add border for better visibility */
+        border-radius: 5px;
+        /* Add some border radius */
+        font-size: 16px;
+        /* Adjust font size as needed */
+        color: #555;
+        /* Adjust text color */
+        width: 100%;
+        /* Make the dropdown full-width */
+    }
+
+    .custom-dropdown::after {
+        content: '';
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        /* Adjust arrow size */
+        border-right: 6px solid transparent;
+        /* Adjust arrow size */
+        border-top: 8px solid #555;
+        /* Adjust arrow color */
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+    }
+
+
+</style>
+
 <head>
     <meta charset="UTF-8">
     <title>User Submission Page</title>
@@ -16,54 +60,197 @@
     {% bootstrap_css %}
     {% bootstrap_javascript %}
     {% bootstrap_messages %}
+    <style>
+        .custom-btn {
+            background-color: #222d4b;
+            color: white;
+        }
+        .custom-btn:hover {
+                background-color:#0e1424;
+                color: white;
+            }
+
+        .welcome-message {
+            margin-bottom: 20px;
+            font-size: 24px;
+
+            font-weight: bold;
+
+            color: #222d4b;
+        }
+         .anon-text {
+            margin-bottom: 20px;
+            font-size: 20px;
+
+            font-weight: bold;
+
+            color: gray;
+        }
+        .make-report{
+            margin-bottom: 10px;
+                font-size: 30px;
+
+                font-weight: bold;
+
+                color: #222d4b;
+        }
+
+        body {
+            color: #222d4b;
+
+        }
+
+        .custom-tag {
+            display: inline-block;
+            padding: 0.25em 0.5em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+            color: #222d4b;
+            background-color: white;
+            border-radius: 0.25rem;
+            border: 1px solid #222d4b;
+            cursor: pointer; /* Add cursor pointer to indicate interactivity */
+        }
+
+        .selected-tag {
+            color: white;
+            background-color: #222d4b;
+        }
+
+        .custom-btn:hover {
+        background-color:#0e1424;
+        color: white;
+    }
+      .center-text {
+        text-align: center;
+    }
+
+
+    </style>
+    <script>
+    function toggleTag(tag) {
+        tag.classList.toggle('selected-tag');
+        var selectedTagsInput = document.getElementById('selected_tags');
+        var tagId = tag.id.substring(3); // Remove 'tag' prefix to get tag ID
+        var selectedTags = selectedTagsInput.value.split(',').filter(Boolean); // Remove empty values
+        var index = selectedTags.indexOf(tagId);
+        if (index === -1) {
+            selectedTags.push(tagId);
+        } else {
+            selectedTags.splice(index, 1);
+        }
+        selectedTagsInput.value = selectedTags.join(',');
+    }
+
+
+    </script>
+
 </head>
+
 <body>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="card-title">Submit Report</h2>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text">Fill in the fields below to make a report on UVA Dine.</p>
-                        <p class="card-text">Upload files as needed (accepted file types are .txt / plain text, .pdf / Adobe PDF documents, .jpg / JPEG images)</p>
-                        <form id="reportForm" method="post" enctype="multipart/form-data" action="{% url 'login:upload_file' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="username" value="{{ user.username }}">
-                            <div class="form-group">
-                                <label for="explanation">Report Explanation (optional):</label>
-                                <textarea class="form-control" id="explanation" name="explanation" rows="4" cols="50" maxlength="2000"></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="available_tags">Tags:</label>
-                                <select class="form-control" id="available_tags" name="tags" multiple>
-                                    {% for tag in available_tags %}
-                                        <option value="{{ tag.id }}">{{ tag.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <input type="file" class="form-control-file" name="file">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Submit Report</button>
-                        </form>
-                    </div>
-                    {% if error_message %}
-                        <div class="card-footer">
-                            <div class="alert alert-danger" role="alert">
-                                <p>{{ error_message }}</p>
-                            </div>
-                        </div>
-                    {% endif %}
+<div class="container mt-5">
+    <br>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title make-report"><strong>Make a Report</strong></h2>
                 </div>
+                <div class="card-body">
+                        <p class="anon-text">
+                            {% if not user.is_authenticated %}
+                            <strong>You are currently reporting anonymously.</strong>
+                            {% endif %}
+                        </p>
+                    <p class="card-text" style="font-size: 18px;">Fill in the fields below to make a report on UVA
+                        Dine.</p>
+                    <form id="reportForm" method="post" enctype="multipart/form-data"
+                          action="{% url 'login:upload_file' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="username" value="{{ user.username }}">
+                        <div class="form-group">
+                            <label for="available_tags"><strong>Tags:</strong></label>
+                            <br>
+                            {% for tag in available_tags %}
+                            <span class="custom-tag" id="tag{{ tag.id }}"
+                                  onclick="toggleTag(this)">{{ tag.name }}</span>
+                            {% endfor %}
+                            <input type="hidden" id="selected_tags" name="tags" value="">
+                        </div>
+
+                        <br>
+                        <div class="form-group custom-dropdown">
+                            <label for="location"><strong>Location:</strong></label>
+                            <select class="form-control" id="location" name="location">
+                                <option value="No specific dining location">No specific dining location
+                                </option>
+                                <option value="Runk Dining Hall">Runk Dining Hall</option>
+                                <option value="O'Hill Dining Hall">O'Hill Dining Hall</option>
+                                <option value="Newcomb Dining Hall">Newcomb Dining Hall</option>
+                                <option value="Food Trucks">Food Trucks</option>
+                                <option value="Crossroads Food Court">Crossroads Food Court</option>
+                                <option value="Food at the Pavilion XI">Food at Pavilion XI</option>
+                            </select>
+                        </div>
+                        <div class="form-group custom-dropdown">
+                            <label for="rating"><strong>Experience Rating:</strong></label>
+                            <select class="form-control" id="rating" name="rating">
+                                <option value="1"></option>
+                                <option value="2">1</option>
+                                <option value="3">2</option>
+                                <option value="4">3</option>
+                                <option value="5">4</option>
+                                <option value="6">5</option>
+                            </select>
+                        </div>
+                        <br>
+                        <p class="card-text"><strong>Upload files as needed </strong>
+                            (accepted file types are .txt / plain text, .pdf / Adobe PDF documents, .jpg / JPEG
+                            images)</p>
+                        <div class="form-group">
+                            <input type="file" class="form-control-file" name="file" accept=".txt,.pdf,.jpg">
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="explanation"><strong>Report Explanation</strong> (optional):</label>
+                            <textarea class="form-control" id="explanation" name="explanation" rows="4"
+                                      cols="50" maxlength="2000"></textarea>
+                        </div>
+                        <br>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary"><strong>Submit Report</strong></button>
+                        </div>
+                    </form>
+                </div>
+                {% if error_message %}
+                <div class="card-footer">
+                    <div class="alert alert-danger" role="alert">
+                        <p>{{ error_message }}</p>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
+
+</div>
+<br>
+<br>
+{% if user.is_authenticated %}
+<a href="{% url 'login:auth_home' %}" class="btn custom-btn"><strong>Return Home</strong></a>
+{% else %}
+<a href="{% url 'login:home' %}" class="btn custom-btn"><strong>Return Home</strong></a>
+{% endif %}
+<br>
+<br>
+<br>
+<br>
 </body>
 {% endblock %}
-
-
-
-
 

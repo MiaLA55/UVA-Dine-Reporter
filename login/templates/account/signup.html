@@ -1,0 +1,124 @@
+{% extends "account/base.html" %}
+{% load i18n %}
+{% load account socialaccount %}
+
+{% block head_title %}{% trans "Sign Up" %}{% endblock head_title %}
+
+{% block content %}
+<style>
+    .custom-btn {
+        background-color: #222d4b;
+        color: white;
+        font-size: 18px;
+    }
+    .custom-btn:hover {
+        background-color: #0e1424;
+        color: white;
+    }
+
+    body {
+        color: #222d4b;
+    }
+
+    .signup-form {
+        border: 2px solid #e87423;
+        border-radius: 1rem;
+        padding: 20px;
+         border-width: 4px;
+    }
+
+    .signup-form input {
+        margin-bottom: 15px;
+    }
+
+    .signup-form label {
+        font-size: 18px;
+        color: #222d4b;
+    }
+
+    .signup-link {
+        color: #222d4b;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .signup-heading {
+        font-size: 40px;
+        color: #222d4b;
+        font-weight: bold;
+    }
+
+    .google-btn {
+        font-size: 18px;
+        background-color: #dd4b39;
+        color: white;
+    }
+
+    .google-btn:hover {
+        background-color: #c53727;
+        color: white;
+    }
+
+    .remember-password-label {
+        padding-left: 10px;
+    }
+
+</style>
+<section class="bg-image"
+         style="background-image: url('https://harvesttableuva.com/wp-content/uploads/2020/12/20201103_161130030_iOS-scaled-2100x900-c-default.jpg');
+            height: 50vh;">
+    <div class="container py-5">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="card shadow-2-strong signup-form">
+                    <div class="card-body p-5 text-center">
+
+                        <h2 class="mb-5 signup-heading"><strong>Sign Up</strong></h2>
+
+
+                        <form method="post" action="{% url 'account_signup' %}">
+                            {% csrf_token %}
+
+                            <div data-mdb-input-init class="form-outline mb-4">
+                                <input type="username" name="username" id="username"
+                                       class="form-control form-control-lg"
+                                       placeholder="Username" required/>
+                            </div>
+
+                            <div data-mdb-input-init class="form-outline mb-4">
+                                <input type="password" name="password1" id="password1"
+                                       class="form-control form-control-lg"
+                                       placeholder="Password" required/>
+                            </div>
+
+                            <div data-mdb-input-init class="form-outline mb-4">
+                                <input type="password" name="password2" id="password2"
+                                       class="form-control form-control-lg"
+                                       placeholder="Confirm Password" required/>
+                            </div>
+                             <div data-mdb-input-init class="form-outline mb-4">
+                                <input type="email" name="email" id="email" class="form-control form-control-lg"
+                                       placeholder="Email (optional)"/>
+                            </div>
+
+                            <button class="btn custom-btn btn-lg btn-block" type="submit"><strong>Sign Up</strong>
+                            </button>
+                        </form>
+
+                        <hr class="my-4">
+
+                        <a href="{% url 'login:home' %}"
+                           class="btn custom-btn btn-block lead btn-lg"><strong>Return Home</strong></a>
+
+                        <br><br>
+
+                        <p class="mb-0 lead">Already have an account? <a href="{{ login_url }}"
+                                                                         class="signup-link">Log In</a></p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

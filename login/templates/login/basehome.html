@@ -12,25 +12,7 @@
             background-color: #222d4b;
             border-bottom: 3px solid #e87423; /* Orange border on the top */
         }
-        .navbar-brand {
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-        }
-        .navbar-nav {
-            align-items: center; /* Center items vertically */
-        }
-        .nav-link {
-            color: white; /* Set color for navbar links */
-            font-weight: bold; /* Set font weight for navbar links */
-            margin-left: 20px; /* Add left margin to navbar links */
-        }
-        .logout-link {
-            margin-top: 10px; /* Add top margin to the logout link */
-        }
-        body {
-            color: #222d4b; /* Set the color for all text */
-        }
+
 
     </style>
 </head>
@@ -46,10 +28,10 @@
     </div>
 </nav>
 
-<div class="container mt-4">
-    {% block content %}
-    {% endblock %}
-</div>
+
+{% block content %}
+{% endblock %}
+
 <footer class="footer fixed-bottom bg-light navbar-light text-center">
     <div class="container">
             <span class="text-muted">This system is a class project, the system is not monitored, and no real

@@ -1,0 +1,88 @@
+{% extends "account/base.html" %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Sign In" %}{% endblock head_title %}
+
+{% block content %}
+<head>
+    <style>
+        .custom-btn {
+            background-color: #222d4b;
+            color: white;
+            font-size: 18px;
+        }
+
+        .custom-btn:hover {
+            background-color: #0e1424;
+            color: white;
+        }
+
+        body {
+            color: #222d4b;
+        }
+
+        .signin-form {
+            border: 2px solid #e87423;
+            border-radius: 1rem;
+            padding: 20px;
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+            margin-top: 50px;
+        }
+
+        .signin-form h1 {
+            font-size: 32px;
+            color: #222d4b;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .signin-form p {
+            font-size: 18px;
+            color: #222d4b;
+            margin-bottom: 20px;
+        }
+
+        .signin-form button {
+            background-color: #222d4b;
+            color: white;
+            font-size: 18px;
+            border: none;
+            border-radius: 0.5rem;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+
+        .signin-form button:hover {
+            background-color: #0e1424;
+        }
+
+
+    </style>
+</head>
+
+<body>
+<div class="signin-form">
+    {% if process == "connect" %}
+    <h1>{% blocktrans with provider.name as provider %}Connect Google{% endblocktrans %}</h1>
+    <p>You are about to connect a new third-party account from Google.</p>
+    {% else %}
+    <h1 style="font-size: 40px;
+    color: #222d4b;
+    font-weight: bold;"><strong>Sign In Via Google</strong></h1>
+    <p>{% blocktrans with provider.name as provider %}You are about to sign in using a third party account from Google.{% endblocktrans %}</p>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn custom-btn btn-block lead btn-lg"><strong>{% trans "Continue" %}</strong>
+        </button>
+    </form>
+    <br>
+    <a href="{% url 'account_login' %}" class="btn custom-btn btn-block lead btn-lg"><strong>Go Back</strong></a>
+
+</div>
+</body>
+{% endblock content %}

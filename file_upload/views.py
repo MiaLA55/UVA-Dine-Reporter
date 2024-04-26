@@ -18,3 +18,4 @@ def user_submit_report(request):
 
 def success(request):
     return render(request, 'file_upload/success.html')
+#

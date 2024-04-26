@@ -1,0 +1,85 @@
+{% extends "login/basehome.html" %}
+{% load i18n %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block head_title %}{% endblock head_title %}</title>
+    {% block extra_head %}
+    {% endblock extra_head %}
+     <style>
+         .custom-btn {
+            background-color: #222d4b;
+            color: white;
+        }
+         .background-section {
+            background-image: url('https://news.virginia.edu/sites/default/files/Header_NA_Lawn_Fall_SS_01_0.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 300px;
+            width: 100vw;
+        }
+         .signup-card {
+            border: 5px solid #e87423;
+            border-radius: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        .content-box {
+            max-width: 90%;
+        }
+        .card-body {
+            padding: 30px;
+
+        }
+        h1 {
+            color: #222d4b;
+            font-weight: bold;
+        }
+        p {
+            margin-bottom: 20px;
+        }
+         .custom-navbar {
+            background-color: #222d4b;
+            border-bottom: 3px solid #e87423;
+        }
+
+    </style>
+  </head>
+  <body>
+    {% block body %}
+
+    {% if messages %}
+    <div>
+      <strong>{% trans "Messages:" %}</strong>
+      <ul>
+        {% for message in messages %}
+        <li>{{message}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <div>
+      <strong>{% trans "Menu:" %}</strong>
+      <ul>
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'account_email' %}">{% trans "Change Email" %}</a></li>
+        <li><a href="{% url 'account_logout' %}">{% trans "Sign Out" %}</a></li>
+        {% else %}
+        <li><a href="{% url 'account_login' %}">{% trans "Sign In" %}</a></li>
+        <li><a href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a></li>
+        {% endif %}
+      </ul>
+    </div>
+    {% block content %}
+    {% endblock content %}
+    {% endblock body %}
+    {% block extra_body %}
+    {% endblock extra_body %}
+  </body>
+</html>

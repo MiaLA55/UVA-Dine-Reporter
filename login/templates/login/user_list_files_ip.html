@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ user.username }}'s Submitted Reports</title>
+    <title>{{ user.username }}'s Reports In Progress</title>
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
@@ -38,19 +38,14 @@
             color: #222d4b;
             /* Set the color for all text */
         }
-         .status-resolved {
-            color: #155724;
-            background-color: #d4edda;
-        }
 
-        .status-in-progress {
+        .custom-btn {
+            background-color: #222d4b;
+            color: white;
+        }
+         .status-in-progress {
              color: #856404;
             background-color: #ffeeba;
-        }
-
-        .status-new {
-            color: #004085;
-            background-color: #cce5ff;
         }
         .status-label {
             display: inline-block;
@@ -78,15 +73,15 @@
             border-radius: 0.25rem;
             border: 1px solid #222d4b;
         }
-
-         .center-text {
-        text-align: center;
-    }
-    .custom-btn:hover {
+        .custom-btn:hover {
         background-color:#0e1424;
         color: white;
     }
-     .header-heading {
+
+.center-text {
+        text-align: center;
+    }
+    .header-heading {
         font-size: 40px;
         color: #222d4b;
         font-weight: bold;
@@ -99,23 +94,19 @@
 </head>
 
 <body>
-<h1 class="center-text header-heading"><strong>{{ user.username.capitalize }}'s Submitted Reports</strong></h1>
+<h1 class="center-text header-heading"><strong>{{ user.username.capitalize }}'s Reports In Progress</strong></h1>
 {% if file_data %}
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
             {% for report in file_data %}
+            {% if report.status == 'IN PROGRESS' %}
             <div class="report-block">
                 <p><strong>Submission Time:</strong> {{ report.submission_time }}</p>
                 <p><strong>Status: </strong>
-                    {% if report.status == 'RESOLVED' %}
-                    <span class="status-label status-resolved">Resolved</span>
-                    {% elif report.status == 'IN PROGRESS' %}
                     <span class="status-label status-in-progress">In Progress</span>
-                    {% else %}
-                    <span class="status-label status-new">New</span>
-                    {% endif %}
                 </p>
+
 
                 {% if report.tags.exists %}
                 <p><strong>Tags:</strong>
@@ -127,14 +118,16 @@
                 {% else %}
                 <p><strong>Tags:</strong> <span class="text-muted">None</span></p>
                 {% endif %}
-                <p><strong>Rating: </strong>{{ report.rating }}</p>
+                 <p><strong>Rating: </strong>{{ report.rating }}</p>
+
                 <p><strong>Location:</strong>
                     {{ report.location }}</p>
 
+
                 <p><strong>File:</strong></p>
                 {% if report.file_name %}
-                <a href="{% url 'login:file_detail' report.file_name %}" class="file-link">
-                    {{ report.file_name }}</a>
+                <a href="{% url 'login:file_detail' report.file_name %}" class="file-link">{{ report.file_name
+                    }}</a>
                 {% else %}
                 <p>None</p>
                 {% endif %}
@@ -154,13 +147,14 @@
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
             </div>
+            {% endif %}
             {% endfor %}
         </div>
     </div>
 </div>
 <a href="{% url 'login:auth_home' %}" class="btn custom-btn"><strong>Return Home</strong></a>
 {% else %}
-<p class="center-text">You have no submitted reports.</p>
+<p class="center-text">You have no reports in progress.</p>
 <br>
 <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-file-earmark" viewBox="0 0 16 16">
   <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
@@ -169,7 +163,6 @@
 <div class="container"><a href="{% url 'login:auth_home' %}" class="btn custom-btn center"><strong>Return Home</strong></a>
 </div>
 {% endif %}
-
 <br>
 <br>
 <br>

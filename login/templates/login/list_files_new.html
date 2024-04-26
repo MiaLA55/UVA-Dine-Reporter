@@ -5,6 +5,28 @@
 {% extends 'login/base.html' %}
 {% block content %}
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get all div elements with the class "custom-card"
+        const cards = document.querySelectorAll('.custom-card');
+
+        // Add a click event listener to each card
+        cards.forEach(function (card) {
+            card.addEventListener('click', function () {
+                // Get the URL from the data-url attribute
+                const url = card.getAttribute('data-url');
+
+                // Redirect the user to the specified URL
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+    });
+
+
+</script>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,30 +36,42 @@
     {% bootstrap_javascript %}
     {% bootstrap_messages %}
     <style>
-        /* Custom styles for the table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        .custom-card {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
-        th,
-        td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
+        .report-block p {
+            margin-bottom: 10px;
         }
 
-        th {
+        .file-link {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .custom-text-color {
+            color: rgb(159, 159, 159);
+        }
+
+        .btn-light:hover {
             background-color: #f2f2f2;
-            font-weight: bold;
         }
 
-        tr:hover {
-            background-color: #f2f2f2;
+        .custom-btn {
+            background-color: #222d4b;
+            color: white;
         }
 
-        /* Rest of your custom styles */
+        .btn-report {
+            width: 600px;
+            height: auto;
+            margin-bottom: 10px;
+            padding: 10px;
+            cursor: pointer;
+        }
+
         .custom-card {
             border: 1px solid #ccc;
             /* Border to give the card a structure */
@@ -72,27 +106,27 @@
             color: white;
         }
 
-        .sort-icon {
-            margin-left: 5px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
 
-        .sort-asc::after {
-            content: '▲';
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
         }
 
-        .sort-desc::after {
-            content: '▼';
-        }
-         .status-resolved {
-            color: #155724;
-            background-color: #d4edda;
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
         }
 
-        .status-in-progress {
-             color: #856404;
-            background-color: #ffeeba;
+        tr:hover {
+            background-color: #f2f2f2;
         }
-
         .status-new {
             color: #004085;
             background-color: #cce5ff;
@@ -108,7 +142,7 @@
             vertical-align: baseline;
             border-radius: 0.25rem;
         }
-         .header-heading {
+           .header-heading {
         font-size: 40px;
         color: #222d4b;
         font-weight: bold;
@@ -122,7 +156,7 @@
 </head>
 
 <body>
-<h1 class="header-heading"><strong>List of Submitted Reports</strong></h1>
+<h1 class="header-heading"><strong>List of New Reports</strong></h1>
 {% if file_data %}
 <p>Please click on an entry to view an individual report and its contents</p>
 {% endif %}
@@ -132,7 +166,6 @@
         <label for="sort-select" class="form-label"><strong>Sort by:</strong></label>
         <select class="form-select" id="sort-select">
             <option value="" selected></option>
-            <option value="status">Status</option>
             <option value="submission_time">Submission Time (Newest → Oldest)</option>
             <option value="location">Location (A-Z)</option>
             <option value="rating">Rating</option>
@@ -149,22 +182,15 @@
             <th>ID</th>
         </tr>
         </thead>
-
         <tbody>
         {% for report in file_data %}
         <tr class="clickable-row"
-            data-url="{% if report.id %}{% url 'login:individual_file_view' report.id %}{% endif %}">
+            data-url="{% if report.id %}{% url 'login:individual_file_view_new' report.id %}{% endif %}">
             <td>
-                {% if report.status == 'RESOLVED' %}
-                <span class="status-label status-resolved">{{ report.status|title }}</span>
-                {% elif report.status == 'IN PROGRESS' %}
-                <span class="status-label status-in-progress">{{ report.status|title }}</span>
-                {% else %}
-                <span class="status-label status-new">{{ report.status|title }}</span>
-                {% endif %}
+                <span class="status-label status-new">New</span>
             </td>
             <td>{{ report.submission_time|date:"Y-m-dTH:i:s" }}</td>
-            <td>{{ report.rating }}</td>
+             <td>{{ report.rating }}</td>
             <td>{{ report.location }}</td>
             <td>{{ report.id }}</td>
         </tr>
@@ -173,19 +199,17 @@
     </table>
 </div>
 {% else %}
-<p>There are no reports submitted.</p>
+<p>There are no new, unopened reports.</p>
 {% endif %}
 <br>
 <br>
-
 <a href="{% url 'login:auth_home' %}" class="btn custom-btn"><strong>Return Home</strong></a>
-
-
-<br><br><br><br>
-
-
+<br>
+<br>
+<br>
+<br>
 <script>
- document.addEventListener('DOMContentLoaded', function () {
+       document.addEventListener('DOMContentLoaded', function () {
         const rows = document.querySelectorAll('.clickable-row');
         rows.forEach(function (row) {
             row.addEventListener('click', function () {
@@ -263,6 +287,7 @@
             document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
         });
     });
+
 </script>
 </body>
 {% endblock %}

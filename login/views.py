@@ -1,12 +1,12 @@
 import os
-
-from django.shortcuts import render, redirect
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.models import User
-from file_upload.models import Report
+from file_upload.models import Report, Tag
 from django.urls import reverse
 import boto3
+from django.contrib import messages
+from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import AnonymousUser
@@ -15,11 +15,25 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 
 
-
 AWS_ACCESS_KEY_ID = "AKIAU6GD2ERXH4XMKEH5"
 AWS_SECRET_ACCESS_KEY = "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"
 AWS_STORAGE_BUCKET_NAME = "dininghallapp"
 
+
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            # Redirect to a success page or perform any other actions
+            return redirect('success_url')
+        else:
+            # If authentication fails, display an error message
+            messages.error(request, 'Invalid username or password.')
+    # If the request method is GET or authentication fails, render the login form
+    return render(request, 'login/home.html')
 
 def auth_home(request):
     if request.user.is_authenticated:
@@ -79,46 +93,78 @@ class CustomLoginView(LoginView):
 
 
 def upload_file(request):
-    if request.method == "POST" and request.FILES.get("file"):
-        s3 = boto3.client(
-            "s3",
-            aws_access_key_id=AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-        )
+    if request.method == "POST":
+        if not request.FILES.get("file") and not request.POST.get("explanation"):
+            error_message = "Please provide either a file or an explanation."
+            available_tags = Tag.objects.all()
+            return render(
+                request,
+                "file_upload/user_submit_report.html",
+                {"error_message": error_message, "available_tags": available_tags},
+            )
 
-        username = request.POST.get("username")
-        report_explanation = request.POST.get("explanation")
+        if request.FILES.get("file"):
+            s3 = boto3.client(
+                "s3",
+                aws_access_key_id=AWS_ACCESS_KEY_ID,
+                aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+            )
+            username = request.POST.get("username")
+            report_explanation = request.POST.get("explanation")
+            uploaded_file = request.FILES["file"]
+            file_name = uploaded_file.name
+            location = request.POST.get("location")
+            rating = request.POST.get("rating")
+            accepted_extensions = ["txt", "pdf", "jpg"]
+            file_extension = file_name.split(".")[-1]
+            if file_extension not in accepted_extensions:
+                return HttpResponse(
+                    f"Invalid file - Files with {file_extension} extension are not allowed"
+                )
 
-        # Get the uploaded file
-        uploaded_file = request.FILES["file"]
-        file_name = uploaded_file.name
-
-        # Check if the file name is not empty
-        if file_name:
-            # Process the file and save it to storage (e.g., Amazon S3)
             s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
 
-            # Get selected tags
-            selected_tags = request.POST.getlist("tags")
+            # Get the comma-separated string of tag IDs
+            selected_tags_str = request.POST.get("tags", "")
 
-            # Create a Report object with the extracted data
+            # Convert the comma-separated string to a list of integers
+            selected_tags_ids = [int(tag_id) for tag_id in selected_tags_str.split(",") if tag_id.isdigit()]
+
+            # Create the report object
             report = Report.objects.create(
                 attached_user=username,
                 explanation=report_explanation,
-                filenames=file_name,
+                filenames=uploaded_file.name,
+                location=location,
+                rating=rating,
             )
 
-            # Save selected tags for the report
-            report.tags.add(*selected_tags)
+            # Add the selected tags to the report
+            report.tags.add(*selected_tags_ids)
 
             return render(request, template_name="file_upload/success.html")
-        else:
-            # If no file is detected, return an error message
-            return HttpResponse("No file detected.")
+        elif request.POST.get("explanation"):
+            username = request.POST.get("username")
+            report_explanation = request.POST.get("explanation")
 
-    else:
-        return HttpResponse("No file detected.")
+            # Get the comma-separated string of tag IDs
+            selected_tags_str = request.POST.get("tags", "")
 
+            # Convert the comma-separated string to a list of integers
+            selected_tags_ids = [int(tag_id) for tag_id in selected_tags_str.split(",") if tag_id.isdigit()]
+
+            location = request.POST.get("location")
+            rating = request.POST.get("rating")
+            report = Report.objects.create(
+                attached_user=username,
+                explanation=report_explanation,
+                location=location,
+                rating=rating,
+            )
+            report.tags.add(*selected_tags_ids)
+            return render(request, template_name="file_upload/success.html")
+
+    return HttpResponse("Nothing uploaded.")
 
 
 
@@ -139,11 +185,14 @@ def list_files(request):
         for report in reports:
             file_data.append(
                 {
-                    "id": report.id,
                     "status": report.status,
                     "file_name": report.filenames,
                     "report_explanation": report.explanation,
+                    "submission_time": report.submission_time,
                     "report_resolve_notes": report.resolved_notes,
+                    "id": report.id,
+                    "location": report.location,
+                    "rating": report.rating
                 }
             )
 
@@ -153,6 +202,100 @@ def list_files(request):
         }
 
         return render(request, "login/list_files.html", context)
+    else:
+        # If the user is not authenticated, redirect them to the login page
+        return redirect("login")
+
+
+def list_files_new(request):
+    if request.user.is_authenticated:
+        # Initialize an empty list to store file data
+        reports = Report.objects.filter(status="NEW")
+        # Initialize an empty list to store file data
+        file_data = []
+        for report in reports:
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "submission_time": report.submission_time,
+                    "report_resolve_notes": report.resolved_notes,
+                    "id": report.id,
+                    "location": report.location,
+                    "rating": report.rating
+                }
+            )
+
+        context = {
+            "username": request.user.username,
+            "file_data": file_data,
+        }
+
+        return render(request, "login/list_files_new.html", context)
+    else:
+        # If the user is not authenticated, redirect them to the login page
+        return redirect("login")
+
+
+def list_files_ip(request):
+    if request.user.is_authenticated:
+        # Initialize an empty list to store file data
+        reports = Report.objects.filter(status="IN PROGRESS")
+        # Initialize an empty list to store file data
+        file_data = []
+        for report in reports:
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "submission_time": report.submission_time,
+                    "report_resolve_notes": report.resolved_notes,
+                    "id": report.id,
+                    "location": report.location,
+                    "rating": report.rating
+                }
+            )
+
+        context = {
+            "username": request.user.username,
+            "file_data": file_data,
+        }
+
+        return render(request, "login/list_files_ip.html", context)
+    else:
+        # If the user is not authenticated, redirect them to the login page
+        return redirect("login")
+
+
+def list_files_resolved(request):
+    if request.user.is_authenticated:
+        # Initialize an empty list to store file data
+        reports = Report.objects.filter(status="RESOLVED")
+        # Initialize an empty list to store file data
+        file_data = []
+        for report in reports:
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "submission_time": report.submission_time,
+                    "report_resolve_notes": report.resolved_notes,
+                    "id": report.id,
+                    "location": report.location,
+                    "rating": report.rating,
+                    "attached_user": report.attached_user,
+                }
+            )
+
+        context = {
+            "username": request.user.username,
+            "file_data": file_data,
+        }
+
+        return render(request, "login/list_files_resolved.html", context)
     else:
         # If the user is not authenticated, redirect them to the login page
         return redirect("login")
@@ -199,12 +342,15 @@ def list_specific_user_files(request):
         for report in reports:
             file_data.append(
                 {
-                    "id": report.id,
                     "status": report.status,
                     "file_name": report.filenames,
                     "report_explanation": report.explanation,
                     "report_resolve_notes": report.resolved_notes,
-                    "tags": report.tags.all(),  # Include tags associated with the report
+                    "submission_time": report.submission_time,
+                    "id": report.id,
+                    "tags": report.tags.all(),
+                    "location": report.location,
+                    "rating": report.rating,
                 }
             )
 
@@ -220,6 +366,114 @@ def list_specific_user_files(request):
         return redirect("login")
 
 
+@login_required
+def user_list_files_new(request):
+    if request.user.is_authenticated:
+        user_identifier = request.user.username
+
+        reports = Report.objects.filter(attached_user=user_identifier, status="NEW")
+        # Initialize an empty list to store file data
+        file_data = []
+        for report in reports:
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "report_resolve_notes": report.resolved_notes,
+                    "submission_time": report.submission_time,
+                    "id": report.id,
+                    "tags": report.tags.all(),
+                    "location": report.location,
+                    "rating": report.rating,
+                }
+            )
+
+        context = {
+            "username": request.user.username,
+            "file_data": file_data,
+        }
+
+        # Render the template with the file data
+        return render(request, "login/user_list_files_new.html", context)
+    else:
+        # If the user is not authenticated, redirect them to the login page
+        return redirect("login")
+
+
+@login_required
+def user_list_files_ip(request):
+    if request.user.is_authenticated:
+        user_identifier = request.user.username
+
+        reports = Report.objects.filter(
+            attached_user=user_identifier, status="IN PROGRESS"
+        )
+        # Initialize an empty list to store file data
+        file_data = []
+        for report in reports:
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "report_resolve_notes": report.resolved_notes,
+                    "submission_time": report.submission_time,
+                    "id": report.id,
+                    "tags": report.tags.all(),
+                    "location": report.location,
+                    "rating": report.rating,
+                }
+            )
+
+        context = {
+            "username": request.user.username,
+            "file_data": file_data,
+        }
+
+        # Render the template with the file data
+        return render(request, "login/user_list_files_ip.html", context)
+    else:
+        # If the user is not authenticated, redirect them to the login page
+        return redirect("login")
+
+
+@login_required
+def user_list_files_resolved(request):
+    if request.user.is_authenticated:
+        user_identifier = request.user.username
+
+        reports = Report.objects.filter(
+            attached_user=user_identifier, status="RESOLVED"
+        )
+        # Initialize an empty list to store file data
+        file_data = []
+        for report in reports:
+            file_data.append(
+                {
+                    "status": report.status,
+                    "file_name": report.filenames,
+                    "report_explanation": report.explanation,
+                    "report_resolve_notes": report.resolved_notes,
+                    "submission_time": report.submission_time,
+                    "id": report.id,
+                    "tags": report.tags.all(),
+                    "location": report.location,
+                    "rating": report.rating,
+                }
+            )
+
+        context = {
+            "username": request.user.username,
+            "file_data": file_data,
+        }
+
+        # Render the template with the file data
+        return render(request, "login/user_list_files_resolved.html", context)
+    else:
+        # If the user is not authenticated, redirect them to the login page
+        return redirect("login")
+
 
 def resolve_report(request):
     if request.user.is_authenticated:
@@ -229,18 +483,18 @@ def resolve_report(request):
         return redirect("login")
 
 
-def resolve_report_submit(request):
+def resolve_report_submit(request, report_id):
     if request.user.is_authenticated:
         if request.method == "POST":
             resolve_notes = request.POST.get("resolveNotes", "")
             filename = request.POST.get("file_name", "")
 
             # Retrieve the specific report based on the file name
-            report = get_object_or_404(Report, filenames=filename)
+            report = get_object_or_404(Report, pk=report_id)
 
             # Update the resolved_notes field of the report
             report.resolved_notes = resolve_notes
-            report.status = 'RESOLVED'
+            report.status = "RESOLVED"
             report.save()
 
             # Your other code for file handling if needed
@@ -251,11 +505,12 @@ def resolve_report_submit(request):
     else:
         return redirect("login")
 
+
 def individual_file_view(request, report_id):
     # Retrieve the corresponding report from the database
     report = get_object_or_404(Report, pk=report_id)
-    if report.status != 'RESOLVED':
-        report.status = 'IN PROGRESS'
+    if report.status != "RESOLVED":
+        report.status = "IN PROGRESS"
         report.save()
 
     # Prepare the context with the details of the specific report
@@ -266,6 +521,51 @@ def individual_file_view(request, report_id):
     # Render the individual file view template with the context
     return render(request, "login/individual_file_view.html", context)
 
+def individual_file_view_new(request, report_id):
+    # Retrieve the corresponding report from the database
+    report = get_object_or_404(Report, pk=report_id)
+    if report.status != "RESOLVED":
+        report.status = "IN PROGRESS"
+        report.save()
+
+    # Prepare the context with the details of the specific report
+    context = {
+        "report": report,
+    }
+
+    # Render the individual file view template with the context
+    return render(request, "login/individual_file_view_new.html", context)
+
+def individual_file_view_ip(request, report_id):
+    # Retrieve the corresponding report from the database
+    report = get_object_or_404(Report, pk=report_id)
+    if report.status != "RESOLVED":
+        report.status = "IN PROGRESS"
+        report.save()
+
+    # Prepare the context with the details of the specific report
+    context = {
+        "report": report,
+    }
+
+    # Render the individual file view template with the context
+    return render(request, "login/individual_file_view_ip.html", context)
+
+
+def individual_file_view_resolved(request, report_id):
+    # Retrieve the corresponding report from the database
+    report = get_object_or_404(Report, pk=report_id)
+    if report.status != "RESOLVED":
+        report.status = "IN PROGRESS"
+        report.save()
+
+    # Prepare the context with the details of the specific report
+    context = {
+        "report": report,
+    }
+
+    # Render the individual file view template with the context
+    return render(request, "login/individual_file_view_resolved.html", context)
 
 def delete_report(request, report_id):
     if request.user.is_authenticated:

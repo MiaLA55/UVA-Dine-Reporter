@@ -1,12 +1,40 @@
 {% extends 'login/base.html' %}
 {% block content %}
+<!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .container {
+            text-align: center;
+        }
+        .success-image {
+            width: 200px;
+            height: 200px;
+        }
+        .success-text {
+            color: green;
+        }
+        body {
+            color: #222d4b; /* Set the color for all text */
+        }
+        .custom-btn {
+            background-color: #222d4b;
+            color: white;
+        }
 
+    </style>
+</head>
 <body>
-    The report has been resolved.
-    <a href="{% url 'login:auth_home' %}" class="btn btn-primary">Return Home</a>
+<div class="container">
+    <img src="https://icons.veryicon.com/png/o/miscellaneous/8atour/success-35.png" alt="Success Image"
+         class="success-image">
+    <br><br><br>
+    <h1><span class="success-text">Report Resolved Successfully!</span></h1>
+    <br><br>
+    <a href="{% url 'login:auth_home' %}" class="btn custom-btn"><strong>Return Home</strong></a>
+</div>
 </body>
-
 </html>
-
 {% endblock %}

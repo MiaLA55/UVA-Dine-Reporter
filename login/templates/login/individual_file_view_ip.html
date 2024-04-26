@@ -82,7 +82,7 @@
             {% if report %}
             <div class="custom-card">
                 <div class="card-body">
-                    <p style=><strong>Status: </strong>
+                    <p><strong>Status: </strong>
                         {% if report.status == 'RESOLVED' %}
                         <span class="status-label status-resolved">Resolved</span>
                         {% elif report.status == 'IN PROGRESS' %}
@@ -150,7 +150,8 @@
                         </div>
                         <input type="hidden" name="file_name" value="{{ report.filenames }}">
                         <br>
-                        <a href="{% url 'login:list_files' %}" class="btn custom-btn"><strong>Back to the List</strong></a>
+                        <a href="{% url 'login:list_files_ip' %}" class="btn custom-btn"><strong>Back to the
+                            List</strong></a>
                         <button type="submit" class="btn btn-primary"><strong>Resolve Report</strong></button>
                     </form>
                     {% endif %}

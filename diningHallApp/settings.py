@@ -59,7 +59,7 @@ ROOT_URLCONF = "diningHallApp.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [os.path.join(BASE_DIR, "../templates"), ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -97,17 +97,27 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "EST"
+TIME_ZONE = "America/New_York"
+
 
 USE_I18N = True
 
+USE_L10N = True
+
 USE_TZ = True
+
+# DATETIME_FORMAT = "Y-m-d H:i:sO"
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = AWS_URL + "/static/"
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+# STATIC_URL = "static/"
+
 STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 MEDIA_URL = AWS_URL + "/media/"
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
@@ -131,11 +141,11 @@ SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "SCOPE": ["profile", "email"],
         "AUTH_PARAMS": {"access_type": "online"},
-         "APP": {
-             "client_id": "1061490713677-lco3blmvsce1jp0k1i91rnvff2t4fm99.apps.googleusercontent.com",
-             "secret": "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",
-             "key": "",
-         },
+        "APP": {
+            "client_id": "1061490713677-lco3blmvsce1jp0k1i91rnvff2t4fm99.apps.googleusercontent.com",
+            "secret": "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",
+            "key": "",
+        },
     }
 }
 SITE_ID = 2
@@ -185,8 +195,11 @@ else:
         }
     }
 
-
 # STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "staticfiles"),
+]
+
 # MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # SHERRIFF

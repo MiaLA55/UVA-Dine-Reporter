@@ -60,13 +60,14 @@
             border-radius: 0.25rem;
             border: 1px solid #222d4b;
         }
-  .header-heading {
+
+          .header-heading {
                 font-size: 40px;
                 color: #222d4b;
                 font-weight: bold;
             }
 
-         .custom-btn:hover {
+             .custom-btn:hover {
         background-color:#0e1424;
         color: white;
     }
@@ -82,7 +83,7 @@
             {% if report %}
             <div class="custom-card">
                 <div class="card-body">
-                    <p style=><strong>Status: </strong>
+                    <p><strong>Status: </strong>
                         {% if report.status == 'RESOLVED' %}
                         <span class="status-label status-resolved">Resolved</span>
                         {% elif report.status == 'IN PROGRESS' %}
@@ -91,6 +92,7 @@
                         <span class="status-label status-new">New</span>
                         {% endif %}
                     </p>
+
                     {% if report.tags.exists %}
                     <p><strong>Tags:</strong>
 
@@ -101,14 +103,14 @@
                     {% else %}
                     <p><strong>Tags:</strong> <span class="text-muted">None</span></p>
                     {% endif %}
-                    {% if report.attached_user %}
+                     {% if report.attached_user %}
                     <p><strong>User:</strong> {{ report.attached_user }}</p>
                     {% else %}
                     <p><strong>User:</strong><span class="text-muted"> Anonymous</span></p>
                     {% endif %}
-                    <p><strong>Location:</strong> {{ report.location }}</p>
-                    <p><strong>Submission Time: </strong>{{ report.submission_time }}</p>
                     <p><strong>Experience Rating: </strong>{{ report.rating }}</p>
+                    <p><strong>Location:</strong> {{ report.location }}</p>
+                     <p><strong>Submission Time: </strong>{{ report.submission_time }}</p>
                     <strong>Report Explanation:</strong>
                     <p>
                         {% if report.explanation %}
@@ -137,7 +139,7 @@
                         <span class="text-muted">No report resolve notes provided</span>
                         {% endif %}
                     </p>
-                    <a href="{% url 'login:list_files' %}" class="btn custom-btn">Back to the List</a>
+                    <a href="{% url 'login:list_files_new' %}" class="btn custom-btn">Back to the List</a>
                     {% else %}
                     <form id="file-upload-form" method="post" enctype="multipart/form-data"
                           action="{% url 'login:resolve_report_submit' report.id%}">
@@ -150,7 +152,8 @@
                         </div>
                         <input type="hidden" name="file_name" value="{{ report.filenames }}">
                         <br>
-                        <a href="{% url 'login:list_files' %}" class="btn custom-btn"><strong>Back to the List</strong></a>
+                        <a href="{% url 'login:list_files_new' %}" class="btn custom-btn"><strong>Back to the
+                            List</strong></a>
                         <button type="submit" class="btn btn-primary"><strong>Resolve Report</strong></button>
                     </form>
                     {% endif %}
