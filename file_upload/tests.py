@@ -15,8 +15,6 @@ AWS_STORAGE_BUCKET_NAME = "dininghallapp"
 
 
 class FileUploadTest(TestCase):
-
-
     def test_upload_txt_file(self):
         s3 = boto3.client(
             "s3",

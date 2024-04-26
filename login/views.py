@@ -33,7 +33,7 @@ def login_view(request):
             # If authentication fails, display an error message
             messages.error(request, 'Invalid username or password.')
     # If the request method is GET or authentication fails, render the login form
-    return render(request, 'login.html')
+    return render(request, 'login/home.html')
 
 def auth_home(request):
     if request.user.is_authenticated:
