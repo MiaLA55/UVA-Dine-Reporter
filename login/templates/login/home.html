@@ -1,8 +1,10 @@
 <!-- /***************************************************************************************
 *  REFERENCES
-*  Title: Login Form, Jumbotron
+*  Title: Login Form, Jumbotron,
 *  Author: mdbootstrap
 *  URL: https://mdbootstrap.com/docs/standard/extended/login/, https://mdbootstrap.com/docs/standard/extended/jumbotron/
+*  Source: ChatGPT
+*  Use: Basic styling/recentering
 ***************************************************************************************/ -->
 {% extends 'login/basehome.html' %}
 {% load static %}
@@ -40,16 +42,16 @@
             color: white;
         }
         .signup-card {
-            border: 5px solid #e87423; /* Orange border */
-            border-radius: 1rem; /* Rounded corners */
+            border: 5px solid #e87423;
+            border-radius: 1rem;
         }
-        /* Default height for small devices */
+
         #intro-example {
             height: 400px;
             position: relative;
         }
 
-        /* Height for devices larger than 992px */
+
         @media (min-width: 992px) {
             #intro-example {
                 height: 600px;
@@ -57,7 +59,11 @@
         }
 
 
-        /* Adjust mask to cover only the background image */
+         .logout-heading {
+        font-size: 40px;
+        color: #222d4b;
+        font-weight: bold;
+    }
         .mask {
             position: absolute;
             top: 0;
@@ -74,7 +80,11 @@
             z-index: 1;
         }
 
-
+         .custom-text {
+        font-size: 40px;
+        color: white;
+        font-weight: bold;
+    }
 
     </style>
 </head>
@@ -106,15 +116,13 @@
         </div>
     </div>
 </nav>
-<!-- Navbar -->
 
-<!-- Background image -->
 <div id="intro-example" class="p-5 text-center bg-image"
      style="background-image: url('https://harvesttableuva.com/wp-content/uploads/2020/12/20201103_161130030_iOS-scaled-2100x900-c-default.jpg');">
     <div class="mask" style="background-color: rgba(0, 0, 0, 0.7);">
         <div class="d-flex justify-content-center align-items-center h-100">
             <div class="text-white">
-                <h1 class="mb-3">UVA Dine Reporter</h1>
+                <h1 class="mb-3 custom-text">UVA Dine Reporter</h1>
                 <h5 class="mb-4">
                     Report. Share. Improve: Together, We Raise Dining Standards.
                 </h5>
