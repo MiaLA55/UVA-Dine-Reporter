@@ -86,11 +86,16 @@
         background-color:#0e1424;
         color: white;
     }
+     .header-heading {
+        font-size: 40px;
+        color: #222d4b;
+        font-weight: bold;
+    }
     </style>
 </head>
 
 <body>
-<h1 class="center-text"><strong>{{ user.username.capitalize }}'s Submitted Reports</strong></h1>
+<h1 class="center-text header-heading"><strong>{{ user.username.capitalize }}'s Submitted Reports</strong></h1>
 {% if file_data %}
 <div class="container mt-5">
     <div class="row justify-content-center">
