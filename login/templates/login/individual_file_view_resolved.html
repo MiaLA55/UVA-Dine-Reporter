@@ -70,6 +70,10 @@
         background-color:#0e1424;
         color: white;
     }
+       .status-resolved {
+            color: #155724;
+            background-color: #d4edda;
+        }
     </style>
 </head>
 
@@ -145,7 +149,7 @@
                         </div>
                         <input type="hidden" name="file_name" value="{{ report.filenames }}">
                         <br>
-                        <a href="{% url 'login:home' %}" class="btn custom-btn"><strong>Back to the List</strong></a>
+                        <a href="{% url 'login:list_files_ip' %}" class="btn custom-btn"><strong>Back to the List</strong></a>
                         <button type="submit" class="btn btn-primary"><strong>Resolve Report</strong></button>
                     </form>
                     {% endif %}

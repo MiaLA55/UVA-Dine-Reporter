@@ -66,14 +66,13 @@
 <body>
 <div class="signin-form">
     {% if process == "connect" %}
-    <h1>{% blocktrans with provider.name as provider %}Connect {{ provider }}{% endblocktrans %}</h1>
-    <p>You are about to connect a new third-party account from {{ provider }}.</p>
+    <h1>{% blocktrans with provider.name as provider %}Connect Google{% endblocktrans %}</h1>
+    <p>You are about to connect a new third-party account from Google.</p>
     {% else %}
     <h1 style="font-size: 40px;
     color: #222d4b;
-    font-weight: bold;"><strong>Sign In Via {{ provider }} </strong></h1>
-    <p>{% blocktrans with provider.name as provider %}You are about to sign in using a third party account from {{
-        provider }}.{% endblocktrans %}</p>
+    font-weight: bold;"><strong>Sign In Via Google</strong></h1>
+    <p>{% blocktrans with provider.name as provider %}You are about to sign in using a third party account from Google.{% endblocktrans %}</p>
     {% endif %}
 
     <form method="post">
