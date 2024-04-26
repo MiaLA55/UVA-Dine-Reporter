@@ -141,19 +141,27 @@
             vertical-align: baseline;
             border-radius: 0.25rem;
         }
-
+        .header-heading {
+        font-size: 40px;
+        color: #222d4b;
+        font-weight: bold;
+    }
+.custom-btn:hover {
+        background-color:#0e1424;
+        color: white;
+    }
     </style>
 </head>
 
 <body>
-<h1>List of Reports In Progress</h1>
+<h1 class="header-heading"><strong>List of Resolved Reports</strong></h1>
 {% if file_data %}
 <p>Please click on an entry to view an individual report and its contents</p>
 {% endif %}
 {% if file_data %}
 <div class="container mt-5">
     <div class="mb-3">
-        <label for="sort-select" class="form-label">Sort by:</label>
+        <label for="sort-select" class="form-label"><strong>Sort by:</strong></label>
         <select class="form-select" id="sort-select">
             <option value="" selected></option>
             <option value="submission_time">Submission Time (Newest → Oldest)</option>
@@ -192,7 +200,7 @@
 {% endif %}
 <br>
 <br>
-<a href="{% url 'login:auth_home' %}" class="btn custom-btn">Return Home</a>
+<a href="{% url 'login:auth_home' %}" class="btn custom-btn"><strong>Return Home</strong></a>
 <br>
 <br>
 <br>

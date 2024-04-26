@@ -60,8 +60,16 @@
             border-radius: 0.25rem;
             border: 1px solid #222d4b;
         }
+  .header-heading {
+                font-size: 40px;
+                color: #222d4b;
+                font-weight: bold;
+            }
 
-
+         .custom-btn:hover {
+        background-color:#0e1424;
+        color: white;
+    }
     </style>
 </head>
 
@@ -69,7 +77,7 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <h1 class="text-center">Report Details</h1>
+            <h1 class="text-center header-heading"><strong>Report Details</strong></h1>
             {% if report %}
             <div class="custom-card">
                 <div class="card-body">
@@ -81,7 +89,6 @@
                         {% else %}
                         <span class="status-label status-new">New</span>
                         {% endif %}
-                        
                     </p>
                     {% if report.tags.exists %}
                     <p><strong>Tags:</strong>
@@ -91,13 +98,12 @@
                         {% endfor %}
                     </p>
                     {% else %}
-                    <p><strong>Submission Time: </strong>{{ report.submission_time }}</p>
                     <p><strong>Tags:</strong> <span class="text-muted">None</span></p>
-                    {% endif %}
-                     <p><strong>Rating: </strong>{{ report.rating }}</p>
                     <p><strong>Location:</strong> {{ report.location }}</p>
 
-
+                    {% endif %}
+                    <p><strong>Submission Time: </strong>{{ report.submission_time }}</p>
+                     <p><strong>Rating: </strong>{{ report.rating }}</p>
                     <p><strong>ID:</strong> {{ report.id }}</p>
                     <strong>Report Explanation:</strong>
                     <p>
@@ -126,7 +132,7 @@
                         <span class="text-muted">No report resolve notes provided</span>
                         {% endif %}
                     </p>
-                    <a href="{% url 'login:list_files_ip' %}" class="btn custom-btn">Back to the List</a>
+                    <a href="{% url 'login:list_files' %}" class="btn custom-btn">Back to the List</a>
                     {% else %}
                     <form id="file-upload-form" method="post" enctype="multipart/form-data"
                           action="{% url 'login:resolve_report_submit' report.id%}">
@@ -139,8 +145,8 @@
                         </div>
                         <input type="hidden" name="file_name" value="{{ report.filenames }}">
                         <br>
-                        <a href="{% url 'login:list_files_ip' %}" class="btn custom-btn">Back to the List</a>
-                        <button type="submit" class="btn btn-primary">Resolve Report</button>
+                        <a href="{% url 'login:list_files_ip' %}" class="btn custom-btn"><strong>Back to the List</strong></a>
+                        <button type="submit" class="btn btn-primary"><strong>Resolve Report</strong></button>
                     </form>
                     {% endif %}
                 </div>

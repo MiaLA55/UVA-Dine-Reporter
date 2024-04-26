@@ -49,6 +49,8 @@
         right: 15px;
         transform: translateY(-50%);
     }
+
+
 </style>
 
 <head>
@@ -76,6 +78,14 @@
 
             color: #222d4b;
         }
+         .anon-text {
+            margin-bottom: 20px;
+            font-size: 20px;
+
+            font-weight: bold;
+
+            color: gray;
+        }
         .make-report{
             margin-bottom: 10px;
                 font-size: 30px;
@@ -87,7 +97,7 @@
 
         body {
             color: #222d4b;
-            /* Set the color for all text */
+
         }
 
         .custom-tag {
@@ -119,6 +129,8 @@
       .center-text {
         text-align: center;
     }
+
+
     </style>
     <script>
     function toggleTag(tag) {
@@ -134,17 +146,14 @@
         }
         selectedTagsInput.value = selectedTags.join(',');
     }
-</script>
+
+
+    </script>
 
 </head>
 
 <body>
 <div class="container mt-5">
-   
-   
-   
-   
-   
     <br>
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -153,7 +162,13 @@
                     <h2 class="card-title make-report"><strong>Make a Report</strong></h2>
                 </div>
                 <div class="card-body">
-                    <p class="card-text" style="font-size: 18px;">Fill in the fields below to make a report on UVA Dine.</p>
+                        <p class="anon-text">
+                            {% if not user.is_authenticated %}
+                            <strong>You are currently reporting anonymously.</strong>
+                            {% endif %}
+                        </p>
+                    <p class="card-text" style="font-size: 18px;">Fill in the fields below to make a report on UVA
+                        Dine.</p>
                     <form id="reportForm" method="post" enctype="multipart/form-data"
                           action="{% url 'login:upload_file' %}">
                         {% csrf_token %}
@@ -177,23 +192,23 @@
                                 </option>
                                 <option value="Runk Dining Hall">Runk Dining Hall</option>
                                 <option value="O'Hill Dining Hall">O'Hill Dining Hall</option>
-                                <option value="New Comb Dining Hall">Newcomb Dining Hall</option>
+                                <option value="Newcomb Dining Hall">Newcomb Dining Hall</option>
                                 <option value="Food Trucks">Food Trucks</option>
-                                <option value="Food At PAV">Food at Pavilion XI</option>
-                                <!-- Add more options as needed -->
+                                <option value="Crossroads Food Court">Crossroads Food Court</option>
+                                <option value="Food at the Pavilion XI">Food at Pavilion XI</option>
                             </select>
                         </div>
-                         <div class="form-group custom-dropdown">
-                                <label for="rating"><strong>Experience Rating:</strong></label>
-                                <select class="form-control" id="rating" name="rating">
-                                    <option value="1"></option>
-                                    <option value="2">1</option>
-                                    <option value="3">2</option>
-                                    <option value="4">3</option>
-                                    <option value="5">4</option>
-                                    <option value="6">5</option>
-                                </select>
-                            </div>
+                        <div class="form-group custom-dropdown">
+                            <label for="rating"><strong>Experience Rating:</strong></label>
+                            <select class="form-control" id="rating" name="rating">
+                                <option value="1"></option>
+                                <option value="2">1</option>
+                                <option value="3">2</option>
+                                <option value="4">3</option>
+                                <option value="5">4</option>
+                                <option value="6">5</option>
+                            </select>
+                        </div>
                         <br>
                         <p class="card-text"><strong>Upload files as needed </strong>
                             (accepted file types are .txt / plain text, .pdf / Adobe PDF documents, .jpg / JPEG
@@ -209,10 +224,7 @@
                         </div>
                         <br>
 
-
-
                         <div class="text-center">
-
                             <button type="submit" class="btn btn-primary"><strong>Submit Report</strong></button>
                         </div>
                     </form>
@@ -234,7 +246,7 @@
 {% if user.is_authenticated %}
 <a href="{% url 'login:auth_home' %}" class="btn custom-btn"><strong>Return Home</strong></a>
 {% else %}
-<a href="{% url 'login:home' %}" class="btn custom-btn">Return Home</a>
+<a href="{% url 'login:home' %}" class="btn custom-btn"><strong>Return Home</strong></a>
 {% endif %}
 <br>
 <br>
