@@ -73,13 +73,19 @@
             border-radius: 0.25rem;
             border: 1px solid #222d4b;
         }
+        .custom-btn:hover {
+        background-color:#0e1424;
+        color: white;
+    }
 
-
+.center-text {
+        text-align: center;
+    }
     </style>
 </head>
 
 <body>
-<h1>{{ username }}'s Submitted Reports In Progress</h1>
+<h1 class="center-text"><strong>{{ username }}'s Submitted Reports In Progress</strong></h1>
 {% if file_data %}
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -140,7 +146,7 @@
 {% else %}
 <p>You have no reports in progress.</p>
 {% endif %}
-<a href="{% url 'login:auth_home' %}" class="btn custom-btn">Return Home</a>
+<a href="{% url 'login:auth_home' %}" class="btn custom-btn"><strong>Return Home</strong></a>
 <br>
 <br>
 <br>
