@@ -192,6 +192,7 @@ def list_files(request):
                     "report_resolve_notes": report.resolved_notes,
                     "id": report.id,
                     "location": report.location,
+                    "rating": report.rating
                 }
             )
 

@@ -109,8 +109,7 @@
                     {% endif %}
                     <p><strong>Location:</strong> {{ report.location }}</p>
                     <p><strong>Submission Time: </strong>{{ report.submission_time }}</p>
-                    <p><strong>Rating: </strong>{{ report.rating }}</p>
-                    <p><strong>ID:</strong> {{ report.id }}</p>
+                    <p><strong>Experience Rating: </strong>{{ report.rating }}</p>
                     <strong>Report Explanation:</strong>
                     <p>
                         {% if report.explanation %}
@@ -128,6 +127,7 @@
                         <span>None</span>
                         {% endif %}
                     </p>
+                    <p><strong>ID:</strong> {{ report.id }}</p>
                     <hr>
                     {% if report.status == 'RESOLVED' %}
                     <p><strong>Report Resolve Notes:</strong></p>
