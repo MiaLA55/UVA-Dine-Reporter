@@ -1,7 +1,7 @@
 from pathlib import Path
 import os
 import dj_database_url
-import secrets
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,7 +19,7 @@ AWS_S3_SIGNATURE_VERSION = "s3v4"
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-x=vxj8o=(976yc(mczv^s*21ke-h(o_3=8-xghs75wjqnx*8g4"
+SECRET_KEY = config("SECRET_KEY")
 
 
 SITE_ID = 2
