@@ -222,6 +222,7 @@ def list_files_new(request):
                     "report_resolve_notes": report.resolved_notes,
                     "id": report.id,
                     "location": report.location,
+                    "rating": report.rating
                 }
             )
 
@@ -252,6 +253,7 @@ def list_files_ip(request):
                     "report_resolve_notes": report.resolved_notes,
                     "id": report.id,
                     "location": report.location,
+                    "rating": report.rating
                 }
             )
 
@@ -282,6 +284,7 @@ def list_files_resolved(request):
                     "report_resolve_notes": report.resolved_notes,
                     "id": report.id,
                     "location": report.location,
+                    "rating": report.rating
                 }
             )
 
