@@ -13,8 +13,6 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 
-
-
 AWS_ACCESS_KEY_ID = "AKIAU6GD2ERXH4XMKEH5"
 AWS_SECRET_ACCESS_KEY = "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"
 AWS_STORAGE_BUCKET_NAME = "dininghallapp"
@@ -34,6 +32,7 @@ def login_view(request):
             messages.error(request, 'Invalid username or password.')
     # If the request method is GET or authentication fails, render the login form
     return render(request, 'login/home.html')
+
 
 def auth_home(request):
     if request.user.is_authenticated:
@@ -109,20 +108,25 @@ def upload_file(request):
                 aws_access_key_id=AWS_ACCESS_KEY_ID,
                 aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
             )
-            username = request.POST.get("username")
-            report_explanation = request.POST.get("explanation")
             uploaded_file = request.FILES["file"]
             file_name = uploaded_file.name
-            location = request.POST.get("location")
-            rating = request.POST.get("rating")
             accepted_extensions = ["txt", "pdf", "jpg"]
             file_extension = file_name.split(".")[-1]
             if file_extension not in accepted_extensions:
-                return HttpResponse(
-                    f"Invalid file - Files with {file_extension} extension are not allowed"
+                error_message = f"Unsupported file type: {file_extension}"
+                available_tags = Tag.objects.all()
+                return render(
+                    request,
+                    "file_upload/user_submit_report.html",
+                    {"error_message": error_message, "available_tags": available_tags},
                 )
 
             s3.upload_fileobj(uploaded_file, AWS_STORAGE_BUCKET_NAME, file_name)
+
+            username = request.POST.get("username")
+            report_explanation = request.POST.get("explanation")
+            location = request.POST.get("location")
+            rating = request.POST.get("rating")
 
             # Get the comma-separated string of tag IDs
             selected_tags_str = request.POST.get("tags", "")
@@ -134,7 +138,7 @@ def upload_file(request):
             report = Report.objects.create(
                 attached_user=username,
                 explanation=report_explanation,
-                filenames=uploaded_file.name,
+                filenames=file_name,
                 location=location,
                 rating=rating,
             )
@@ -146,6 +150,8 @@ def upload_file(request):
         elif request.POST.get("explanation"):
             username = request.POST.get("username")
             report_explanation = request.POST.get("explanation")
+            location = request.POST.get("location")
+            rating = request.POST.get("rating")
 
             # Get the comma-separated string of tag IDs
             selected_tags_str = request.POST.get("tags", "")
@@ -153,8 +159,7 @@ def upload_file(request):
             # Convert the comma-separated string to a list of integers
             selected_tags_ids = [int(tag_id) for tag_id in selected_tags_str.split(",") if tag_id.isdigit()]
 
-            location = request.POST.get("location")
-            rating = request.POST.get("rating")
+            # Create the report object
             report = Report.objects.create(
                 attached_user=username,
                 explanation=report_explanation,
@@ -165,7 +170,6 @@ def upload_file(request):
             return render(request, template_name="file_upload/success.html")
 
     return HttpResponse("Nothing uploaded.")
-
 
 
 def check_existing_filename(s3_client, bucket_name, file_name):
@@ -521,6 +525,7 @@ def individual_file_view(request, report_id):
     # Render the individual file view template with the context
     return render(request, "login/individual_file_view.html", context)
 
+
 def individual_file_view_new(request, report_id):
     # Retrieve the corresponding report from the database
     report = get_object_or_404(Report, pk=report_id)
@@ -535,6 +540,7 @@ def individual_file_view_new(request, report_id):
 
     # Render the individual file view template with the context
     return render(request, "login/individual_file_view_new.html", context)
+
 
 def individual_file_view_ip(request, report_id):
     # Retrieve the corresponding report from the database
@@ -566,6 +572,7 @@ def individual_file_view_resolved(request, report_id):
 
     # Render the individual file view template with the context
     return render(request, "login/individual_file_view_resolved.html", context)
+
 
 def delete_report(request, report_id):
     if request.user.is_authenticated:
