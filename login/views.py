@@ -509,6 +509,23 @@ def resolve_report_submit(request, report_id):
     else:
         return redirect("login")
 
+def user_file_view(request, report_id):
+    # Retrieve the corresponding report from the database
+    prevPage = request.GET.get('prevPage')
+    report = get_object_or_404(Report, pk=report_id)
+    if report.status != "RESOLVED":
+        report.status = "IN PROGRESS"
+        report.save()
+
+    # Prepare the context with the details of the specific report
+    context = {
+        "report": report,
+        "prevPage": prevPage
+    }
+
+    # Render the individual file view template with the context
+    return render(request, "login/user_file_view.html", context)
+
 
 def individual_file_view(request, report_id):
     # Retrieve the corresponding report from the database

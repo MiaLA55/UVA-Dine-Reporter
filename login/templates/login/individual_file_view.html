@@ -137,7 +137,7 @@
                         <span class="text-muted">No report resolve notes provided</span>
                         {% endif %}
                     </p>
-                    <a href="{% url 'login:list_files' %}" class="btn custom-btn">Back to the List</a>
+                    <a href="{% url 'login:list_files' %}" class="btn custom-btn"><strong>Back to the List</strong></a>
                     {% else %}
                     <form id="file-upload-form" method="post" enctype="multipart/form-data"
                           action="{% url 'login:resolve_report_submit' report.id%}">

@@ -17,10 +17,12 @@ urlpatterns = [
     path("user_list_files_new/", views.user_list_files_new, name="user_list_files_new"),
     path("user_list_files_ip/", views.user_list_files_ip, name="user_list_files_ip"),
     path("user_list_files_resolved/", views.user_list_files_resolved, name="user_list_files_resolved"),
+    path("user_file_view/<int:report_id>/", views.user_file_view, name="user_file_view"),
     path("individual_file_view/<int:report_id>/", views.individual_file_view, name="individual_file_view"),
     path("individual_file_view_new/<int:report_id>/", views.individual_file_view_new, name="individual_file_view_new"),
     path("individual_file_view_ip/<int:report_id>/", views.individual_file_view_ip, name="individual_file_view_ip"),
-    path("individual_file_view_resolved/<int:report_id>/", views.individual_file_view_resolved, name="individual_file_view_resolved"),
+    path("individual_file_view_resolved/<int:report_id>/", views.individual_file_view_resolved,
+         name="individual_file_view_resolved"),
     path("detail/<str:file_name>/", views.file_detail, name="file_detail"),
     path(
         "resolve_report_submit/<int:report_id>/",
