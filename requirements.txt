@@ -9,3 +9,4 @@ Pillow
 django-heroku
 boto3
 django-storages
+python-decouple
