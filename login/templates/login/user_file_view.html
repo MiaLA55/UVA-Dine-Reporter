@@ -106,7 +106,11 @@
 
                     <p><strong>Location:</strong> {{ report.location }}</p>
                     <p><strong>Submission Time: </strong>{{ report.submission_time }}</p>
+                     {% if report.rating != 0 %}
                     <p><strong>Experience Rating: </strong>{{ report.rating }}</p>
+                    {% else %}
+                    <p><strong>Experience Rating: </strong>  <span class="text-muted">None</span></p>
+                    {% endif %}
                     <strong>Report Explanation:</strong>
                     <p>
                         {% if report.explanation %}

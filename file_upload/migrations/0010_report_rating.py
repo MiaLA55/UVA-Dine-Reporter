@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='report',
             name='rating',
-            field=models.IntegerField(blank=True, default=1, null=True),
+            field=models.IntegerField(blank=True, default=0, null=True),
         ),
     ]

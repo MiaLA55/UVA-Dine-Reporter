@@ -118,6 +118,7 @@
         color: white;
     }
 
+
     </style>
 </head>
 
@@ -164,7 +165,12 @@
                 {% endif %}
             </td>
             <td>{{ report.submission_time|date:"Y-m-dTH:i:s" }}</td>
-            <td>{{ report.rating }}</td>
+            <td> {% if report.rating != 0 %}
+                {{ report.rating }}
+                {% else %}
+
+                {% endif %}
+            </td>
             <td>{{ report.location }}</td>
             <td>{{ report.id }}</td>
         </tr>
@@ -263,6 +269,7 @@
             document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
         });
     });
+
 </script>
 </body>
 {% endblock %}

@@ -195,7 +195,12 @@
                 <span class="status-label status-in-progress">In Progress</span>
             </td>
             <td>{{ report.submission_time|date:"Y-m-dTH:i:s" }}</td>
-            <td>{{ report.rating }}</td>
+            <td> {% if report.rating != 0 %}
+                {{ report.rating }}
+                {% else %}
+
+                {% endif %}
+            </td>
             <td>{{ report.location }}</td>
             <td>{{ report.id }}</td>
         </tr>
