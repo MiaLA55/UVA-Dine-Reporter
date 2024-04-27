@@ -190,12 +190,22 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+
+     document.addEventListener('DOMContentLoaded', function () {
+        const rows = document.querySelectorAll('.clickable-row');
+        rows.forEach(function (row) {
+            row.addEventListener('click', function () {
+                const url = row.getAttribute('data-url');
+                if (url) {
+                    window.location.href = url;
+                }
+            });
+        });
+
         document.getElementById('sort-select').addEventListener('change', function () {
             const selectedValue = this.value;
             sortTable(selectedValue);
         });
-
         const sortTable = (sortBy) => {
             const table = document.querySelector('table');
             const tbody = table.querySelector('tbody');
