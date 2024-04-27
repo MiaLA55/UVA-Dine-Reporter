@@ -213,17 +213,7 @@
 <br>
 <br>
 <script>
-       document.addEventListener('DOMContentLoaded', function () {
-        const rows = document.querySelectorAll('.clickable-row');
-        rows.forEach(function (row) {
-            row.addEventListener('click', function () {
-                const url = row.getAttribute('data-url');
-                if (url) {
-                    window.location.href = url;
-                }
-            });
-        });
-
+    document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('sort-select').addEventListener('change', function () {
             const selectedValue = this.value;
             sortTable(selectedValue);
@@ -235,16 +225,20 @@
             const rows = Array.from(tbody.querySelectorAll('tr'));
 
             rows.sort((a, b) => {
-                const cellA = a.querySelector(`td:nth-child(${getSortIndex(sortBy)})`).innerText;
-                const cellB = b.querySelector(`td:nth-child(${getSortIndex(sortBy)})`).innerText;
+                const cellA = getValue(a, sortBy);
+                const cellB = getValue(b, sortBy);
 
                 if (sortBy === 'location') {
                     return cellA.localeCompare(cellB);
-                } else if (sortBy == 'status') {
+                } else if (sortBy === 'status') {
                     const order = { 'New': 1, 'In Progress': 2, 'Resolved': 3 };
                     return order[cellA] - order[cellB];
                 } else if (sortBy === 'submission_time') {
                     return new Date(cellB).getTime() - new Date(cellA).getTime();
+                } else if (sortBy === 'rating') {
+                    if (cellA === '') cellA = -1; // Treat empty ratings as -1 for sorting
+                    if (cellB === '') cellB = -1;
+                    return parseInt(cellA) - parseInt(cellB);
                 } else {
                     return parseInt(cellA) - parseInt(cellB);
                 }
@@ -254,44 +248,23 @@
             rows.forEach(row => tbody.appendChild(row));
         };
 
-        const getSortIndex = (sortBy) => {
+        const getValue = (row, sortBy) => {
             switch (sortBy) {
                 case 'status':
-                    return 1;
+                    return row.querySelector('.status-label').innerText;
                 case 'submission_time':
-                    return 2;
+                    return row.querySelector('td:nth-child(2)').innerText;
                 case 'rating':
-                    return 3;
+                    const rating = row.querySelector('td:nth-child(3)').innerText.trim();
+                    return rating === '' ? 0 : parseInt(rating);
                 case 'location':
-                    return 4;
+                    return row.querySelector('td:nth-child(4)').innerText;
                 case 'id':
-                    return 5;
+                    return row.querySelector('td:nth-child(5)').innerText;
             }
         };
-
-        var scrollToTopBtn = document.getElementById("scrollToTopBtn");
-
-        // When the user scrolls down 20px from the top of the document, show the button
-        window.onscroll = function() {scrollFunction()};
-
-        function scrollFunction() {
-            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-                scrollToTopBtn.style.display = "block";
-                // Center the button horizontally
-                scrollToTopBtn.style.left = "50%";
-                scrollToTopBtn.style.transform = "translateX(-50%)";
-            } else {
-                scrollToTopBtn.style.display = "none";
-            }
-        }
-
-        // When the user clicks on the button, scroll to the top of the document
-        scrollToTopBtn.addEventListener("click", function() {
-            document.body.scrollTop = 0; // For Safari
-            document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-        });
     });
-
 </script>
+
 </body>
 {% endblock %}
