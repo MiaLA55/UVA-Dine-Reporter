@@ -65,13 +65,20 @@
                 font-weight: bold;
             }
 
-         .custom-btn:hover {
-        background-color:#0e1424;
-        color: white;
-    }
+        .custom-btn:hover {
+            background-color:#0e1424;
+            color: white;
+        }
 
-
-
+        .resolved-notes-container {
+            background-color: #e3eeff;
+            color: #222d4b;
+            font-style: italic;
+            border: 1.5px solid #222d4b;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 
@@ -130,14 +137,18 @@
                     <p><strong>ID:</strong> {{ report.id }}</p>
                     <hr>
                     {% if report.status == 'RESOLVED' %}
-                    <p><strong>Report Resolve Notes:</strong></p>
-                    <p>
-                        {% if report.resolved_notes %}
-                        {{ report.resolved_notes }}
-                        {% else %}
-                        <span class="text-muted">No report resolve notes provided</span>
-                        {% endif %}
-                    </p>
+                    <div class="resolved-notes-container">
+                        <p><strong>Report Resolve Notes:</strong></p>
+                        <p>
+                            {% if report.resolved_notes %}
+                            {{ report.resolved_notes }}
+                            {% else %}
+                            <span class="text-muted">No report resolve notes provided</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <br>
+                    {% endif %}
                     {% if prevPage == 'user_reports' %}
                     <a href="{% url 'login:user_reports' %}" class="btn custom-btn"><strong>Back to the
                         List</strong></a>
@@ -150,22 +161,6 @@
                     {% elif prevPage == 'user_reports_resolved' %}
                        <a href="{% url 'login:user_list_files_resolved' %}" class="btn custom-btn"><strong>Back to the
                         List</strong></a>
-                    {% endif %}
-                    {% else %}
-                    <p><strong>Report Resolve Notes: </strong>No notes provided.</p>
-                     {% if prevPage == 'user_reports' %}
-                    <a href="{% url 'login:user_reports' %}" class="btn custom-btn"><strong>Back to the
-                        List</strong></a>
-                    {% elif prevPage == 'user_reports_new' %}
-                    <a href="{% url 'login:user_list_files_new' %}" class="btn custom-btn"><strong>Back to the
-                        List</strong></a>
-                    {% elif prevPage == 'user_reports_ip' %}
-                     <a href="{% url 'login:user_list_files_ip' %}" class="btn custom-btn"><strong>Back to the
-                        List</strong></a>
-                    {% elif prevPage == 'user_reports_resolved' %}
-                       <a href="{% url 'login:user_list_files_resolved' %}" class="btn custom-btn"><strong>Back to the
-                        List</strong></a>
-                    {% endif %}
                     {% endif %}
                 </div>
             </div>
