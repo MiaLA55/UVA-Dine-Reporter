@@ -100,7 +100,7 @@
 </head>
 
 <body>
-<h1 class="center-text header-heading"><strong>{{ user.username.capitalize }}'s Submitted Reports</strong></h1>
+<h1 class="center-text header-heading"><strong>{{ user.username.capitalize }}'s Reports In Progress</strong></h1>
 {% if file_data %}
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -149,7 +149,7 @@
 </div>
 <a href="{% url 'login:auth_home' %}" class="btn custom-btn"><strong>Return Home</strong></a>
 {% else %}
-<p class="center-text">You have no submitted reports.</p>
+<p class="center-text">You have no reports in progress.</p>
 <br>
 <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-file-earmark"
      viewBox="0 0 16 16">
