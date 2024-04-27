@@ -513,9 +513,7 @@ def user_file_view(request, report_id):
     # Retrieve the corresponding report from the database
     prevPage = request.GET.get('prevPage')
     report = get_object_or_404(Report, pk=report_id)
-    if report.status != "RESOLVED":
-        report.status = "IN PROGRESS"
-        report.save()
+
 
     # Prepare the context with the details of the specific report
     context = {
