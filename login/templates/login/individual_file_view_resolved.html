@@ -7,7 +7,6 @@
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
-    {% bootstrap_messages %}
     <style>
         body {
             color: #222d4b;
@@ -70,6 +69,15 @@
         background-color:#0e1424;
         color: white;
     }
+    .resolved-notes-container {
+            background-color: #e3eeff;
+            color: #222d4b;
+            font-style: italic;
+            border: 1.5px solid #222d4b;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 20px;
+        }
 
 
     </style>
@@ -135,6 +143,7 @@
                     <p><strong>ID:</strong> {{ report.id }}</p>
                     <hr>
                     {% if report.status == 'RESOLVED' %}
+                    <div class="resolved-notes-container">
                     <p><strong>Report Resolve Notes:</strong></p>
                     <p>
                         {% if report.resolved_notes %}
@@ -143,6 +152,8 @@
                         <span class="text-muted">No report resolve notes provided</span>
                         {% endif %}
                     </p>
+                     </div>
+                    <br>
                     <a href="{% url 'login:list_files_resolved' %}" class="btn custom-btn"><strong>Back to the
                         List</strong></a>
                     {% else %}
