@@ -5,7 +5,7 @@
 *  URL: https://getbootstrap.com/docs/5.3/getting-started/introduction/
 
 *  Tool: ChatGPT
-*  Use: Container styling
+*  Use: Container styling, basic styling additions (e.g. borders, padding), dropdown
 ***************************************************************************************/ -->
 {% extends 'login/base.html' %}
 {% block content %}
@@ -21,17 +21,12 @@
         -moz-appearance: none;
         background: transparent;
         padding: 10px;
-        /* Adjust padding as needed */
         border: 1px solid #ccc;
-        /* Add border for better visibility */
         border-radius: 5px;
-        /* Add some border radius */
+
         font-size: 16px;
-        /* Adjust font size as needed */
         color: #555;
-        /* Adjust text color */
         width: 100%;
-        /* Make the dropdown full-width */
     }
 
     .custom-dropdown::after {
@@ -39,11 +34,10 @@
         width: 0;
         height: 0;
         border-left: 6px solid transparent;
-        /* Adjust arrow size */
+
         border-right: 6px solid transparent;
-        /* Adjust arrow size */
         border-top: 8px solid #555;
-        /* Adjust arrow color */
+
         position: absolute;
         top: 50%;
         right: 15px;
@@ -114,7 +108,7 @@
             background-color: white;
             border-radius: 0.25rem;
             border: 1px solid #222d4b;
-            cursor: pointer; /* Add cursor pointer to indicate interactivity */
+            cursor: pointer;
         }
 
         .selected-tag {
