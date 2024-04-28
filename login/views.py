@@ -1,3 +1,6 @@
+# REFERENCES
+# ChatGPT
+# Use: Fixing unknown errors, requesting info from templates, etc.
 import os
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView

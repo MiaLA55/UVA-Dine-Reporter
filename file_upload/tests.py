@@ -1,3 +1,6 @@
+# REFERENCES
+# ChatGPT
+# Use: Fixing unknown errors, basics of building a test
 import os
 
 from django.conf import settings
@@ -159,3 +162,42 @@ class DeleteReportTests(TestCase):
             explanation="Test explanation",
             filenames=None
         ).exists())
+
+
+
+class ResolveReport(TestCase):
+    def setUp(self):
+        self.test_user = get_user_model().objects.create_user(username="test_user", password="password")
+        self.report_with_file = Report.objects.create(
+            attached_user=self.test_user.username,
+            explanation="Test explanation",
+            filenames="test.txt"
+        )
+        self.report_without_file = Report.objects.create(
+            attached_user=self.test_user.username,
+            explanation="Test explanation",
+            filenames=None
+        )
+        self.client = Client()
+        self.client.force_login(self.test_user)
+
+    def tearDown(self):
+        self.report_with_file.delete()
+        self.report_without_file.delete()
+        self.test_user.delete()
+
+    def test_resolve_report_submit(self):
+        self.report = Report.objects.create(
+            attached_user=self.test_user.username,
+            explanation="Test explanation",
+            filenames="test.txt"
+        )
+
+        response = self.client.post(reverse("login:resolve_report_submit", args=[self.report.pk]), {
+            "resolveNotes": "Resolved notes",
+            "file_name": "test.txt"
+        })
+
+        self.report.refresh_from_db()
+        self.assertEqual(self.report.resolved_notes, "Resolved notes")
+        self.assertEqual(self.report.status, "RESOLVED")
