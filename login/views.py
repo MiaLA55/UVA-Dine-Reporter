@@ -509,11 +509,11 @@ def resolve_report_submit(request, report_id):
     else:
         return redirect("login")
 
+
 def user_file_view(request, report_id):
     # Retrieve the corresponding report from the database
     prevPage = request.GET.get('prevPage')
     report = get_object_or_404(Report, pk=report_id)
-
 
     # Prepare the context with the details of the specific report
     context = {
@@ -591,13 +591,13 @@ def individual_file_view_resolved(request, report_id):
 
 def delete_report(request, report_id):
     if request.user.is_authenticated:
-        # Retrieve the report object based on the filenames
+        # Retrieve the report object based on the report_id
         report = get_object_or_404(Report, pk=report_id)
-        prevPage = request.GET.get('prevPage')
+        prevPage = request.GET.get('prevPage', None)
 
         # Check if the current user is the owner of the report
         if report.attached_user == request.user.username:
-            # Delete the file from S3 bucket
+            # Delete the file from S3 bucket if it exists
             if report.filenames:
                 s3 = boto3.client(
                     "s3",
@@ -609,15 +609,17 @@ def delete_report(request, report_id):
             # Delete the report from the database
             report.delete()
 
-            # Redirect the user back to their list of reports
+            # Redirect the user back to their list of reports or a default page
             if prevPage == "user_reports":
-                return HttpResponseRedirect(reverse("login:user_reports"))
+                return redirect("login:user_reports")
             elif prevPage == "user_reports_new":
-                return HttpResponseRedirect(reverse("login:user_list_files_new"))
+                return redirect("login:user_list_files_new")
             elif prevPage == "user_reports_ip":
-                return HttpResponseRedirect(reverse("login:user_list_files_ip"))
+                return redirect("login:user_list_files_ip")
             elif prevPage == "user_reports_resolved":
-                return HttpResponseRedirect(reverse("login:user_list_files_resolved"))
+                return redirect("login:user_list_files_resolved")
+            else:
+                return redirect("login:user_reports")
         else:
             # If the user is not the owner, return an error or redirect to an appropriate page
             return HttpResponse("You are not authorized to delete this report.")
