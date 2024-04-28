@@ -132,7 +132,7 @@
                 <p><strong>Report ID:</strong> {{ report.id }}</p>
 
 
-                <form method="post" action="{% url 'login:delete_report' report.id %}">
+                <form method="post" action="{% url 'login:delete_report' report.id %}?prevPage=user_reports">
                     {% csrf_token %}
                     <a href="{% url 'login:user_file_view' report.id %}?prevPage=user_reports"
                        class="btn custom-btn"><strong>View Details</strong></a>

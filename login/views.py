@@ -593,6 +593,7 @@ def delete_report(request, report_id):
     if request.user.is_authenticated:
         # Retrieve the report object based on the filenames
         report = get_object_or_404(Report, pk=report_id)
+        prevPage = request.GET.get('prevPage')
 
         # Check if the current user is the owner of the report
         if report.attached_user == request.user.username:
@@ -609,7 +610,14 @@ def delete_report(request, report_id):
             report.delete()
 
             # Redirect the user back to their list of reports
-            return HttpResponseRedirect(reverse("login:user_reports"))
+            if prevPage == "user_reports":
+                return HttpResponseRedirect(reverse("login:user_reports"))
+            elif prevPage == "user_reports_new":
+                return HttpResponseRedirect(reverse("login:user_list_files_new"))
+            elif prevPage == "user_reports_ip":
+                return HttpResponseRedirect(reverse("login:user_list_files_ip"))
+            elif prevPage == "user_reports_resolved":
+                return HttpResponseRedirect(reverse("login:user_list_files_resolved"))
         else:
             # If the user is not the owner, return an error or redirect to an appropriate page
             return HttpResponse("You are not authorized to delete this report.")
